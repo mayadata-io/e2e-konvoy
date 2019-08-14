@@ -3,7 +3,6 @@ set -e
 
 path=$(pwd)
 mkdir -p $path/config
-mkdir -p $path/config/cluster
 
 git clone -b Openebs-base https://github.com/mayadata-io/e2e-konvoy.git
 cd e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
