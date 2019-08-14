@@ -10,7 +10,6 @@ konvoy-cluster:
   tags: 
     - k8s-konvoy 
   script:
-    - bash
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
     - sudo ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
   artifacts:
@@ -23,6 +22,5 @@ konvoy-cleanup:
   tags: 
     - k8s-konvoy 
   script:
-    - bash
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-setup
     - sudo ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-cleanup
