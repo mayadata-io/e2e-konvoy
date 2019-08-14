@@ -7,8 +7,8 @@ stages:
 konvoy-cluster:
   image: ranjnshashank855/konvoy:v15
   stage: CLUSTER-SETUP
-  tags: 
-    - k8s-konvoy 
+  #tags: 
+  #  - k8s-konvoy 
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
     - sudo ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
@@ -19,8 +19,8 @@ konvoy-cluster:
 konvoy-cleanup:
   image: ranjnshashank855/konvoy:v15
   stage: CLUSTER-CLEANUP
-  tags: 
-    - k8s-konvoy 
+  # tags: 
+  #  - k8s-konvoy 
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-setup
     - sudo ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-cleanup
