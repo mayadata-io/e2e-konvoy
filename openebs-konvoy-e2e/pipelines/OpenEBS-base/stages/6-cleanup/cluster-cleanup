@@ -1,0 +1,13 @@
+#!/bin/bash
+
+path=$(pwd)
+
+mkdir $path/cluster
+
+scp -r $path/config $path/cluster
+
+cd $path/cluster
+
+scp -r $path/cluster/konvoy_v0.6.0/* /usr/local/bin/
+
+konvoy down -y

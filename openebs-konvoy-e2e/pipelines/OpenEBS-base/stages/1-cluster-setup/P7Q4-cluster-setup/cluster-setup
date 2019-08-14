@@ -1,0 +1,50 @@
+#!/bin/bash
+set -e
+
+path=$(pwd)
+mkdir -p $path/config
+
+git clone -b Openebs-base https://github.com/mayadata-io/e2e-konvoy.git
+cd e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
+
+aws configure set aws_access_key_id $access_key
+aws configure set aws_secret_access_key $secret_key
+
+mv konvoy_v0.6.0_linux.tar.bz2 $path/config
+
+tar -xf $path/config/konvoy_v0.6.0_linux.tar.bz2
+
+mv konvoy_v0.6.0 $path/config
+
+scp $path/config/konvoy_v0.6.0/* /usr/local/bin/
+
+cd $path/config
+
+konvoy --version
+
+konvoy init
+
+# Disabling default addons on cluster.yaml
+
+sed -i -e '128s/.*/      enabled: false/' \
+-e '122s/.*/      enabled: false/' \
+-e '120s/.*/      enabled: false/' \
+-e '110s/.*/      enabled: false/' \
+-e '106s/.*/      enabled: false/' \
+-e '104s/.*/      enabled: false/' \
+-e '102s/.*/      enabled: false/' \
+-e '92s/.*/      enabled: false/' \
+-e '29s/.*/    count: 1/' cluster.yaml
+
+# Bringing up cluster using konvoy up command
+
+konvoy up --cluster-name konvoypipeline -y
+
+konvoy apply kubeconfig
+
+mkdir ~/.kube
+
+scp $path/config/admin.conf ~/.kube/config
+
+kubectl get nodes
+kubectl get pods --all-namespaces
