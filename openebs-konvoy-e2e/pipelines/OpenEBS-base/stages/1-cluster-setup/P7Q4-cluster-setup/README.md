@@ -2,7 +2,7 @@
 
 #### Description
 
-The Administrator should be able to use this job to configure OpenShift-3.10 enterprise cluster in vSphere based virtual machines and check if it is healthy for carrying out e2e tests.
+The Administrator should be able to use this job to configure konvoy cluster and check if it is healthy for carrying out e2e tests.
 
 #### Prerequisites
 
@@ -16,7 +16,7 @@ The Administrator should be able to use this job to configure OpenShift-3.10 ent
 
 #### Expected result
 
-- OpenShift enterprise cluster should be configured successfully. All the nodes in the cluster should be in healthy state. 
+- Konvoy cluster should be configured successfully. All the nodes in the cluster should be in healthy state. 
 
 #### Test Result
 
