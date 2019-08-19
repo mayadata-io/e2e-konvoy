@@ -1,4 +1,4 @@
-### PCZD-Setting up OpenShift enterprise cluster.
+### PCZD-Setting up D2IQ-Konvoy cluster.
 
 #### Description
 
@@ -10,9 +10,9 @@ The Administrator should be able to use this job to configure konvoy cluster and
 
 #### Procedure
 
-- This job triggers a litmus experiment which configures OpenShift enterprise cluster using its corresponding inventory.
+- This job triggers a litmus experiment which configures konvoy cluster using its corresponding inventory.
 - The litmus experiment receives the necessary parameters in form of pod environmental variables and updates the inventory accordingly.
-- This test should check if the OpenShift cluster is ready using kubectl command ```kubectl get nodes```
+- This test should check if the konvoy cluster is ready using kubectl command ```kubectl get nodes```
 
 #### Expected result
 
