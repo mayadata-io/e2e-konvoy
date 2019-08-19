@@ -24,9 +24,9 @@ scp $path/config/konvoy_v0.6.0/* /usr/local/bin/
 
 cd $path/config
 
-konvoy --version
+sudo konvoy --version
 
-konvoy init
+sudo konvoy init
 
 # Disabling default addons on cluster.yaml
 
@@ -42,9 +42,9 @@ sed -i -e '128s/.*/      enabled: false/' \
 
 # Bringing up cluster using konvoy up command
 
-konvoy up --cluster-name konvoypipeline -y
+sudo konvoy up --cluster-name konvoypipeline -y
 
-konvoy apply kubeconfig
+sudo konvoy apply kubeconfig
 
 mkdir ~/.kube
 

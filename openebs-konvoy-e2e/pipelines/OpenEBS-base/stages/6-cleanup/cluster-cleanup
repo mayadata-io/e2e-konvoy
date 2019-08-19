@@ -10,4 +10,4 @@ cd $path/cluster
 
 scp -r $path/cluster/konvoy_v0.6.0/* /usr/local/bin/
 
-konvoy down -y
+sudo konvoy down -y
