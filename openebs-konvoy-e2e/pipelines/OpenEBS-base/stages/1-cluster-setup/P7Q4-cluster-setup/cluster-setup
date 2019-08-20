@@ -11,7 +11,7 @@ export AWS_SECRET_ACCESS_KEY=$SECRET_KEY
 #cd e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
 git branch
 cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
-mkdir /home/gitlab-runner/config
+mkdir -p /home/gitlab-runner/config
 sudo mv konvoy_v0.6.0_linux.tar.bz2 /home/gitlab-runner/config
 
 cd /home/gitlab/config
