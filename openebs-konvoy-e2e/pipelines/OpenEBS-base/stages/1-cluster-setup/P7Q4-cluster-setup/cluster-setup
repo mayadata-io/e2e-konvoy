@@ -6,10 +6,6 @@ mkdir -p $path/config
 git clone -b Openebs-base https://github.com/mayadata-io/e2e-konvoy.git
 cd e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
 
-
-aws configure set aws_access_key_id  AKIA5T4KAEA24JR22ZNL
-aws configure set aws_secret_access_key 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
-
 sudo mv konvoy_v0.6.0_linux.tar.bz2 $path/config
 
 tar -xf $path/config/konvoy_v0.6.0_linux.tar.bz2
