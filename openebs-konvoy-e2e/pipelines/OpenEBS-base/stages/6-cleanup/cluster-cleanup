@@ -5,9 +5,6 @@ echo $path
 cd /home/gitlab-runner
 pwd
 ls
-cd $path
-cd ../../
-rm -rf openebs
 cd config
 sudo konvoy down -y
 cd ..
