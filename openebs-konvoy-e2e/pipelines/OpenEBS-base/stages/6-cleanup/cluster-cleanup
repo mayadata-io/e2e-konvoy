@@ -2,12 +2,11 @@
 set -x
 path=$(pwd)
 echo $path
-cd $path/cluster
-sudo rm -rf /home/gitlab-runner/builds
+cd /home/gitlab-runner
 
+sudo rm -rf build
+cd config
 sudo konvoy down -y
-
-sudo rm -rf *
-sudo rm -rf /usr/local/bin/konvoy
-sudo rm -rf /usr/local/bin/konvoy-preflight
+cd ..
+sudo rm -rf config
 pwd
