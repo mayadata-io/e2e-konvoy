@@ -5,7 +5,7 @@ echo $path
 cd /home/gitlab-runner
 pwd
 ls
-sudo rm -rf builds
+#sudo rm -rf builds
 cd config
 sudo konvoy down -y
 cd ..
