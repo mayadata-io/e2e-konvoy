@@ -12,5 +12,6 @@ sudo konvoy down -y
 sudo rm -rf *
 sudo rm -rf /usr/local/bin/konvoy
 sudo rm -rf /usr/local/bin/konvoy-preflight
+rm -rf /home/gitlab-runner/builds/sjPTxETt/0
 
 pwd
