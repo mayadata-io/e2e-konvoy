@@ -1,23 +1,27 @@
 #!/bin/bash
 set -ex
 path=$(pwd)
+echo $path
 mkdir -p $path/config
-
+ls
 export AWS_ACCESS_KEY_ID=$ACCESS_KEY
 export AWS_SECRET_ACCESS_KEY=$SECRET_KEY
 
 git clone -b Openebs-base https://github.com/mayadata-io/e2e-konvoy.git
 cd e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
-
+ls
 sudo mv konvoy_v0.6.0_linux.tar.bz2 $path/config
 
 tar -xf $path/config/konvoy_v0.6.0_linux.tar.bz2
 
 sudo mv konvoy_v0.6.0 $path/config
 
-sudo scp $path/config/konvoy_v0.6.0/* /usr/local/bin/
 
+sudo scp $path/config/konvoy_v0.6.0/* /usr/local/bin/
+ls
 cd $path/config
+pwd
+ls
 
 sudo konvoy --version
 
@@ -81,3 +85,4 @@ sudo scp $path/config/admin.conf ~/.kube/config
 
 kubectl get nodes
 kubectl get pods --all-namespaces
+cd $path
