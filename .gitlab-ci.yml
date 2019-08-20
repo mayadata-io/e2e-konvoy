@@ -5,7 +5,6 @@ stages:
   - CLUSTER-CLEANUP
 
 konvoy-cluster:
-  image: ranjnshashank855/konvoy:v15
   stage: CLUSTER-SETUP
   tags: 
     - k8s-konvoy 
@@ -18,8 +17,9 @@ konvoy-cluster:
 
 konvoy-cleanup:
   when: always
-  image: ranjnshashank855/konvoy:v15
   stage: CLUSTER-CLEANUP
+  dependencies: 
+    - konvoy-cluster
   tags: 
     - k8s-konvoy 
   script:
