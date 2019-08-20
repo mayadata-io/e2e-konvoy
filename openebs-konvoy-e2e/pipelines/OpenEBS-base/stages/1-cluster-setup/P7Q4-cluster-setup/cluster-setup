@@ -14,7 +14,7 @@ cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster
 mkdir -p /home/gitlab-runner/config
 sudo mv konvoy_v0.6.0_linux.tar.bz2 /home/gitlab-runner/config
 
-cd /home/gitlab/config
+cd /home/gitlab-runner/config
 tar -xf konvoy_v0.6.0_linux.tar.bz2
 pwd
 
