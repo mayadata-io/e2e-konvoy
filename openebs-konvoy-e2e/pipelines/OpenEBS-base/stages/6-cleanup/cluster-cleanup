@@ -4,7 +4,7 @@ path=$(pwd)
 
 
 cd $path/cluster
-sudo rm -rf /home/gitlab-runner/builds/sjPTxETt/0
+sudo rm -rf /home/gitlab-runner/builds
 scp -r $path/cluster/konvoy_v0.6.0/* /usr/local/bin/
 
 sudo konvoy down -y
