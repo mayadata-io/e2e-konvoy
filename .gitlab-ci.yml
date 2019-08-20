@@ -23,5 +23,5 @@ konvoy-cleanup:
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-setup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-cleanup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-cleanup
