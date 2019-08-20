@@ -1,8 +1,7 @@
 #!/bin/bash
 set -x
 path=$(pwd)
-
-
+echo $path
 cd $path/cluster
 sudo rm -rf /home/gitlab-runner/builds
 
