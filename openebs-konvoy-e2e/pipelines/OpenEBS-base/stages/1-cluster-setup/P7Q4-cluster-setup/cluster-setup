@@ -29,7 +29,7 @@ tar -xf $path/config/konvoy_v0.6.0_linux.tar.bz2
 
 mv konvoy_v0.6.0 $path/config
 
-scp $path/config/konvoy_v0.6.0/* /usr/local/bin/
+sudo scp $path/config/konvoy_v0.6.0/* /usr/local/bin/
 
 cd $path/config
 
