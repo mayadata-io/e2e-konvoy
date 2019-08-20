@@ -5,7 +5,9 @@ echo $path
 cd /home/gitlab-runner
 pwd
 ls
-#sudo rm -rf builds
+cd $path
+cd ../../
+rm -rf openebs
 cd config
 sudo konvoy down -y
 cd ..
