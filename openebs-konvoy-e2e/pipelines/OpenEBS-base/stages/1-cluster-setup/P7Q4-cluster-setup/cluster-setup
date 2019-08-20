@@ -1,33 +1,20 @@
 #!/bin/bash
 set -ex
-
 path=$(pwd)
 mkdir -p $path/config
 
 git clone -b Openebs-base https://github.com/mayadata-io/e2e-konvoy.git
 cd e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
 
-#Installing Docker
-#curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-#sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-#sudo apt-get update
-#sudo apt-get install -y docker-ce
-#sudo systemctl start docker
-#systemctl status docker
 
+aws configure set aws_access_key_id  AKIA5T4KAEA24JR22ZNL
+aws configure set aws_secret_access_key 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
 
-echo $ACCESS_KEY
-echo $SECRET_KEY
-echo $CI_JOB_ID
-
-aws configure set aws_access_key_id $ACCESS_KEY
-aws configure set aws_secret_access_key $SECRET_KEY
-
-mv konvoy_v0.6.0_linux.tar.bz2 $path/config
+sudo mv konvoy_v0.6.0_linux.tar.bz2 $path/config
 
 tar -xf $path/config/konvoy_v0.6.0_linux.tar.bz2
 
-mv konvoy_v0.6.0 $path/config
+sudo mv konvoy_v0.6.0 $path/config
 
 sudo scp $path/config/konvoy_v0.6.0/* /usr/local/bin/
 
@@ -39,7 +26,41 @@ sudo konvoy init
 
 # Disabling default addons on cluster.yaml
 
+#122-prometheusadapter
+#128-velero
+#120-prometheus
+#110-kibana
+#106-fluentbit
+#104-elasticsearchexporter
+#102-elasticsearch
+#92-awsebscsiprovisioner
+#29-control-plane
+
+#94-awsebsprovisioner
+#96-dashboard
+#98-dex
+#100-dex-k8s-authenticator
+#102-elasticsearch
+#112-kommander
+#114-konvoy-ui
+#118-opsportal
+#120-prometheus
+#124-traefik
+#126-traefik-forward-auth
+
+
 sed -i -e '128s/.*/      enabled: false/' \
+-e '94s/.*/      enabled: false/' \
+-e '96s/.*/      enabled: false/' \
+-e '98s/.*/      enabled: false/' \
+-e '100s/.*/      enabled: false/' \
+-e '102s/.*/      enabled: false/' \
+-e '112s/.*/      enabled: false/' \
+-e '114s/.*/      enabled: false/' \
+-e '118s/.*/      enabled: false/' \
+-e '120s/.*/      enabled: false/' \
+-e '124s/.*/      enabled: false/' \
+-e '126s/.*/      enabled: false/' \
 -e '122s/.*/      enabled: false/' \
 -e '120s/.*/      enabled: false/' \
 -e '110s/.*/      enabled: false/' \
@@ -55,9 +76,9 @@ sudo konvoy up --cluster-name konvoypipeline -y
 
 sudo konvoy apply kubeconfig
 
-mkdir ~/.kube
+sudo mkdir ~/.kube
 
-scp $path/config/admin.conf ~/.kube/config
+sudo scp $path/config/admin.conf ~/.kube/config
 
 kubectl get nodes
 kubectl get pods --all-namespaces
