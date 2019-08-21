@@ -71,8 +71,8 @@ sudo konvoy up -y
 sudo konvoy apply kubeconfig --force-overwrite
 
 sudo mkdir ~/.kube
-
-sudo scp $path/config/admin.conf ~/.kube/config
+pwd
+sudo scp home/gitlab-runner/config/admin.conf ~/.kube/config
 
 kubectl get nodes
 kubectl get pods --all-namespaces
