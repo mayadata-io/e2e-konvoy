@@ -66,9 +66,9 @@ sed -i -e '128s/.*/      enabled: false/' \
 
 # Bringing up cluster using konvoy up command
 
-sudo konvoy up --cluster-name konvoypipeline -y
+sudo konvoy up -y
 
-sudo konvoy apply kubeconfig
+sudo konvoy apply kubeconfig --force-overwrite
 
 sudo mkdir ~/.kube
 
