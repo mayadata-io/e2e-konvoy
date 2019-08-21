@@ -70,7 +70,7 @@ sudo konvoy up -y
 
 sudo konvoy apply kubeconfig --force-overwrite
 
-sudo mkdir ~/.kube
+sudo mkdir -p ~/.kube
 pwd
 sudo scp home/gitlab-runner/config/admin.conf ~/.kube/config
 
