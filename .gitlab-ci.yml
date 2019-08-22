@@ -25,19 +25,19 @@ konvoy-cluster:
 
 ## Setup OpenEBS control plane
 
-openebs-kovoy-deploy:
+openebs-konvoy-deploy:
   image: ranjnshashank855/konvoy:v15
   stage: PROVIDER-INFRA-SETUP
   tags: 
     - k8s-konvoy-test
   dependencies:
-    - kovoy-cluster
+    - konvoy-cluster
   script: 
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-depoy/infra-setup
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-infra-setup/O21Y-openebs-depoy/infra-setup
   artifacts:
     paths:
-      - openebs-kovoy/
+      - openebs-konvoy/
 
 openebs-sc-deploy:
   image: ranjnshashank855/konvoy:v15
@@ -45,13 +45,13 @@ openebs-sc-deploy:
   tags: 
     - k8s-konvoy-test
   dependencies:
-    - kovoy-cluster
+    - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
   artifacts:
     paths:
-      - openebs-kovoy/
+      - openebs-konvoy/
 
 ## Define a job template for app deployers
 
@@ -61,10 +61,10 @@ openebs-sc-deploy:
   tags: 
     - k8s-konvoy-test
   dependencies:
-    - openebs-kovoy-deploy
+    - openebs-konvoy-deploy
   artifacts:
     paths: 
-      - openebs-kovoy/
+      - openebs-konvoy/
 
 ## Define the app deployer jobs
 
@@ -161,7 +161,7 @@ percona-jiva:
 #   when: always 
 #   artifacts:
 #     paths: 
-#       - openebs-kovoy/
+#       - openebs-konvoy/
 
 # app-replica-scale-{cassandra-jiva}:
 #   extends: .func_test_template #dependencies: cassandra-jiva
@@ -234,7 +234,7 @@ percona-jiva:
 #   when: always 
 #   artifacts:
 #     paths: 
-#       - openebs-kovoy/
+#       - openebs-konvoy/
 
 # repl-kill-{percona-jiva}:
 #   extends: .chaos_test_template #dependencies: percona-jiva
@@ -299,7 +299,7 @@ percona-jiva:
 #   when: always
 #   artifacts:
 #     paths:
-#      - openebs-kovoy/
+#      - openebs-konvoy/
 
 # ## PERCONA-JIVA
 # percona-jiva-deprovision:
