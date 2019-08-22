@@ -8,6 +8,6 @@ ls
 cd config
 sudo konvoy down -y
 cd ..
-sudo rm -rf config
+# sudo rm -rf config
 pwd
 sudo rm -rf /home/gitlab-runner/builds
