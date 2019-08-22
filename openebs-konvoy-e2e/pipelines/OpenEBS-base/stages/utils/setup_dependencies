@@ -6,7 +6,7 @@ derive_cluster_details_infra()
  path=$(pwd) 
  ## Get kubeconfig file into infra-setup gitlab runner pod
  mkdir ~/.kube $path/openebs-konvoy $path/openebs-konvoy/.kube 
- cp -r $path/config/.kube/. ~/.kube/
+ cp -r /home/gitlab-runner/config/admin.conf ~/.kube/
  cp -r /home/gitlab-runner/config/admin.conf $path/openebs-konvoy/.kube/config
 }
  
