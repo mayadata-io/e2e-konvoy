@@ -1,0 +1,62 @@
+#!/bin/bash
+set -x
+
+#################
+## ENVIRONMENT ##
+#################
+
+## https://github.com/openebs/litmus/blob/master/apps/percona/chaos/openebs_target_failure/test_vars.yml
+test_name=$(${utils_path}/generate_test_name testcase=openebs-target-failure metadata="")
+
+###################
+## DEPENDENCIES  ##
+###################
+
+${utils_path}/setup_dependencies litmus-test
+
+## Clone the litmus repo, navigate to litmus root 
+git clone https://github.com/litmuschaos/litmus.git
+cd litmus
+
+############################
+## LITMUS PRECONDITIONING ##
+############################
+
+## TODO: Change location of chaos jobs
+
+: << EOF
+  ----------------------------------------------------------------------------------
+ | specAttribute        | kind     | percona             | mongodb                  |
+  ----------------------------------------------------------------------------------|
+ | appLabel             | env      | name=percona        | app=mongo                |
+ | pvcName              | env      | percona-mysql-claim | openebs-mongo-mongo-0    | 
+ | appNamespace         | env      | app-percona-ns      | app-mongo-ns		    | 
+  ----------------------------------------------------------------------------------
+EOF
+
+cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_test.yml
+
+sed -i -e 's/''name=percona''/''app=mongo''/g' \
+-e 's/value: app-percona-ns/value: app-mongo-ns/g' \
+-e 's/value: percona-mysql-claim/value: openebs-mongo-mongo-0/g' run_test.yml
+
+#################
+## RUNNER MAIN ##
+#################
+
+echo "Running the litmus test.."
+${utils_path}/litmus_job_runner label='name:openebs-target-failure' job=run_test.yml
+${utils_path}/task_delimiter;
+
+echo "Dumping state of cluster post job run"; echo ""
+${utils_path}/dump_cluster_state;
+${utils_path}/task_delimiter;
+
+#################
+## GET RESULT  ##
+#################
+
+## Check the test status & result from the litmus result custom resource
+${utils_path}/get_litmus_result ${test_name}
+
+

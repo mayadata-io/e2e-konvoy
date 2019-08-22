@@ -1,0 +1,58 @@
+#!/bin/bash
+set -x
+
+#################
+## ENVIRONMENT ##
+#################
+
+## https://github.com/openebs/litmus/blob/master/apps/percona/chaos/openebs-replica-network-delay/test_vars.yml
+test_name=$(${utils_path}/generate_test_name testcase=openebs-replica-network-delay metadata="")
+
+###################
+## DEPENDENCIES  ##
+###################
+
+${utils_path}/setup_dependencies litmus-test
+
+## Clone the litmus repo, navigate to litmus root 
+git clone https://github.com/litmuschaos/litmus.git
+cd litmus
+
+############################
+## LITMUS PRECONDITIONING ##
+############################
+
+: << EOF
+  ----------------------------------------------------------------------------------
+ | specAttribute        | kind     | percona             | jenkins                  |
+  ----------------------------------------------------------------------------------|
+ | appLabel             | env      | name=percona        | app=jenkins-app          |
+ | pvcName              | env      | percona-mysql-claim | jenkins-claim            | 
+ | appNamespace         | env      | app-percona-ns      | app-jenkins-ns           | 
+  ----------------------------------------------------------------------------------
+EOF
+
+cp apps/percona/chaos/openebs_replica_network_delay/run_litmus_test.yml run_test.yml
+
+sed -i -e 's/''name=percona''/''app=jenkins-app''/g' \
+-e 's/value: app-percona-ns/value: app-jenkins-ns/g' \
+-e 's/value: percona-mysql-claim/value: jenkins-claim/g' run_test.yml
+
+#################
+## RUNNER MAIN ##
+#################
+
+echo "Running the litmus test.."
+${utils_path}/litmus_job_runner label='name:openebs-replica-network' job=run_test.yml
+${utils_path}/task_delimiter;
+
+echo "Dumping state of cluster post job run"; echo ""
+${utils_path}/dump_cluster_state;
+${utils_path}/task_delimiter;
+
+#################
+## GET RESULT  ##
+#################
+
+## Check the test status & result from the litmus result custom resource
+${utils_path}/get_litmus_result ${test_name}
