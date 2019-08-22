@@ -8,6 +8,8 @@ echo $path
 git branch
 cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
 mkdir -p /home/gitlab-runner/config
+mkdir -p $path/config
+sudo mv konvoy_v0.6.0_linux.tar.bz2 $path/config
 sudo mv konvoy_v0.6.0_linux.tar.bz2 /home/gitlab-runner/config
 
 cd /home/gitlab-runner/config
@@ -73,6 +75,8 @@ sudo konvoy apply kubeconfig --force-overwrite
 sudo mkdir -p ~/.kube
 
 sudo cp /home/gitlab-runner/config/admin.conf ~/.kube/config
+
+sudo cp * $path/config
 
 kubectl get nodes
 kubectl get pods --all-namespaces
