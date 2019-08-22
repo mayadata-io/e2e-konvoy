@@ -10,7 +10,7 @@ stages:
   - CLUSTER-CLEANUP
 
 variables: 
-  utils_path: "/builds/openebs/e2e-konvoy/script/utils"
+  utils_path: "/builds/openebs/e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/utils"
 
 konvoy-cluster:
   stage: CLUSTER-SETUP
@@ -33,8 +33,8 @@ openebs-konvoy-deploy:
   dependencies:
     - konvoy-cluster
   script: 
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-depoy/infra-setup
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-infra-setup/O21Y-openebs-depoy/infra-setup
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-infra-setup/O21Y-openebs-deploy/infra-setup
   artifacts:
     paths:
       - openebs-konvoy/
