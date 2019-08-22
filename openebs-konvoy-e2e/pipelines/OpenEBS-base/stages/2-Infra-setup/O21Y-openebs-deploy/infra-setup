@@ -5,6 +5,8 @@ set -ex
 ##   ENVIRONMENT    ##
 ######################
 
+ls /config
+
 present_dir=$(pwd)
 #clone e2e-infrastructre to get the latest commits and run env-exporter script from env
 git clone https://github.com/openebs/e2e-infrastructure.git
