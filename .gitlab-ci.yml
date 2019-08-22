@@ -34,7 +34,7 @@ openebs-konvoy-deploy:
     - konvoy-cluster
   script: 
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-infra-setup/O21Y-openebs-deploy/infra-setup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
   artifacts:
     paths:
       - openebs-konvoy/
