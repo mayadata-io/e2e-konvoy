@@ -9,9 +9,8 @@ cd config
 aws configure set aws_access_key_id $ACCESS_KEY
 aws configure set aws_secret_access_key $SECRET_KEY
 
-sudo mkdir /root/.aws
-sudo cp ~/.aws/credentials /root/.aws/credentials
-sudo konvoy down
+
+sudo konvoy down -y
 
 # cd /home/gitlab-runner
 # pwd
