@@ -3,7 +3,7 @@ set -ex
 path=$(pwd)
 echo $path
 
-which aws
+
 kubectl version
 docker version
 
