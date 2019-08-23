@@ -21,7 +21,7 @@ konvoy-cluster:
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
   artifacts:
     paths:
-      - openebs-konvoy/
+      - config/
 
 ## Setup OpenEBS control plane
 
