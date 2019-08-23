@@ -1,44 +1,51 @@
 #!/bin/bash
 set -x
 
+
+path=$(pwd)
+
+cd $path/openebs-konvoy
+ls
+cat script.sh
+
 #################
 ## ENVIRONMENT ##
 #################
 
-test_name=$(${utils_path}/generate_test_name testcase=storageclassinstaller metadata="")
+# test_name=$(${utils_path}/generate_test_name testcase=storageclassinstaller metadata="")
       
 ###################
 ## DEPENDENCIES  ##
 ###################
 
-echo "Setting up test dependencies.."
-${utils_path}/setup_dependencies infra-setup
+# echo "Setting up test dependencies.."
+# ${utils_path}/setup_dependencies infra-setup
 
-## Clone the litmus repo,navigate to litmus root 
-git clone https://github.com/openebs/litmus.git
-cd litmus 
+# ## Clone the litmus repo,navigate to litmus root 
+# git clone https://github.com/openebs/litmus.git
+# cd litmus 
 
-############################
-## LITMUS PRECONDITIONING ##
-############################
+# ############################
+# ## LITMUS PRECONDITIONING ##
+# ############################
 
-cp providers/openebs/installers/storageclass/0.7/litmusbook/storageclass_setup.yaml run_test.yml
+# cp providers/openebs/installers/storageclass/0.7/litmusbook/storageclass_setup.yaml run_test.yml
 
-#################
-## RUNNER MAIN ##
-#################
+# #################
+# ## RUNNER MAIN ##
+# #################
 
-echo "Running the litmus test.."
-${utils_path}/litmus_job_runner label='provider:openebs-sc-setup' job=run_test.yml
-${utils_path}/task_delimiter;
+# echo "Running the litmus test.."
+# ${utils_path}/litmus_job_runner label='provider:openebs-sc-setup' job=run_test.yml
+# ${utils_path}/task_delimiter;
 
-echo "Dumping state of cluster post job run"; echo ""
-${utils_path}/dump_cluster_state;
-${utils_path}/task_delimiter;
+# echo "Dumping state of cluster post job run"; echo ""
+# ${utils_path}/dump_cluster_state;
+# ${utils_path}/task_delimiter;
 
-#################
-## GET RESULT  ##
-#################
+# #################
+# ## GET RESULT  ##
+# #################
 
-## Check the test status & result from the litmus result custom resource
-${utils_path}/get_litmus_result ${test_name}
+# ## Check the test status & result from the litmus result custom resource
+# ${utils_path}/get_litmus_result ${test_name}
