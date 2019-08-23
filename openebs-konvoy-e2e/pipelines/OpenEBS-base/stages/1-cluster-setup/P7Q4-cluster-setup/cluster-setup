@@ -22,6 +22,7 @@ cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster
 tar -xf konvoy_v0.6.0_linux.tar.bz2
 pwd
 mkdir $path/config
+cd konvoy_v0.6.0
 cp -r * /usr/local/bin
 
 sudo konvoy --version
