@@ -5,7 +5,8 @@ echo $path
 
 cd $path
 ls
-cat $path/openebs-konvoy/txt.txt
+cd config
+sudo convoy down
 
 # cd /home/gitlab-runner
 # pwd
