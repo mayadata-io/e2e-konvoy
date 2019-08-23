@@ -19,36 +19,39 @@ konvoy-cluster:
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
+  artifacts:
+    paths:
+      - openebs-konvoy/
 
 ## Setup OpenEBS control plane
 
-openebs-konvoy-deploy:
-  image: ranjnshashank855/konvoy:v15
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy-test
-  dependencies:
-    - konvoy-cluster
-  script: 
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
-  artifacts:
-    paths:
-      - openebs-konvoy/
+# openebs-konvoy-deploy:
+#   image: ranjnshashank855/konvoy:v15
+#   stage: PROVIDER-INFRA-SETUP
+#   tags: 
+#     - k8s-konvoy-test
+#   dependencies:
+#     - konvoy-cluster
+#   script: 
+#     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
+#   artifacts:
+#     paths:
+#       - openebs-konvoy/
 
-openebs-sc-deploy:
-  image: ranjnshashank855/konvoy:v15
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy-test
-  dependencies:
-    - konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
-  artifacts:
-    paths:
-      - openebs-konvoy/
+# openebs-sc-deploy:
+#   image: ranjnshashank855/konvoy:v15
+#   stage: PROVIDER-INFRA-SETUP
+#   tags: 
+#     - k8s-konvoy-test
+#   dependencies:
+#     - konvoy-cluster
+#   script:
+#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
+#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
+#   artifacts:
+#     paths:
+#       - openebs-konvoy/
 
 ## Define a job template for app deployers
 
