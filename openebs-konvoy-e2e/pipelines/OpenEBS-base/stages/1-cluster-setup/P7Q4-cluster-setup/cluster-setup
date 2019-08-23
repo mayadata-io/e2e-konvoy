@@ -11,11 +11,11 @@ whoami
 
 docker version
 
-aws configure set aws_access_key_id $ACCESS_KEY
+aws configure set aws_access_key_id $ACCESS_KEY 
 aws configure set aws_secret_access_key $SECRET_KEY
 
-sudo mkdir /root/.aws
-sudo cp ~/.aws/credentials /root/.aws/credentials
+# sudo mkdir /root/.aws
+# sudo cp ~/.aws/credentials /root/.aws/credentials
 
 cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
 
