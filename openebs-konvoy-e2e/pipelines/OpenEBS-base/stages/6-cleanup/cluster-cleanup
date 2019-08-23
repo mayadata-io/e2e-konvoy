@@ -6,7 +6,7 @@ echo $path
 cd $path
 ls
 cd config
-sudo convoy down
+sudo konvoy down
 
 # cd /home/gitlab-runner
 # pwd
