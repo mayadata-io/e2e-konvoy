@@ -6,7 +6,23 @@ echo $path
 ##   ENVIRONMENT    ##
 ######################
 
-ls /config
+auth_service=$SERVICE_ACCOUNT
+mkdir $path/auth
+echo $auth > $path/auth/service.json
+mkdir $path/openebs-konvoy
+
+ssh-keygen -q -t rsa -f ~/.ssh/id_rsa -N ''
+gcloud auth activate-service-account --key-file $path/auth/service.json
+
+gcloud config set project openebs-ci
+
+gcloud compute config-ssh --force-key-file-overwrite --ssh-key-file=~/.ssh/id_rsa
+
+scp -o StrictHostKeyChecking=no konvoy-autoscalar.us-central1-a.openebs-ci:/home/gitlab-runner/script.sh $path/openebs-konvoy
+
+cd $path/openebs-konvoy
+ls
+
 
 # present_dir=$(pwd)
 # #clone e2e-infrastructre to get the latest commits and run env-exporter script from env
