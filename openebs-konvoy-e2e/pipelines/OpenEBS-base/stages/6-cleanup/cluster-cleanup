@@ -10,4 +10,3 @@ sudo konvoy down -y
 cd ..
 #sudo rm -rf config
 pwd
-sudo rm -rf $path
