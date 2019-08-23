@@ -52,24 +52,24 @@ openebs-sc-deploy:
 
 ## Define a job template for app deployers
 
-.app_deploy_template:
-  image: ranjnshashank855/konvoy:v15
-  stage: STATEFUL-APP-DEPLOY
-  tags: 
-    - k8s-konvoy-test
-  dependencies:
-    - openebs-konvoy-deploy
-  artifacts:
-    paths: 
-      - openebs-konvoy/
+# .app_deploy_template:
+#   image: ranjnshashank855/konvoy:v15
+#   stage: STATEFUL-APP-DEPLOY
+#   tags: 
+#     - k8s-konvoy-test
+#   dependencies:
+#     - openebs-konvoy-deploy
+#   artifacts:
+#     paths: 
+#       - openebs-konvoy/
 
 ## Define the app deployer jobs
 
 ## PERCONA-JIVA
-percona-jiva:
-  extends: .app_deploy_template
-  script: 
-   - ./script/apps/percona/deployer/percona-app-deploy-jiva
+# percona-jiva:
+#   extends: .app_deploy_template
+#   script: 
+#    - ./script/apps/percona/deployer/percona-app-deploy-jiva
 
 ## NUODB-CSTOR
 #nuodb-cstor:
