@@ -7,7 +7,7 @@ echo $path
 
 whoami
 
-sudo usermod -aG docker gitlab-runner
+#sudo usermod -aG docker gitlab-runner
 
 docker version
 
