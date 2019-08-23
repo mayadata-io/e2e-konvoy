@@ -3,7 +3,7 @@
 stages:
   - CLUSTER-SETUP
   - PROVIDER-INFRA-SETUP
-  - STATEFUL-APP-DEPLOY
+#   - STATEFUL-APP-DEPLOY
     #  - APP-FUNC-TEST
     # - APP-CHAOS-TEST
     # - APP-DEPROVISION    
@@ -19,9 +19,6 @@ konvoy-cluster:
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
-  artifacts:
-    paths:
-      - config/
 
 ## Setup OpenEBS control plane
 
