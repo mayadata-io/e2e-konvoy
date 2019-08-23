@@ -3,80 +3,85 @@ set -ex
 path=$(pwd)
 echo $path
 
-#git clone -b Openebs-base https://github.com/mayadata-io/e2e-konvoy.git
-#cd e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
-git branch
-cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
-mkdir -p /home/gitlab-runner/config
-mkdir -p $path/config
-sudo scp -r konvoy_v0.6.0_linux.tar.bz2 $path/config
-sudo scp -r konvoy_v0.6.0_linux.tar.bz2 /home/gitlab-runner/config
+which aws
+kubectl version
+docker version
 
-cd /home/gitlab-runner/config
-tar -xf konvoy_v0.6.0_linux.tar.bz2
-pwd
+mkdir openebs-konvoy
 
-sudo konvoy --version
+echo "konvoy" > openebs-konvoy/txt.txt
 
-sudo konvoy init
+# cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
+# mkdir -p /home/gitlab-runner/config
+# mkdir -p $path/config
+# sudo scp -r konvoy_v0.6.0_linux.tar.bz2 $path/config
+# sudo scp -r konvoy_v0.6.0_linux.tar.bz2 /home/gitlab-runner/config
 
-# Disabling default addons on cluster.yaml
+# cd /home/gitlab-runner/config
+# tar -xf konvoy_v0.6.0_linux.tar.bz2
+# pwd
 
-#122-prometheusadapter
-#128-velero
-#120-prometheus
-#110-kibana
-#106-fluentbit
-#104-elasticsearchexporter
-#102-elasticsearch
-#92-awsebscsiprovisioner
-#29-control-plane
+# sudo konvoy --version
 
-#94-awsebsprovisioner
-#96-dashboard
-#98-dex
-#100-dex-k8s-authenticator
-#102-elasticsearch
-#112-kommander
-#114-konvoy-ui
-#118-opsportal
-#120-prometheus
-#124-traefik
-#126-traefik-forward-auth
+# sudo konvoy init
+
+# # Disabling default addons on cluster.yaml
+
+# #122-prometheusadapter
+# #128-velero
+# #120-prometheus
+# #110-kibana
+# #106-fluentbit
+# #104-elasticsearchexporter
+# #102-elasticsearch
+# #92-awsebscsiprovisioner
+# #29-control-plane
+
+# #94-awsebsprovisioner
+# #96-dashboard
+# #98-dex
+# #100-dex-k8s-authenticator
+# #102-elasticsearch
+# #112-kommander
+# #114-konvoy-ui
+# #118-opsportal
+# #120-prometheus
+# #124-traefik
+# #126-traefik-forward-auth
 
 
-sed -i -e '128s/.*/      enabled: false/' \
--e '94s/.*/      enabled: false/' \
--e '96s/.*/      enabled: false/' \
--e '98s/.*/      enabled: false/' \
--e '100s/.*/      enabled: false/' \
--e '102s/.*/      enabled: false/' \
--e '112s/.*/      enabled: false/' \
--e '114s/.*/      enabled: false/' \
--e '118s/.*/      enabled: false/' \
--e '120s/.*/      enabled: false/' \
--e '124s/.*/      enabled: false/' \
--e '126s/.*/      enabled: false/' \
--e '122s/.*/      enabled: false/' \
--e '120s/.*/      enabled: false/' \
--e '110s/.*/      enabled: false/' \
--e '106s/.*/      enabled: false/' \
--e '104s/.*/      enabled: false/' \
--e '102s/.*/      enabled: false/' \
--e '92s/.*/      enabled: false/' \
--e '29s/.*/    count: 1/' cluster.yaml
+# sed -i -e '128s/.*/      enabled: false/' \
+# -e '94s/.*/      enabled: false/' \
+# -e '96s/.*/      enabled: false/' \
+# -e '98s/.*/      enabled: false/' \
+# -e '100s/.*/      enabled: false/' \
+# -e '102s/.*/      enabled: false/' \
+# -e '112s/.*/      enabled: false/' \
+# -e '114s/.*/      enabled: false/' \
+# -e '118s/.*/      enabled: false/' \
+# -e '120s/.*/      enabled: false/' \
+# -e '124s/.*/      enabled: false/' \
+# -e '126s/.*/      enabled: false/' \
+# -e '122s/.*/      enabled: false/' \
+# -e '120s/.*/      enabled: false/' \
+# -e '110s/.*/      enabled: false/' \
+# -e '106s/.*/      enabled: false/' \
+# -e '104s/.*/      enabled: false/' \
+# -e '102s/.*/      enabled: false/' \
+# -e '92s/.*/      enabled: false/' \
+# -e '29s/.*/    count: 1/' cluster.yaml
 
-# Bringing up cluster using konvoy up command
+# # Bringing up cluster using konvoy up command
 
-sudo konvoy up -y
+# sudo konvoy up -y
 
-sudo konvoy apply kubeconfig --force-overwrite
+# sudo konvoy apply kubeconfig --force-overwrite
 
-sudo mkdir -p ~/.kube
+# sudo mkdir -p ~/.kube
 
-sudo cp /home/gitlab-runner/config/admin.conf ~/.kube/config
-cd ..
-sudo cp -r config/* $path/config
+# sudo cp /home/gitlab-runner/config/admin.conf ~/.kube/config
+# cd ..
+# sudo cp -r config/* $path/config
 
-kubectl get nodes
-kubectl get pods --all-namespaces
+# kubectl get nodes
+# kubectl get pods --all-namespaces
