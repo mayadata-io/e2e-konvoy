@@ -2,11 +2,16 @@
 set -x
 path=$(pwd)
 echo $path
-cd /home/gitlab-runner
-pwd
+
+cd $path
 ls
-cd config
-sudo konvoy down -y
-cd ..
-#sudo rm -rf config
-pwd
+cat $path/openebs-konvoy/txt.txt
+
+# cd /home/gitlab-runner
+# pwd
+# ls
+# cd config
+# sudo konvoy down -y
+# cd ..
+# #sudo rm -rf config
+# pwd
