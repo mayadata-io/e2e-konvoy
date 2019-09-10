@@ -3,9 +3,9 @@
 stages:
   - CLUSTER-SETUP
   - PROVIDER-INFRA-SETUP
-#   - STATEFUL-APP-DEPLOY
+  - STATEFUL-APP-DEPLOY
     #  - APP-FUNC-TEST
-    # - APP-CHAOS-TEST
+  - APP-CHAOS-TEST
     # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
@@ -52,16 +52,14 @@ openebs-konvoy-deploy:
 
 ## Define a job template for app deployers
 
-# .app_deploy_template:
-#   image: ranjnshashank855/konvoy:v15
-#   stage: STATEFUL-APP-DEPLOY
-#   tags: 
-#     - k8s-konvoy-test
-#   dependencies:
-#     - openebs-konvoy-deploy
-#   artifacts:
-#     paths: 
-#       - openebs-konvoy/
+.app_deploy_template:
+  image: ranjnshashank855/konvoy:v15
+  stage: STATEFUL-APP-DEPLOY
+  tags: 
+    - k8s-konvoy-test
+  dependencies:
+    - openebs-konvoy-deploy
+  
 
 ## Define the app deployer jobs
 
@@ -113,12 +111,12 @@ openebs-konvoy-deploy:
 #    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-jiva
 #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-jiva
 
-# # PERCONA-CSTOR
-# percona-cstor:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-cstor
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-cstor
+# PERCONA-CSTOR
+percona-cstor:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-cstor
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-cstor
 
 # # MONGO-CSTOR
 # mongo-cstor:
@@ -223,16 +221,15 @@ openebs-konvoy-deploy:
 
 # ## Define job template for chaos jobs 
 
-# .chaos_test_template:
-#   image: ranjnshashank855/konvoy:v15
-#   stage: APP-CHAOS-TEST
-#   tags: 
-#     - k8s-konvoy-test
-#   when: always 
-#   artifacts:
-#     paths: 
-#       - openebs-konvoy/
-
+.chaos_test_template:
+  image: ranjnshashank855/konvoy:v15
+  stage: APP-CHAOS-TEST
+  tags: 
+    - k8s-konvoy-test
+  when: always
+  dependencies:
+    - openebs-konvoy-deploy 
+  
 # repl-kill-{percona-jiva}:
 #   extends: .chaos_test_template #dependencies: percona-jiva
 #   script:
@@ -276,11 +273,11 @@ openebs-konvoy-deploy:
 #    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/application-pod-failure
 #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/application-pod-failure
 
-# tgt-kill-{percona-cstor}:
-#   extends: .chaos_test_template #dependencies: percona-cstor
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
+tgt-kill-{percona-cstor}:
+  extends: .chaos_test_template #dependencies: percona-cstor
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
 
 # tgt-disconnect-{mongo-cstor}:
 #   extends: .chaos_test_template #dependencies: mongo-cstor

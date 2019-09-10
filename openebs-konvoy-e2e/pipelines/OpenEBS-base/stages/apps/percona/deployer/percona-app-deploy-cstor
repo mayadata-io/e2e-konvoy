@@ -5,7 +5,6 @@ set -x
 ## ENVIRONMENT ##
 #################
 
-#utils_path="/openebs/e2e-aws/script/utils"
 
 ## https://github.com/openebs/litmus/blob/master/apps/percona/deployers/test_vars.yml
 run_id="cstor";test_name=$(${utils_path}/generate_test_name testcase=percona-deployment metadata=${run_id})
@@ -28,13 +27,13 @@ cd litmus
 ## TODO: Add logic to add ENV for run_instance_metadata/RunID
 
 : << EOF
-  ------------------------------------------------------------------------------------
- | specAttribute        | kind	   | jiva       	| cStor-sparse  	       |
-  ------------------------------------------------------------------------------------
+  --------------------------------------------------------------------------------------
+ | specAttribute        | kind	   | jiva       	| cStor-sparse  	                   |
+  --------------------------------------------------------------------------------------
  | litmusJobLabel       | jobSpec  | percona-deployment | percona-deployment-cstor     |
  | providerStorageClass | env 	   | openebs-standard   | openebs-cstor-sparse         |
- | appNamespace         | env	   | app-percona-ns     | percona-cstor                |
- | runID		| env(add) | 	-		| cstor 
+ | appNamespace         | env	     | app-percona-ns     | percona-cstor                |
+ | runID		            | env(add) | 	-		              | cstor                        |
   ------------------------------------------------------------------------------------
 EOF
 
