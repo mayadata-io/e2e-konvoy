@@ -98,3 +98,8 @@ for i in $compute_nodes
 do
   ssh -i konvoy_v0.6.0-ssh.pem -o StrictHostKeyChecking=no  centos@$i 'sudo yum install iscsi-initiator-utils -y && sudo systemctl enable iscsid && sudo systemctl start iscsid'
 done
+
+#Installing litmus pre-requisites
+kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/hack/rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/hack/crds.yaml
+kubectl create configmap kubeconfig --from-file=$path/config/admin.conf -n litmus

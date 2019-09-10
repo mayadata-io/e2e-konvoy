@@ -45,7 +45,7 @@ ${utils_path}/task_delimiter;
 ls ${utils_path}
 
 echo "Setting up test dependencies.."
-${utils_path}/setup_dependencies infra-setup 
+${utils_path}/setup_dependencies litmus-test 
 
 for i in efk-vars.yml efk.yml get_url.yml; do
   wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/workload/efk-client/playbook/$i
