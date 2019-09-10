@@ -89,3 +89,12 @@ sudo cp admin.conf ~/.kube/config
 
 kubectl get nodes
 kubectl get pods --all-namespaces
+
+# Installing iSCSI on each compute node
+
+compute_nodes=$(kubectl get nodes -o wide --no-headers | grep -v master | awk '{print $7}')
+echo $compute_nodes
+for i in $compute_nodes
+do
+  ssh -i konvoy_v0.6.0-ssh.pem -o StrictHostKeyChecking=no  centos@$i 'sudo yum install iscsi-initiator-utils -y && sudo systemctl enable iscsid && sudo systemctl start iscsid'
+done
