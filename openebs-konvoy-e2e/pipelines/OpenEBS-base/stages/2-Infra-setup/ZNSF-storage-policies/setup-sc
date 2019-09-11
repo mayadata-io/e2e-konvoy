@@ -12,7 +12,7 @@ test_name=$(${utils_path}/generate_test_name testcase=storageclassinstaller meta
 ###################
 
 echo "Setting up test dependencies.."
-${utils_path}/setup_dependencies infra-setup
+${utils_path}/setup_dependencies litmus-test
 
 ## Clone the litmus repo,navigate to litmus root 
 git clone https://github.com/openebs/litmus.git
