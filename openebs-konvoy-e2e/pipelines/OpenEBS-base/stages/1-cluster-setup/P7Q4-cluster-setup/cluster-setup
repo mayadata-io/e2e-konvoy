@@ -3,16 +3,23 @@ set -ex
 path=$(pwd)
 echo $path
 
-#git clone -b Openebs-base https://github.com/mayadata-io/e2e-konvoy.git
-#cd e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
-git branch
-cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
-mkdir -p /home/gitlab-runner/config
-sudo mv konvoy_v0.6.0_linux.tar.bz2 /home/gitlab-runner/config
+#sudo usermod -aG docker gitlab-runner
 
-cd /home/gitlab-runner/config
+docker version
+
+aws configure set aws_access_key_id $ACCESS_KEY 
+aws configure set aws_secret_access_key $SECRET_KEY
+
+# sudo mkdir /root/.aws
+# sudo cp ~/.aws/credentials /root/.aws/credentials
+
+cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
+
 tar -xf konvoy_v0.6.0_linux.tar.bz2
 pwd
+mkdir $path/config
+cd konvoy_v0.6.0
+cp -r * /usr/local/bin
 
 sudo konvoy --version
 
@@ -70,9 +77,26 @@ sudo konvoy up -y
 
 sudo konvoy apply kubeconfig --force-overwrite
 
+cp -r * $path/config
+
 sudo mkdir -p ~/.kube
 
-sudo cp /home/gitlab-runner/config/admin.conf ~/.kube/config
+sudo cp admin.conf ~/.kube/config
 
 kubectl get nodes
 kubectl get pods --all-namespaces
+
+# Installing iSCSI on each compute node
+
+compute_nodes=$(kubectl get nodes -o wide --no-headers | grep -v master | awk '{print $7}')
+echo $compute_nodes
+for i in $compute_nodes
+do
+  ssh -i konvoy_v0.6.0-ssh.pem -o StrictHostKeyChecking=no  centos@$i 'sudo yum install iscsi-initiator-utils -y && sudo systemctl enable iscsid && sudo systemctl start iscsid'
+done
+
+#Installing litmus pre-requisites
+kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/hack/rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/hack/crds.yaml
+kubectl create configmap kubeconfig --from-file=$path/config/admin.conf -n litmus
+

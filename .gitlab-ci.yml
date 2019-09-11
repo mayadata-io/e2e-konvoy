@@ -4,9 +4,9 @@ stages:
   - CLUSTER-SETUP
   - PROVIDER-INFRA-SETUP
   - STATEFUL-APP-DEPLOY
-    #  - APP-FUNC-TEST
-    # - APP-CHAOS-TEST
-    # - APP-DEPROVISION    
+  - APP-FUNC-TEST
+  - APP-CHAOS-TEST
+  - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
 variables: 
@@ -29,29 +29,23 @@ openebs-konvoy-deploy:
   image: ranjnshashank855/konvoy:v15
   stage: PROVIDER-INFRA-SETUP
   tags: 
-    - k8s-konvoy-test
+    - k8s-konvoy
   dependencies:
     - konvoy-cluster
   script: 
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
-  artifacts:
-    paths:
-      - openebs-konvoy/
 
 openebs-sc-deploy:
   image: ranjnshashank855/konvoy:v15
   stage: PROVIDER-INFRA-SETUP
   tags: 
-    - k8s-konvoy-test
+    - k8s-konvoy
   dependencies:
     - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
-  artifacts:
-    paths:
-      - openebs-konvoy/
 
 ## Define a job template for app deployers
 
@@ -59,289 +53,283 @@ openebs-sc-deploy:
   image: ranjnshashank855/konvoy:v15
   stage: STATEFUL-APP-DEPLOY
   tags: 
-    - k8s-konvoy-test
+    - k8s-konvoy
   dependencies:
-    - openebs-konvoy-deploy
-  artifacts:
-    paths: 
-      - openebs-konvoy/
-
+    - konvoy-cluster
+  
 ## Define the app deployer jobs
 
-## PERCONA-JIVA
+# PERCONA-JIVA
 percona-jiva:
   extends: .app_deploy_template
   script: 
    - ./script/apps/percona/deployer/percona-app-deploy-jiva
 
-## NUODB-CSTOR
-#nuodb-cstor:
-#  extends: .app_deploy_template
-#  script:
-#   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/nuodb/deployer/nuodb-app-deploy-cstor
-#   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/nuodb/deployer/nuodb-app-deploy-cstor
+# NUODB-CSTOR
+nuodb-cstor:
+ extends: .app_deploy_template
+ script:
+  - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/nuodb/deployer/nuodb-app-deploy-cstor
+  - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/nuodb/deployer/nuodb-app-deploy-cstor
 
-## PERCONA-JIVA-SINGLE-REPLICA
-#percona-jiva-single-replica:
-#  extends: .app_deploy_template
-#  script:
-#   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-deploy-jiva-single-replica
-#   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-deploy-jiva-single-replica
+# PERCONA-JIVA-SINGLE-REPLICA
+percona-jiva-single-replica:
+ extends: .app_deploy_template
+ script:
+  - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-deploy-jiva-single-replica
+  - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-deploy-jiva-single-replica
 
-# ## MONGO-JIVA
-# mongo-jiva:
-#   extends: .app_deploy_template
-#   script: 
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deployer/mongo-app-deploy-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deployer/mongo-app-deploy-jiva
+## MONGO-JIVA
+mongo-jiva:
+  extends: .app_deploy_template
+  script: 
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deployer/mongo-app-deploy-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deployer/mongo-app-deploy-jiva
 
-# # POSTGRES-JIVA
-# postgres-jiva:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/deployer/postgres-app-deploy-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/deployer/postgres-app-deploy-jiva
+# POSTGRES-JIVA
+postgres-jiva:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/deployer/postgres-app-deploy-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/deployer/postgres-app-deploy-jiva
 
-# # CASSANDRA-JIVA
-# cassandra-jiva:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deployer/cassandra-app-deploy-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deployer/cassandra-app-deploy-jiva
+# CASSANDRA-JIVA
+cassandra-jiva:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deployer/cassandra-app-deploy-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deployer/cassandra-app-deploy-jiva
 
-# # JENKINS-JIVA
-# jenkins-jiva:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-jiva
+# JENKINS-JIVA
+jenkins-jiva:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-jiva
 
-# # PERCONA-CSTOR
-# percona-cstor:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-cstor
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-cstor
+# PERCONA-CSTOR
+percona-cstor:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-cstor
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-cstor
 
-# # MONGO-CSTOR
-# mongo-cstor:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deployer/mongo-app-deploy-cstor
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deployer/mongo-app-deploy-cstor
+# MONGO-CSTOR
+mongo-cstor:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deployer/mongo-app-deploy-cstor
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deployer/mongo-app-deploy-cstor
 
-# # CASSANDRA_CSTOR
-# cassandra-cstor:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deployer/cassandra-app-deploy-cstor
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deployer/cassandra-app-deploy-cstor
+# CASSANDRA_CSTOR
+cassandra-cstor:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deployer/cassandra-app-deploy-cstor
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deployer/cassandra-app-deploy-cstor
 
-# # JENKINS_CSTOR
-# jenkins-cstor:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-cstor
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-cstor 
+# JENKINS_CSTOR
+jenkins-cstor:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-cstor
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deployer/jenkins-app-deploy-cstor 
 
-# # PROMETHEUS-CSTOR
-# prometheus-cstor:
-#   extends: .app_deploy_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/deployer/prometheus-app-deploy-cstor
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/deployer/prometheus-app-deploy-cstor
+# PROMETHEUS-CSTOR
+prometheus-cstor:
+  extends: .app_deploy_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/deployer/prometheus-app-deploy-cstor
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/deployer/prometheus-app-deploy-cstor
 
-# ## Define job template for func test jobs  
+## Define job template for func test jobs  
 
-# .func_test_template:
-#   image: ranjnshashank855/konvoy:v15
-#   stage: APP-FUNC-TEST
-#   tags: 
-#     - k8s-konvoy-test
-#   when: always 
-#   artifacts:
-#     paths: 
-#       - openebs-konvoy/
+.func_test_template:
+  image: ranjnshashank855/konvoy:v15
+  stage: APP-FUNC-TEST
+  tags: 
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - konvoy-cluster  
 
-# app-replica-scale-{cassandra-jiva}:
-#   extends: .func_test_template #dependencies: cassandra-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/jiva/app-sts-replica-scale
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/jiva/app-sts-replica-scale
+app-replica-scale-{cassandra-jiva}:
+  extends: .func_test_template #dependencies: cassandra-jiva
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/jiva/app-sts-replica-scale
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/jiva/app-sts-replica-scale
 
-# app-upgrade-deployment-{jenkins-jiva}:
-#   extends: .func_test_template #dependencies: jenkins-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/jiva/app-upgrade-deployment
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/jiva/app-upgrade-deployment
+app-upgrade-deployment-{jenkins-jiva}:
+  extends: .func_test_template #dependencies: jenkins-jiva
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/jiva/app-upgrade-deployment
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/jiva/app-upgrade-deployment
 
-# volume-data-integrity-{fio-jiva}:
-#   extends: .func_test_template 
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/jiva/fio-volume-data-integrity-check
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/jiva/fio-volume-data-integrity-check
+volume-data-integrity-{fio-jiva}:
+  extends: .func_test_template 
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/jiva/fio-volume-data-integrity-check
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/jiva/fio-volume-data-integrity-check
 
-# volume-data-integrity-{fio-cstor}:
-#   extends: .func_test_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/cstor/fio-volume-data-integrity-check
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/cstor/fio-volume-data-integrity-check
+volume-data-integrity-{fio-cstor}:
+  extends: .func_test_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/cstor/fio-volume-data-integrity-check
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/cstor/fio-volume-data-integrity-check
 
-# volume-memory-consumption-{memcheck-jiva}:  
-#   extends: .func_test_template 
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/memleak/tests/jiva/memory-consumption
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/memleak/tests/jiva/memory-consumption
+volume-memory-consumption-{memcheck-jiva}:  
+  extends: .func_test_template 
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/memleak/tests/jiva/memory-consumption
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/memleak/tests/jiva/memory-consumption
 
-# volume-memory-consumption-{memcheck-cstor}:
-#   extends: .func_test_template #dependencies: prometheus-cstor
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/functional/cstor/memcheck/memory-consumption
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/functional/cstor/memcheck/memory-consumption
+volume-memory-consumption-{memcheck-cstor}:
+  extends: .func_test_template #dependencies: prometheus-cstor
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/functional/cstor/memcheck/memory-consumption
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/functional/cstor/memcheck/memory-consumption
 
-# k8s-snapshot-clone-creation-{percona-jiva}:
-#   extends: .func_test_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/jiva/k8s-snapshot-clone
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/jiva/k8s-snapshot-clone
+k8s-snapshot-clone-creation-{percona-jiva}:
+  extends: .func_test_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/jiva/k8s-snapshot-clone
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/jiva/k8s-snapshot-clone
 
-# # K8s-snapshot/clone test on cStor volume
-# cstor-k8s-snapshot-clone-creation-{snapshot-clone-cStor}:
-#   extends: .func_test_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/cstor/k8s-snapshot-clone-cstor
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/cstor/k8s-snapshot-clone-cstor
+# K8s-snapshot/clone test on cStor volume
+cstor-k8s-snapshot-clone-creation-{snapshot-clone-cStor}:
+  extends: .func_test_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/cstor/k8s-snapshot-clone-cstor
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/cstor/k8s-snapshot-clone-cstor
 
-# app-replica-scale-{cassandra-cstor}:
-#   extends: .func_test_template #dependencies: cassandra-cstor
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/cstor/app-sts-replica-scale
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/cstor/app-sts-replica-scale
+app-replica-scale-{cassandra-cstor}:
+  extends: .func_test_template #dependencies: cassandra-cstor
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/cstor/app-sts-replica-scale
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/cstor/app-sts-replica-scale
 
-# app-upgrade-deployment-{jenkins-cstor}:
-#   extends: .func_test_template #dependencies: jenkins-cstor
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/cstor/app-upgrade-deployment
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/cstor/app-upgrade-deployment
+app-upgrade-deployment-{jenkins-cstor}:
+  extends: .func_test_template #dependencies: jenkins-cstor
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/cstor/app-upgrade-deployment
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/cstor/app-upgrade-deployment
 
 # ## Define job template for chaos jobs 
 
-# .chaos_test_template:
-#   image: ranjnshashank855/konvoy:v15
-#   stage: APP-CHAOS-TEST
-#   tags: 
-#     - k8s-konvoy-test
-#   when: always 
-#   artifacts:
-#     paths: 
-#       - openebs-konvoy/
+.chaos_test_template:
+  image: ranjnshashank855/konvoy:v15
+  stage: APP-CHAOS-TEST
+  tags: 
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - konvoy-cluster 
+  
+repl-kill-{percona-jiva}:
+  extends: .chaos_test_template #dependencies: percona-jiva
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/volume-replica-failure
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/volume-replica-failure
 
-# repl-kill-{percona-jiva}:
-#   extends: .chaos_test_template #dependencies: percona-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/volume-replica-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/volume-replica-failure
+## Single replica failure
+single-repl-kill-{percona-jiva}:
+  extends: .chaos_test_template #dependencies: percona-jiva-single-replica
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/single-replica-failure
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/single-replica-failure
 
-# ## Single replica failure
-# single-repl-kill-{percona-jiva}:
-#   extends: .chaos_test_template #dependencies: percona-jiva-single-replica
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/single-replica-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/single-replica-failure
+ctrl-kill-{mongo-jiva}:
+  extends: .chaos_test_template #dependencies: mongo-jiva
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/volume-controller-failure
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/volume-controller-failure
 
-# ctrl-kill-{mongo-jiva}:
-#   extends: .chaos_test_template #dependencies: mongo-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/volume-controller-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/volume-controller-failure
+repl-disconnect-{jenkins-jiva}:
+  extends: .chaos_test_template #dependencies: jenkins-jiva
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
 
-# repl-disconnect-{jenkins-jiva}:
-#   extends: .chaos_test_template #dependencies: jenkins-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
+ctrl-disconnect-{postgres-jiva}:
+  extends: .chaos_test_template #dependencies: postgres-jiva
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
 
-# ctrl-disconnect-{postgres-jiva}:
-#   extends: .chaos_test_template #dependencies: postgres-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
+app-kill-{jenkins-cstor}:
+  extends: .chaos_test_template #dependencies: jenkins-cstor
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
 
-# app-kill-{jenkins-cstor}:
-#   extends: .chaos_test_template #dependencies: jenkins-cstor
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
+app-kill-{mongo-jiva-xfs}:
+  extends: .chaos_test_template #dependencies: mongo-jiva
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/application-pod-failure
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/application-pod-failure
 
-# app-kill-{mongo-jiva-xfs}:
-#   extends: .chaos_test_template #dependencies: mongo-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/application-pod-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/application-pod-failure
+tgt-kill-{percona-cstor}:
+  extends: .chaos_test_template #dependencies: percona-cstor
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
 
-# tgt-kill-{percona-cstor}:
-#   extends: .chaos_test_template #dependencies: percona-cstor
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
+tgt-disconnect-{mongo-cstor}:
+  extends: .chaos_test_template #dependencies: mongo-cstor
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
 
-# tgt-disconnect-{mongo-cstor}:
-#   extends: .chaos_test_template #dependencies: mongo-cstor
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
+.app_deprovision_template:
+  image: ranjnshashank855/konvoy:v15
+  stage: APP-DEPROVISION
+  dependencies:
+    - konvoy-cluster
+  tags: 
+    - k8s-konvoy
+  when: always
 
-# .app_deprovision_template:
-#   image: ranjnshashank855/konvoy:v15
-#   stage: APP-DEPROVISION
-#   tags: 
-#     - k8s-konvoy-test
-#   when: always
-#   artifacts:
-#     paths:
-#      - openebs-konvoy/
+## PERCONA-JIVA
+percona-jiva-deprovision:
+  extends: .app_deprovision_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deprovision/percona-app-deprovision-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deprovision/percona-app-deprovision-jiva
 
-# ## PERCONA-JIVA
-# percona-jiva-deprovision:
-#   extends: .app_deprovision_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deprovision/percona-app-deprovision-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deprovision/percona-app-deprovision-jiva
+## PROMETHEUS-CSTOR
+prometheus-cstor-deprovision:
+  extends: .app_deprovision_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/deprovision/prometheus-app-deprovision-cstor
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/deprovision/prometheus-app-deprovision-cstor
 
-# ## PROMETHEUS-CSTOR
-# prometheus-cstor-deprovision:
-#   extends: .app_deprovision_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/deprovision/prometheus-app-deprovision-cstor
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/deprovision/prometheus-app-deprovision-cstor
+## MONGODB-JIVA
+mongodb-jiva-deprovision:
+  extends: .app_deprovision_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deprovision/mongo-app-deprovision-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deprovision/mongo-app-deprovision-jiva
 
-# ## MONGODB-JIVA
-# mongodb-jiva-deprovision:
-#   extends: .app_deprovision_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deprovision/mongo-app-deprovision-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/deprovision/mongo-app-deprovision-jiva
+## POSTGRES-JIVA
+postgres-jiva-deprovision:
+  extends: .app_deprovision_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/deprovision/postgres-app-deprovision-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/deprovision/postgres-app-deprovision-jiva
 
-# ## POSTGRES-JIVA
-# postgres-jiva-deprovision:
-#   extends: .app_deprovision_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/deprovision/postgres-app-deprovision-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/deprovision/postgres-app-deprovision-jiva
+## JENKINS-JIVA
+jenkins-jiva-deprovision:
+  extends: .app_deprovision_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deprovision/jenkins-app-deprovision-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deprovision/jenkins-app-deprovision-jiva
 
-# ## JENKINS-JIVA
-# jenkins-jiva-deprovision:
-#   extends: .app_deprovision_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deprovision/jenkins-app-deprovision-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/deprovision/jenkins-app-deprovision-jiva
-
-# ## CASSANDRA-JIVA
-# cassandra-jiva-deprovision:
-#   extends: .app_deprovision_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
+## CASSANDRA-JIVA
+cassandra-jiva-deprovision:
+  extends: .app_deprovision_template
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
 
 konvoy-cleanup:
   when: always
@@ -351,5 +339,5 @@ konvoy-cleanup:
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-cleanup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-cleanup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/cluster-cleanup/cluster-cleanup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/cluster-cleanup/cluster-cleanup
