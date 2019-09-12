@@ -62,8 +62,9 @@ openebs-sc-deploy:
 # PERCONA-JIVA
 percona-jiva:
   extends: .app_deploy_template
-  script: 
-   - ./script/apps/percona/deployer/percona-app-deploy-jiva
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-jiva
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/deployer/percona-app-deploy-jiva
 
 # NUODB-CSTOR
 nuodb-cstor:
@@ -262,11 +263,11 @@ app-kill-{jenkins-cstor}:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
 
-app-kill-{mongo-jiva-xfs}:
+app-kill-{cassandra-jiva}:
   extends: .chaos_test_template #dependencies: mongo-jiva
   script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/application-pod-failure
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/application-pod-failure
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
 
 tgt-kill-{percona-cstor}:
   extends: .chaos_test_template #dependencies: percona-cstor
