@@ -38,6 +38,7 @@ cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_test.yml
 
 sed -i -e 's/''name=percona''/''app=mongo''/g' \
 -e 's/value: app-percona-ns/value: app-mongo-ns/g' \
+-e 's/value: deployment/value: statefulset/g' \
 -e 's/value: percona-mysql-claim/value: openebs-mongo-mongo-0/g' run_test.yml
 
 #################
