@@ -26,6 +26,7 @@ cd litmus
 cp experiments/chaos/openebs_volume_replica_failure/run_litmus_test.yml run_test.yml 
 
 sed -i -e 's/name: openebs-volume-replica-failure/name: jiva-single-replica-failure/g' \
+-e 's/name: replica-failure/name: single-replica-failure/g' \
 -e 's/value: app-percona-ns/value: percona-single-replica/g' run_test.yml
 
 sed -i '/command:/i \
