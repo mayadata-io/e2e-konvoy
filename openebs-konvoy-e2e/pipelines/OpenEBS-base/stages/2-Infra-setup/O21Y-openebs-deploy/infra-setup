@@ -30,8 +30,7 @@ export INSTALL_DEFAULT_CSP=true
 
 cd $present_dir
 
-test_name=$(${utils_path}/generate_test_name testcase=openebsinstaller metadata="")
-
+test_name=$(${utils_path}/generate_test_name testcase=openebs-provision metadata="")
 
 ## Display pipeline info
 echo $CI_PIPELINE_ID; echo $CI_PIPELINE_IID; echo $CI_COMMIT_SHA
@@ -66,25 +65,25 @@ ${utils_path}/task_delimiter;
 ############################
 #update openebs litmus job
 wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/env-update/env.py # script to update openebs_setup.yaml
-python3 env.py -f providers/openebs/installers/operator/master/litmusbook/openebs_setup.yaml
+python3 env.py -f providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml
 
 echo "updated yaml"
-cat providers/openebs/installers/operator/master/litmusbook/openebs_setup.yaml
-cp providers/openebs/installers/operator/master/litmusbook/openebs_setup.yaml run_test.yml
+cat providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml
+cp providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml run_test.yml
 
 #update openebs litmus job
 wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/env-update/env.py # script to update openebs_setup.yaml
-python3 env.py -f providers/openebs/installers/operator/master/litmusbook/openebs_setup.yaml
+python3 env.py -f providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml
 
 echo "updated yaml"
-cat providers/openebs/installers/operator/master/litmusbook/openebs_setup.yaml
+cat providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml
 
 #################
 ## RUNNER MAIN ##
 #################
 
 echo "Running litmus test for openebs deploy.."
-${utils_path}/litmus_job_runner label='provider:openebs-setup' job=run_test.yml
+${utils_path}/litmus_job_runner label='provider:openebs-runner' job=run_test.yml
 ${utils_path}/task_delimiter;
 
 echo "Dumping state of cluster post job run"; echo ""

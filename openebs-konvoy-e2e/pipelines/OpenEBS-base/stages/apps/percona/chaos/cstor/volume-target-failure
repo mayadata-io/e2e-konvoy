@@ -43,7 +43,7 @@ sed -i '/command:/i \
 ' run_test.yml
 
 ## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
-sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: percona/}' run_test.yml
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_test.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
