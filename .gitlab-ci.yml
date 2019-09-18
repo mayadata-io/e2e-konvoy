@@ -269,11 +269,11 @@ ctrl-kill-{mongo-jiva}:
      #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
 
-tgt-kill-{percona-cstor}:
-  extends: .chaos_test_template #dependencies: percona-cstor
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
+     #tgt-kill-{percona-cstor}:
+     #  extends: .chaos_test_template #dependencies: percona-cstor
+     #  script:
+     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
+     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
 
      #tgt-disconnect-{mongo-cstor}:
      #  extends: .chaos_test_template #dependencies: mongo-cstor
