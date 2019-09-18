@@ -190,11 +190,11 @@ volume-memory-consumption-{memcheck-cstor}:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/functional/cstor/memcheck/memory-consumption
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/prometheus/functional/cstor/memcheck/memory-consumption
 
-k8s-snapshot-clone-creation-{percona-jiva}:
-  extends: .func_test_template
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/jiva/k8s-snapshot-clone
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/jiva/k8s-snapshot-clone
+     #k8s-snapshot-clone-creation-{percona-jiva}:
+     #  extends: .func_test_template
+     #  script:
+     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/jiva/k8s-snapshot-clone
+     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/functional/jiva/k8s-snapshot-clone
 
 # K8s-snapshot/clone test on cStor volume
 cstor-k8s-snapshot-clone-creation-{snapshot-clone-cStor}:
@@ -245,29 +245,29 @@ ctrl-kill-{mongo-jiva}:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/volume-controller-failure
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/volume-controller-failure
 
-repl-disconnect-{jenkins-jiva}:
-  extends: .chaos_test_template #dependencies: jenkins-jiva
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
+     #repl-disconnect-{jenkins-jiva}:
+     #  extends: .chaos_test_template #dependencies: jenkins-jiva
+     #  script:
+     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
+     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
 
-ctrl-disconnect-{postgres-jiva}:
-  extends: .chaos_test_template #dependencies: postgres-jiva
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
+     #ctrl-disconnect-{postgres-jiva}:
+     #  extends: .chaos_test_template #dependencies: postgres-jiva
+     #  script:
+     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
+     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
 
-app-kill-{jenkins-cstor}:
-  extends: .chaos_test_template #dependencies: jenkins-cstor
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
+     #app-kill-{jenkins-cstor}:
+     #  extends: .chaos_test_template #dependencies: jenkins-cstor
+     #  script:
+     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
+     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
 
-app-kill-{cassandra-jiva}:
-  extends: .chaos_test_template #dependencies: mongo-jiva
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
+     #app-kill-{cassandra-jiva}:
+     #  extends: .chaos_test_template #dependencies: mongo-jiva
+     #  script:
+     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
+     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
 
 tgt-kill-{percona-cstor}:
   extends: .chaos_test_template #dependencies: percona-cstor
@@ -275,11 +275,11 @@ tgt-kill-{percona-cstor}:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
 
-tgt-disconnect-{mongo-cstor}:
-  extends: .chaos_test_template #dependencies: mongo-cstor
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
+     #tgt-disconnect-{mongo-cstor}:
+     #  extends: .chaos_test_template #dependencies: mongo-cstor
+     #  script:
+     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
+     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
 
 .app_deprovision_template:
   image: ranjnshashank855/konvoy:v15

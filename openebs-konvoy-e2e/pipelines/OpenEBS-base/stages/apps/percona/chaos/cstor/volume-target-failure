@@ -34,6 +34,7 @@ EOF
 
 cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_test.yml
 sed -i -e 's/name: openebs-target-failure/name: openebs-target-failure-cstor/g' \
+-e 's/target-zrepl-kill/target-delete/g' \
 -e 's/name: target-failure/name: target-failure-percona/g' \
 -e 's/value: app-percona-ns/value: percona-cstor/g' run_test.yml
 
