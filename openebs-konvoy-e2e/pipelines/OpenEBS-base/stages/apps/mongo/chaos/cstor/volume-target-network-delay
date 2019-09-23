@@ -1,0 +1,67 @@
+#!/bin/bash
+set -x
+
+#################
+## ENVIRONMENT ##
+#################
+
+## https://github.com/openebs/litmus/blob/master/apps/percona/chaos/openebs_target_network_delay/test_vars.yml
+run_id="cstor";test_name=$(${utils_path}/generate_test_name testcase=openebs-target-network-delay metadata=${run_id})
+
+###################
+## DEPENDENCIES  ##
+###################
+
+${utils_path}/setup_dependencies litmus-test
+
+## Clone the litmus repo, navigate to litmus root 
+
+git clone https://github.com/litmuschaos/litmus.git
+cd litmus
+
+############################
+## LITMUS PRECONDITIONING ##
+############################
+
+: << EOF
+  ---------------------------------------------------------------------------------------------------
+ | specAttribute        | kind     | jiva                         | cStor-sparse                      |
+  --------------------------------------------------------------------------------------------------- |
+ | litmusJobLabel       | jobSpec  | openebs-target-network-delay | openebs-target-network-delay-cstor|
+ | appNamespace         | env      | app-mongo-ns                 | mongocstor                        |
+ | pvcName              | env      | percona-mysql-claim          | openebs-mongo-mongo-0             | 
+ | appLabel             | env      | name=percona                 | app=mongo                         | 
+ | runID                | env(add) |    -                         | cstor                             | 
+  ----------------------------------------------------------------------------------------------------
+EOF
+
+cp experiments/chaos/openebs_target_network_delay/run_litmus_test.yml run_test.yml
+
+sed -i -e 's/name: openebs-target-network-delay/name: openebs-target-network-delay-cstor/g' \
+-e 's/value: app-percona-ns/value: mongocstor/g' \
+-e 's/value: percona-mysql-claim/value: openebs-mongo-mongo-0/g' \
+-e 's/''name=percona''/''app=mongo''/g' run_test.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_test.yml
+
+#################
+## RUNNER MAIN ##
+#################
+
+echo "Running the litmus test.."
+${utils_path}/litmus_job_runner label='name:openebs-target-network-delay-cstor' job=run_test.yml
+${utils_path}/task_delimiter;
+
+echo "Dumping state of cluster post job run"; echo ""
+${utils_path}/dump_cluster_state;
+${utils_path}/task_delimiter;
+
+#################
+## GET RESULT  ##
+#################
+
+## Check the test status & result from the litmus result custom resource
+${utils_path}/get_litmus_result ${test_name}

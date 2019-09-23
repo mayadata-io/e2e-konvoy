@@ -1,0 +1,42 @@
+#!/bin/bash
+set -ex
+
+################
+## FUNCTIONS  ##
+################
+
+error_handler()
+{
+rc=$1; message=$(echo $2 | cut -d "=" -f 2); act=$(echo $3 | cut -d "=" -f 2)
+if [ $rc -ne 0 ]; then
+  echo "$message"
+  if [ "$act" == "exit" ]; then
+    exit 1 
+  fi
+fi
+}
+
+sleep 90; 
+
+jobNameCmd="kubectl get jobs -n litmus --no-headers -o jsonpath='{.items[?(@.metadata.labels.app==\"percona-deployment\")].metadata.name}'"
+job_name=$(eval $jobNameCmd); retcode=$?
+error_handler $retcode msg="Unable to find litmusbook, exiting" action="exit"
+
+litmusPodCmd="kubectl get pod --no-headers -n litmus -o jsonpath='{.items[?(@.metadata.labels.job-name==\"$job_name\")].metadata.name}'"
+litmus_pod=$(eval $litmusPodCmd); retcode=$?
+error_handler $retcode msg="Unable to find litmus test runner pod, exiting" action="exit"
+
+containerStateCmd="kubectl get pod ${litmus_pod} -n litmus -o jsonpath='{.status.containerStatuses[?(@.name==\"ansibletest\")].state}'"
+jobStateCmd="kubectl get pod ${litmus_pod} --no-headers -n litmus -o custom-columns=:status.phase"
+
+while [[ ! $(eval $containerStateCmd) =~ 'terminated' ]]; do
+  sleep 1
+done
+
+while [[ $(eval $jobStateCmd) =~ 'Running' ]]; do
+   sleep 1
+done
+
+echo "Deployer job has completed"
+
+
