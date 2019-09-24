@@ -10,15 +10,13 @@ stages:
   - CLUSTER-CLEANUP
 
 konvoy-cluster:
+  image: openebs/openshift-ci:latest
   stage: CLUSTER-SETUP
   tags: 
     - k8s-konvoy 
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
-  artifacts:
-    paths:
-      - config/
 
 ## Setup OpenEBS control plane
 
