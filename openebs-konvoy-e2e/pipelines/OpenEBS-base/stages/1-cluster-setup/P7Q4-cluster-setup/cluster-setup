@@ -1,102 +1,54 @@
 #!/bin/bash
-set -e
-path=$(pwd)
-echo $path
+set -x
 
-#sudo usermod -aG docker gitlab-runner
+#time="date"
+#current_time=$(eval $time)
 
-docker version
+time="$(TZ=IST date)"
+current_time=$time
+echo $current_time
 
-aws configure set aws_access_key_id $ACCESS_KEY 
-aws configure set aws_secret_access_key $SECRET_KEY
+echo "***Checking the cluster is Engaged or not*"
 
-# sudo mkdir /root/.aws
-# sudo cp ~/.aws/credentials /root/.aws/credentials
+state="sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 'ls | grep e2e-konvoy'"
+cluster_state=$(eval $state)
 
-cd openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup
-
-tar -xf konvoy_v0.6.0_linux.tar.bz2
-pwd
-mkdir $path/config
-cd konvoy_v0.6.0
-cp -r * /usr/local/bin
-
-sudo konvoy --version
-
-sudo konvoy init
-
-# Disabling default addons on cluster.yaml
-
-#122-prometheusadapter
-#128-velero
-#120-prometheus
-#110-kibana
-#106-fluentbit
-#104-elasticsearchexporter
-#102-elasticsearch
-#92-awsebscsiprovisioner
-#29-control-plane
-
-#94-awsebsprovisioner
-#96-dashboard
-#98-dex
-#100-dex-k8s-authenticator
-#102-elasticsearch
-#112-kommander
-#114-konvoy-ui
-#118-opsportal
-#120-prometheus
-#124-traefik
-#126-traefik-forward-auth
-
-
-sed -i -e '128s/.*/      enabled: false/' \
--e '94s/.*/      enabled: false/' \
--e '96s/.*/      enabled: false/' \
--e '98s/.*/      enabled: false/' \
--e '100s/.*/      enabled: false/' \
--e '102s/.*/      enabled: false/' \
--e '112s/.*/      enabled: false/' \
--e '114s/.*/      enabled: false/' \
--e '118s/.*/      enabled: false/' \
--e '120s/.*/      enabled: false/' \
--e '124s/.*/      enabled: false/' \
--e '126s/.*/      enabled: false/' \
--e '122s/.*/      enabled: false/' \
--e '120s/.*/      enabled: false/' \
--e '110s/.*/      enabled: false/' \
--e '106s/.*/      enabled: false/' \
--e '104s/.*/      enabled: false/' \
--e '102s/.*/      enabled: false/' \
--e '92s/.*/      enabled: false/' \
--e '29s/.*/    count: 1/' cluster.yaml
-
-# Bringing up cluster using konvoy up command
-
-sudo konvoy up -y
-
-sudo konvoy apply kubeconfig --force-overwrite
-
-cp -r * $path/config
-
-sudo mkdir -p ~/.kube
-
-sudo cp admin.conf ~/.kube/config
-
-kubectl get nodes
-kubectl get pods --all-namespaces
-
-# Installing iSCSI on each compute node
-
-compute_nodes=$(kubectl get nodes -o wide --no-headers | grep -v master | awk '{print $7}')
-echo $compute_nodes
-for i in $compute_nodes
-do
-  ssh -i konvoy_v0.6.0-ssh.pem -o StrictHostKeyChecking=no  centos@$i 'sudo yum install iscsi-initiator-utils -y && sudo systemctl enable iscsid && sudo systemctl start iscsid'
+while [ "${cluster_state}" == "e2e-konvoy" ]; do
+  echo "***cluster is Engaged******"
+  wait=1
+  cluster_state=$(eval $state)
+  sleep 30
 done
 
-#Installing litmus pre-requisites
-kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/hack/rbac.yaml
-kubectl apply -f https://raw.githubusercontent.com/litmuschaos/litmus/master/hack/crds.yaml
-kubectl create configmap kubeconfig --from-file=$path/config/admin.conf -n litmus
+if [ "$wait" == "1" ]; then
+sleep 120
+fi
 
+echo "*************************Checking the Cluster's Health********************"
+
+echo "Checking for the number of nodes in ready state*******************************"
+ready_nodes=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 kubectl get nodes | grep Ready | wc -l)
+
+git_token=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 'cat ~/.profile | grep github_token | cut -d= -f2')
+gittoken=$(echo $git_token | tr -d '"')
+
+
+if [ "$ready_nodes" -eq 8 ]; then
+echo "Number of nodes in ready state is $ready_nodes"
+echo "******Cluster is in Healthy state****"
+
+echo "*************Dumping cluster state********"
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 kubectl get nodes
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 kubectl get pod --all-namespaces
+
+echo "cloning e2e-konvoy repo*************"
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b konvoy-onprem https://github.com/mayadata-io/e2e-konvoy.git'
+# sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'python3 e2e-konvoy/Openshift-EE/utils/result/result_update.py '"'$CI_JOB_ID'"' P&Q4 1-cluster-setup "Configure OpenShift cluster" Pass '"'$CI_PIPELINE_ID'"' '"'$current_time'"' '"'$CI_COMMIT_SHA'"' '"'$gittoken'"''
+else
+echo "All nodes are not ready"
+echo "******Cluster is in Unhealthy state*******"
+echo "cloning e2e-openshift repo*************"
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b konvoy-onprem https://github.com/mayadata-io/e2e-konvoy.git'
+# sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'python3 e2e-openshift/Openshift-EE/utils/result/result_update.py '"'$CI_JOB_ID'"' P&Q4 1-cluster-setup "Configure OpenShift cluster" Fail '"'$CI_PIPELINE_ID'"' '"'$current_time'"' '"'$CI_COMMIT_SHA'"' '"'$gittoken'"''
+exit;
+fi

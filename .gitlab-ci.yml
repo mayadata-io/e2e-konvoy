@@ -3,14 +3,11 @@
 stages:
   - CLUSTER-SETUP
   - PROVIDER-INFRA-SETUP
-  - STATEFUL-APP-DEPLOY
-  - APP-FUNC-TEST
-  - APP-CHAOS-TEST
-  - APP-DEPROVISION    
+  # - STATEFUL-APP-DEPLOY
+  # - APP-FUNC-TEST
+  # - APP-CHAOS-TEST
+  # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
-
-variables: 
-  utils_path: "/builds/openebs/e2e-konvoy/openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/utils"
 
 konvoy-cluster:
   stage: CLUSTER-SETUP
@@ -26,7 +23,7 @@ konvoy-cluster:
 ## Setup OpenEBS control plane
 
 openebs-konvoy-deploy:
-  image: ranjnshashank855/konvoy:v15
+  image: openebs/openshift-ci:latest
   stage: PROVIDER-INFRA-SETUP
   tags: 
     - k8s-konvoy
@@ -36,26 +33,26 @@ openebs-konvoy-deploy:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
 
-openebs-sc-deploy:
-  image: ranjnshashank855/konvoy:v15
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
+# openebs-sc-deploy:
+#   image: openebs/openshift-ci:latest
+#   stage: PROVIDER-INFRA-SETUP
+#   tags: 
+#     - k8s-konvoy
+#   dependencies:
+#     - konvoy-cluster
+#   script:
+#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
+#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
 
 ## Define a job template for app deployers
 
-.app_deploy_template:
-  image: ranjnshashank855/konvoy:v15
-  stage: STATEFUL-APP-DEPLOY
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - konvoy-cluster
+# .app_deploy_template:
+#   image: openebs/openshift-ci:latest
+#   stage: STATEFUL-APP-DEPLOY
+#   tags: 
+#     - k8s-konvoy
+#   dependencies:
+#     - konvoy-cluster
   
 ## Define the app deployer jobs
 
@@ -146,7 +143,7 @@ prometheus-cstor:
 ## Define job template for func test jobs  
 
 .func_test_template:
-  image: ranjnshashank855/konvoy:v15
+  image: openebs/openshift-ci:latest
   stage: APP-FUNC-TEST
   tags: 
     - k8s-konvoy
@@ -217,14 +214,14 @@ app-upgrade-deployment-{jenkins-cstor}:
 
 # ## Define job template for chaos jobs 
 
-.chaos_test_template:
-  image: ranjnshashank855/konvoy:v15
-  stage: APP-CHAOS-TEST
-  tags: 
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - konvoy-cluster 
+# .chaos_test_template:
+#   image: openebs/openshift-ci:latest
+#   stage: APP-CHAOS-TEST
+#   tags: 
+#     - k8s-konvoy
+#   when: always
+#   dependencies:
+#     - konvoy-cluster 
   
 repl-kill-{percona-jiva}:
   extends: .chaos_test_template #dependencies: percona-jiva
@@ -281,14 +278,14 @@ ctrl-kill-{mongo-jiva}:
      #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
 
-.app_deprovision_template:
-  image: ranjnshashank855/konvoy:v15
-  stage: APP-DEPROVISION
-  dependencies:
-    - konvoy-cluster
-  tags: 
-    - k8s-konvoy
-  when: always
+# .app_deprovision_template:
+#   image: openebs/openshift-ci:latest
+#   stage: APP-DEPROVISION
+#   dependencies:
+#     - konvoy-cluster
+#   tags: 
+#     - k8s-konvoy
+#   when: always
 
 ## PERCONA-JIVA
 percona-jiva-deprovision:
