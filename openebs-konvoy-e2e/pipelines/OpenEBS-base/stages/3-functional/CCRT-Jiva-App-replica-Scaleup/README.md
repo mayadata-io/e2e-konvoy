@@ -6,7 +6,7 @@ This test checks if the application replicas consuming jiva based storage can be
 
 #### Prerequisites
 
-- OpenShift Cluster should be created and have the dependencies installed.
+- Konvoy Cluster should be created and have the dependencies installed.
 - Jiva based storage pool should have been created. A default storage pool is created by default during OpenEBS deployment.
 - OpenEBS storage class using jiva cas-type should be created.
 

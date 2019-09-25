@@ -6,7 +6,7 @@ This test ensures that the application replicas can be scaled by updating its co
 
 #### Prerequisites
 
-- OpenShift Cluster should be created and have the dependencies installed.
+- Konvoy Cluster should be created and have the dependencies installed.
 - cStor based storage pool should have been created.
 - OpenEBS storage class should be created with the desired storage pool claim.
 

@@ -6,7 +6,7 @@ This test checks if the statefulset application pod and its corresponding target
 
 #### Prerequisites
 
-- OpenShift Cluster should be created and have the dependencies installed.
+- Konvoy Cluster should be created and have the dependencies installed.
 - cStor based storage pool should have been created.
 - OpenEBS storage class should be created with the desired storage pool claim.
 

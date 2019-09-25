@@ -1,4 +1,4 @@
-### SUTP-Setting up OpenShift D2IQ Konvoy cluster.
+### SUTP-Setting up D2IQ Konvoy cluster.
 
 #### Description
 
