@@ -1,8 +1,8 @@
-### XC0I-Create Striped Storage Pool using disks.
+### KSDJ-Create raidz2 Storage Pool using disks.
 
 #### Description
 
-Administrator should be able to use this job to create OpenEBS cStor based storage pool of type stripe.
+Administrator should be able to use this job to create OpenEBS cStor based storage pool of type raidz2.
 
 #### Prerequisites
 
@@ -12,7 +12,7 @@ Administrator should be able to use this job to create OpenEBS cStor based stora
 
 #### Procedure
 
-- This job triggers litmus experiment which creates striped storage pool using disks.
+- This job triggers litmus experiment which creates raidz2 storage pool using disks.
 - The litmus experiment receives the necessary parameters in form of pod environmental variables and updates the manifest accordingly.
 - This test checks if the required cStor pool is created successfully using kubectl command `kubectl get spc`
 - This investigates if the corresponding cstor pool pods are running using SPC as label.
@@ -23,3 +23,5 @@ Administrator should be able to use this job to create OpenEBS cStor based stora
 - Storagepoolclaim should be created successfully and cStor pool pods should be running according to the maxpool count set.
 
 #### Test Result
+
+
