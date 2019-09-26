@@ -96,7 +96,18 @@ OQEW-NFSv4-PROVISION:
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
-     
+ 
+HODS-CSI-PROVISIONER:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
+
 ## Define a job template for app deployers
 
 # .app_deploy_template:
@@ -382,7 +393,7 @@ OQEW-NFSv4-PROVISION:
 #    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
 #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
 
-konvoy-cleanup:
+ISTV-konvoy-cleanup:
   when: always
   stage: CLUSTER-CLEANUP
   dependencies: 
@@ -390,5 +401,5 @@ konvoy-cleanup:
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/cluster-cleanup/cluster-cleanup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/cluster-cleanup/cluster-cleanup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/ISTV-cluster-cleanup/cluster-cleanup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/ISTV-cluster-cleanup/cluster-cleanup

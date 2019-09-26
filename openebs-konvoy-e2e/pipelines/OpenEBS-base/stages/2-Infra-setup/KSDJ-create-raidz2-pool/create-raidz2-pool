@@ -36,7 +36,7 @@ echo "Running the litmus test.."
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------------------------------     
- | specAttribute     | kind   |         default value                           | test specifc value                                           |
+ | specAttribute     | kind   |         default value                           | test specific value                                           |
   ---------------------------------------------------------------------------------------------------------------------------------------------
  | Litmus job label  | label  | app: cstor-block-device-pool-provision          | app: cstor-raidz2-pool-provision                             |
  | Litmus Job name   | name   | generateName: cstor-block-device-pool-provision | generateName: cstor-block-device-raidz2-pool-provision       |
@@ -75,12 +75,12 @@ rc_val=$(echo $?)
 source ~/.profile
 gittoken=$(echo "$github_token")
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
-#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id KSDJ 2-setup "Create cStor based RAIDZ2 storage pool on disks and corresponding storage class" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id KSDJ 2-Infra-setup "Create cStor based RAIDZ2 storage pool on disks and corresponding storage class" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j5-cstor-raidz2-pool jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
 
-#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id KSDJ 2-setup "Create cStor based RAIDZ2 storage pool on disks and corresponding storage class" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id KSDJ 2-Infra-setup "Create cStor based RAIDZ2 storage pool on disks and corresponding storage class" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 if [ "$rc_val" != "0" ]; then
 exit 1;
 fi

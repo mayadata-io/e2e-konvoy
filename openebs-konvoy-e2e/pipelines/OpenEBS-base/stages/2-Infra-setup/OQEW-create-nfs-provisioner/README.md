@@ -1,4 +1,4 @@
-### AP1O-Create NFS provisioner on openshift cluster.
+### OQEW-Create NFS provisioner on konvoy cluster.
 
 #### Description
 
@@ -18,7 +18,7 @@ Administrator should be able to use this job to create OpenEBS cStor based stora
 
 #### Expected result
 
-- nfs provisioner deployment should be successful.
+- NFS provisioner deployment should be successful.
 
 #### Test Result
 

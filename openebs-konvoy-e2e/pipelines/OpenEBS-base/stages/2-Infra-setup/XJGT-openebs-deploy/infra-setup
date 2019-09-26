@@ -1,7 +1,6 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b konvoy-onprem https://github.com/mayadata-io/e2e-konvoy.git'
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$NDM_TAG'"' '"'$RELEASE_BRANCH'"' '"'$E_USER'"' '"'$E_PASSWORD'"'
 }
 
@@ -51,7 +50,8 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j4-cstor-raidz1-pool jobphase:Wa
 #bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j5-cstor-raidz2-pool jobphase:Waiting
 #bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-striped-pool jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j7-nfsv4-provision jobphase:Waiting
-#bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-nfsv3-provision jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Waiting
+#bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv3-provision jobphase:Waiting
 
 source ~/.profile
 
@@ -132,12 +132,12 @@ test_case_id="XJGT-$pipeline_id"
 source ~/.profile
 gittoken=$(echo "$github_token")
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
-#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XJGT 2-setup "Deploy OpenEBS in openebs-konvoy-e2e-3.10 Cluster" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XJGT 2-Infra-setup "Deploy OpenEBS in openebs-konvoy-e2e-3.10 Cluster" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j1-openebs-deploy jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
 
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XJGT 2-setup "Deploy OpenEBS in openebs-konvoy-e2e-3.10 Cluster" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XJGT 2-Infra-setup "Deploy OpenEBS in openebs-konvoy-e2e-3.10 Cluster" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

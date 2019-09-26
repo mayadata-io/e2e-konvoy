@@ -1,4 +1,4 @@
-### 37Y6-Create raidz1 Storage Pool using disks.
+### AMHE-Create raidz1 Storage Pool using disks.
 
 #### Description
 
@@ -6,7 +6,7 @@ Administrator should be able to use this job to create OpenEBS cStor based stora
 
 #### Prerequisites
 
-- OpenShift cluster should be ready.
+- Konvoy cluster should be ready.
 - OpenEBS should be deployed in cluster.
 - Each node should have the disks attached depending on required pool configuration.
 

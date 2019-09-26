@@ -1,4 +1,4 @@
-### XC0I-Create Striped Storage Pool using disks.
+### GZTK-Create Striped Storage Pool using disks.
 
 #### Description
 

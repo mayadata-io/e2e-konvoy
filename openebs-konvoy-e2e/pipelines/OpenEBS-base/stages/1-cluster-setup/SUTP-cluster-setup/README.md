@@ -1,12 +1,12 @@
-### PCZD-Setting up D2IQ-Konvoy cluster.
+### SUTP-Setting up D2IQ-Konvoy cluster.
 
 #### Description
 
-The Administrator should be able to use this job to configure konvoy cluster and check if it is healthy for carrying out e2e tests.
+The Administrator should be able to use this job to configure D2IQ-Konvoy cluster in vSphere based virtual machines and check if it is healthy for carrying out e2e tests.
 
 #### Prerequisites
 
-- The host machines should be created and have the dependent packages installed in all the machines.
+The host machines should be created and have the dependent packages installed in all the machines.
 
 #### Procedure
 

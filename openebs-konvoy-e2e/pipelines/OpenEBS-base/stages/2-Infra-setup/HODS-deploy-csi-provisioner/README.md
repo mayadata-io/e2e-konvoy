@@ -1,4 +1,4 @@
-### PIGE-OpenEBS Storage Classes creation.
+### HODS-Create CSI provisioner on Konvoy cluster.
 
 #### Description
 

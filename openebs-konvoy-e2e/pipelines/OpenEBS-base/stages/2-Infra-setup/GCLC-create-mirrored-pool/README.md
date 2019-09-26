@@ -1,4 +1,4 @@
-### XH12-Create Mirrored Storage Pool using disks.
+### GCLC-Create Mirrored Storage Pool using disks.
 
 #### Description
 
