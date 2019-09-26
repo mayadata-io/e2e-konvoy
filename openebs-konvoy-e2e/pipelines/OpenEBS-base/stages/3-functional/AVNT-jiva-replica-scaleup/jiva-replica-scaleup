@@ -31,14 +31,14 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-replica-scaleup jobphase:Runni
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------------     
- | specAttribute     | kind   |         default value               | test specifc value                                    |
+ | specAttribute     | kind   |         default value               | test specific value                                   |
   --------------------------------------------------------------------------------------------------------------------------|
  | Litmus job label  | label  | app: busybox-litmus                 | app: deploy-jiva-busybox-rep-scaleup                  |
  | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-provision-jiva-replica-scaleup  |
  | appLabel          | env    | app=busybox-sts                     | app=busybox-jiva-replica                              |
  | deploy type       | env    | statefulset                         | deployment                                            |
  | pvcName           | env    | openebs-busybox                     | busybox-jiva-replica-scaleup                          | 
- | storage clas      | env    | openebs-cstor-sparse                | openebs-jiva-standalone                               |
+ | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-standalone                               |
  | appNamespace      | env    | app-busybox-ns                      | jiva-replica-scaleup                                  |
   ---------------------------------------------------------------------------------------------------------------------------
 EOF
@@ -66,10 +66,10 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-replica-scaleup $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
-# if [ "$?" != "0" ]; then
+if [ "$?" != "0" ]; then
 # python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id AVNT 3-functional "Verify if the Jiva replicas can be scaled up" Fail $pipeline_id "$current_time" $commit_id $gittoken
-# exit 1;
-# fi
+exit 1;
+fi
 
 ##Running Busybox loadgen 
 
@@ -115,10 +115,10 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-replica-scaleup $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
-# if [ "$?" != "0" ]; then
+if [ "$?" != "0" ]; then
 # python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id AVNT 3-functional "Verify if the Jiva replicas can be scaled up" Fail $pipeline_id "$current_time" $commit_id $gittoken
-# exit 1;
-# fi
+exit 1;
+fi
 
 ##Scaling up the Jiva replicas 
 
@@ -155,10 +155,10 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-replica-scaleup $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
-# if [ "$?" != "0" ]; then
+if [ "$?" != "0" ]; then
 # python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id AVNT 3-functional "Verify if the Jiva replicas can be scaled up" Fail $pipeline_id "$current_time" $commit_id $gittoken
-# exit 1;
-# fi
+exit 1;
+fi
 
 #Deprovisioning Busybox-loadgen
 
@@ -207,10 +207,10 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-replica-scaleup $test_n
 rc_val=$(echo $?)
 
 # Update result of the test case in github mayadata-io/e2e-openshift repository.
-# if [ "$rc_val" != "0" ]; then
+if [ "$rc_val" != "0" ]; then
 # python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id AVNT 4-chaos "Verify if the Jiva replicas can be scaled up" Fail $pipeline_id "$current_time" $commit_id $gittoken
-# exit 1;
-# fi
+exit 1;
+fi
 
 ###########-Deprovisioning busybox Application
 
@@ -240,10 +240,10 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-replica-scaleup $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 return_count=$?
 
-# if [ "$return_count" != "0" ]; then
+if [ "$return_count" != "0" ]; then
 # python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id AVNT 3-functional "Verify if the Jiva replicas can be scaled up" Fail $pipeline_id "$current_time" $commit_id $gittoken
-# exit 1;
-# fi
+exit 1;
+fi
 
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-replica-scaleup jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
