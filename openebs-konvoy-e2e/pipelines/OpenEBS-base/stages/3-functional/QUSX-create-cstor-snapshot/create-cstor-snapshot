@@ -69,7 +69,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:snapshot $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 9AKX 3-functional "Verify if the snapshot can be created for persistent volume" Fail $pipeline_id "$current_time" $commit_id $gittoken
+# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id QUSX 3-functional "Verify if the snapshot can be created for persistent volume" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -117,7 +117,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:snapshot $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 9AKX 3-functional "Verify if the snapshot can be created for persistent volume" Fail $pipeline_id "$current_time" $commit_id $gittoken
+# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id QUSX 3-functional "Verify if the snapshot can be created for persistent volume" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -149,7 +149,7 @@ rc_val=$(echo $?)
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 9AKX 3-functional "Verify if the snapshot can be created for persistent volume" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id QUSX 3-functional "Verify if the snapshot can be created for persistent volume" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -189,7 +189,7 @@ fi
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
 
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 9AKX 3-functional "Verify if the snapshot can be created for persistent volume" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id QUSX 3-functional "Verify if the snapshot can be created for persistent volume" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

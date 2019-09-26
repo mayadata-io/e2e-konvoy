@@ -133,7 +133,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cas-performance $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 02EA 3-functional "Check if the application is successfully deployed using CAS performance tuning parameters" Fail $pipeline_id "$current_time" $commit_id $gittoken
+# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id KUSP 3-functional "Check if the application is successfully deployed using CAS performance tuning parameters" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -185,7 +185,7 @@ rc_val=$(echo $?)
 
  # Update result of the test case in github mayadata-io/e2e-openshift repository.
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 02EA 3-functional "Check if the application is successfully deployed using CAS performance tuning parameters" Fail $pipeline_id "$current_time" $commit_id $gittoken
+# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id KUSP 3-functional "Check if the application is successfully deployed using CAS performance tuning parameters" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 #TODO: Include performance specific functional cases 
