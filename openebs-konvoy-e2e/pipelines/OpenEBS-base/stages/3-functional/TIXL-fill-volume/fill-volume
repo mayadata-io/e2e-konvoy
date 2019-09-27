@@ -36,7 +36,7 @@ cp apps/percona/deployers/run_litmus_test.yml deploy_run_test_percona.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-standalone                          |
   ----------------------------------------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:volume-capacity-fill  $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id TIXL 3-functional "Fill cstor volume completely and check if its size can be scaled seamlessly" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id TIXL 3-functional "Fill cstor volume completely and check if its size can be scaled seamlessly" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -69,7 +69,7 @@ cp experiments/functional/volume-capacity/run_litmus_test.yml volume_capacity_fi
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appLabel          | env    | app=busybbox                        | name=percona                                     | 
  | appNamespace      | env    | app-busybox-ns                      | app-percona-ns                                   | 
@@ -87,7 +87,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:volume-capacity-fill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id TIXL 3-functional "Fill cstor volume completely and check if its size can be scaled seamlessly" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id TIXL 3-functional "Fill cstor volume completely and check if its size can be scaled seamlessly" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -105,7 +105,7 @@ cp apps/percona/deployers/run_litmus_test.yml deprovision_run_test_percona.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-standalone                          |
   ----------------------------------------------------------------------------------------------------------------------
@@ -132,13 +132,13 @@ rc_val=$(echo $?)
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id TIXL 3-functional "Fill cstor volume completely and check if its size can be scaled seamlessly" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id TIXL 3-functional "Fill cstor volume completely and check if its size can be scaled seamlessly" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:volume-capacity-fill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:$testResult
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id TIXL 3-functional "Fill cstor volume completely and check if its size can be scaled seamlessly" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id TIXL 3-functional "Fill cstor volume completely and check if its size can be scaled seamlessly" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

@@ -49,7 +49,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot-clone jobphase:Running ini
 # bash openebs-konvoy-e2e/utils/event_updater jobname:snapshot-clone $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 # if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PLIR 3-functional "Check if the clone can be created using volume snapshot" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PLIR 3-functional "Check if the clone can be created using volume snapshot" Fail $pipeline_id "$current_time" $commit_id $gittoken
 # exit 1;
 # fi
 
@@ -81,7 +81,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot-clone jobphase:Running ini
 # bash openebs-konvoy-e2e/utils/event_updater jobname:snapshot-clone $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 # if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PLIR 3-functional "Check if the clone can be created using volume snapshot" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PLIR 3-functional "Check if the clone can be created using volume snapshot" Fail $pipeline_id "$current_time" $commit_id $gittoken
 # exit 1;
 # fi
 
@@ -95,7 +95,7 @@ cp experiments/functional/clone-creation/run_litmus_test.yml run_clone_test.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appPVC            | env    | openebs-busybox                     |  busybox-snapshot                                |
  | appNamespace      | env    | app-busybox-ns                      |  busybox-snap                                    | 
@@ -116,7 +116,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:snapshot-clone $test_name jo
 rc_val=$(echo $?)
 
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PLIR 3-functional "Check if the clone can be created using volume snapshot" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PLIR 3-functional "Check if the clone can be created using volume snapshot" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -157,7 +157,7 @@ fi
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot-clone jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
 
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PLIR 3-functional "Check if the clone can be created using volume snapshot" Pass $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PLIR 3-functional "Check if the clone can be created using volume snapshot" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

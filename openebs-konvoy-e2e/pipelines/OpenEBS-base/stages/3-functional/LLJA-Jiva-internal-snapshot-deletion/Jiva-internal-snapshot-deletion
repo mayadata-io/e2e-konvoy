@@ -30,9 +30,9 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-internal-snapshot-deletion job
 
 : << EOF
   --------------------------------------------------------------------------------------------------------------------     
- | specAttribute     | kind   |         default value               | test specifc value                              |
+ | specAttribute     | kind   |         default value               | test specific value                              |
   ------------------------------------------------------------------------------------------------------------------- |
- | storage clas      | env    | openebs-jiva-standard               | openebs-jiva-default                            |
+ | storage class     | env    | openebs-jiva-standard               | openebs-jiva-default                            |
  | appNamespace      | env    | fio                                 | fio-jiva-snapshot-del                           |
   ---------------------------------------------------------------------------------------------------------------------
 EOF
@@ -56,7 +56,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-internal-snapshot-deletion $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id LLJA 3-functional "Verify if the snapshot is getting Deleted Automatically" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id LLJA 3-functional "Verify if the snapshot is getting Deleted Automatically" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 

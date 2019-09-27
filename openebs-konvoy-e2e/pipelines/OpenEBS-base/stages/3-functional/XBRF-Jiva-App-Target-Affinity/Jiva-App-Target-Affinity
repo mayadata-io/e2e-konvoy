@@ -35,12 +35,12 @@ cp apps/busybox/deployers/run_litmus_test.yml deploy_affinity_test_jiva.yml
 
 : << EOF
   -------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                             |
+ | specAttribute     | kind   |         default value               | test specific value                             |
   -------------------------------------------------------------------------------------------------------------------|
  | appLabel          | env    | app=busybox-sts                     | app=target-affinity-jiva                       |
  | pvcName           | env    | openebs-busybox                     | busybox-target-affinity-jiva                   | 
  | appNamespace      | env    | app-busybox-ns                      | target-affinity-jiva                           | 
- | storage clas      | env    | openebs-cstor-sparse                | openebs-jiva-default                           |
+ | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-default                           |
  | deploy type       | env    | statefulset                         | deployment                                     |
  | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-provision-target-affinity|
  | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-litmus-target-jiva                |
@@ -64,7 +64,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-target-affinity-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -85,7 +85,7 @@ cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_target_affinity.yml
 
  : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | target-affinity-jiva                             | 
  | appLabel          | env    | app=busybox-sts                     | app=target-affinity-jiva                         | 
@@ -112,7 +112,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-target-affinity-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -130,7 +130,7 @@ cp experiments/functional/app-target-affinity/run_litmus_test.yml run_affinity_t
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                         |
+ | specAttribute     | kind   |         default value               | test specific value                         |
   ---------------------------------------------------------------------------------------------------------------|
  | appLabel          | env    | app=busybox-sts                     | app=target-affinity-jiva               | 
  | appNamespace      | env    | app-busybox-ns                      | target-affinity-jiva                       | 
@@ -157,7 +157,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-target-affinity-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -178,7 +178,7 @@ cp apps/busybox/liveness/run_litmus_test.yml bb_loadgen_dep_target_affinity.yml
 
  : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | target-affinity-jvia                             | 
  | action            | env    | provision                           | deprovision                                      |
@@ -209,7 +209,7 @@ rc_val=$(echo $?)
 
  # Update result of the test case in github mayadata-io/e2e-openshift repository.
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -227,12 +227,12 @@ cp apps/busybox/deployers/run_litmus_test.yml deprovision_affinity_jiva.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appLabel          | env    | app=busybox-sts                     | app=ctrl-kill                                    |
  | pvcName           | env    | openebs-busybox                     | busybox-target-affinity-jiva                     | 
  | appNamespace      | env    | app-busybox-ns                      | target-affinity-jiva                             | 
- | storage clas      | env    | openebs-cstor-sparse                | openebs-jiva-standalone                          |
+ | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-standalone                          |
  | deploy type       | env    | statefulset                         | deployment                                       |
  | Action            | env    | value: provision                    | value: deprovision                               |
  | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-deprovision-target-affinity|
@@ -263,13 +263,13 @@ rc_val=$(echo $?)
 
 # testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:app-target-affinity-jiva  jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Pass $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XBRF 3-functional "Checking Application and target scheduled on same Node" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

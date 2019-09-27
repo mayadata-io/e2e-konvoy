@@ -38,12 +38,12 @@ cp apps/busybox/deployers/run_litmus_test.yml deploy_sts_affinity_test.yml
 
 : << EOF
   -------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                             |
+ | specAttribute     | kind   |         default value               | test specific value                             |
   -------------------------------------------------------------------------------------------------------------------|
  | appLabel          | env    | app=busybox-sts                     | app=sts-target-affinity                        |
  | pvcName           | env    | openebs-busybox                     | busybox-sts-target-affinity                    | 
  | appNamespace      | env    | app-busybox-ns                      | sts-target-affinity                            | 
- | storage clas      | env    | openebs-cstor-sparse                | openebs-cstor-disk                             |
+ | storage class     | env    | openebs-cstor-sparse                | openebs-cstor-disk                             |
  | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-deploy-sts-affinity      |
  | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-sts-target-affinity               |
   --------------------------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:sts-app-target-affinity $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -87,7 +87,7 @@ cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_sts_target_affinity
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | sts-target-affinity                              | 
  | appLabel          | env    | app=busybox-sts                     | app=sts-target-affinity                          | 
@@ -113,7 +113,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:sts-app-target-affinity $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -132,7 +132,7 @@ cp experiments/functional/app-target-affinity/run_litmus_test.yml run_sts_affini
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value                     | test specifc value                         |
+ | specAttribute     | kind   |         default value                     | test specific value                         |
   ---------------------------------------------------------------------------------------------------------------------|
  | appLabel          | env    | app=busybox-sts                           | app=sts-target-affinity                    | 
  | appNamespace      | env    | app-busybox-ns                            | sts-target-affinity                        | 
@@ -161,7 +161,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:sts-app-target-affinity $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -182,7 +182,7 @@ cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_dep_sts_target_affi
 
  : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | sts-target-affinity                              | 
  | action            | env    | provision                           | deprovision                                      | 
@@ -213,7 +213,7 @@ rc_val=$(echo $?)
 
  # Update result of the test case in github mayadata-io/e2e-openshift repository.
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -231,12 +231,12 @@ cp apps/busybox/deployers/run_litmus_test.yml deprovision_sts_affinity.yml
 
 : << EOF
   --------------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                                   |
+ | specAttribute     | kind   |         default value               | test specific value                                   |
   -------------------------------------------------------------------------------------------------------------------------|
  | appLabel          | env    | app=busybox-sts                     | app=sts-target-affinity                              |
  | pvcName           | env    | openebs-busybox                     | busybox-sts-target-affinity                          | 
  | appNamespace      | env    | app-busybox-ns                      | sts-target-affinity                                  | 
- | storage clas      | env    | openebs-cstor-sparse                | openebs-cstor-disk                                   |
+ | storage class     | env    | openebs-cstor-sparse                | openebs-cstor-disk                                   |
  | Action            | env    | value: provision                    | value: deprovision                                   |
  | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-deprovision-sts-target-affinity|
  | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-deprovision-sts-affinity                |
@@ -264,13 +264,13 @@ rc_val=$(echo $?)
 
 # testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:sts-app-target-affinity  jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Pass $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id POXG 3-functional "Checking Statefulset Application and target scheduled on same Node" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

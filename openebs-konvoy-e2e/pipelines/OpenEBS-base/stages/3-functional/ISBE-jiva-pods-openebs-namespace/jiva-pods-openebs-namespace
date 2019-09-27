@@ -57,7 +57,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-openebs-ns $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 3-functional "Check if the application is successfully deployed and JIVA Controller, Replica pods are scheduled on OpenEBS namespace" $testResult $pipeline_id "$current_time" $commit_id $gitToken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 3-functional "Check if the application is successfully deployed and JIVA Controller, Replica pods are scheduled on OpenEBS namespace" $testResult $pipeline_id "$current_time" $commit_id $gitToken
 exit 1;
 fi
 
@@ -78,7 +78,7 @@ cp experiments/functional/jiva-pods-openebs-ns/run_litmus_test.yml deprovision_b
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------     
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   -------------------------------------------------------------------------------------------------------------------- |
  | action            | env    | provision                           | deprovision                                      |
  | Litmus job label  | label  | app: litmus-jiva-openebs-ns         | app: deprovision-busybox-jiva-openebs            |
@@ -112,7 +112,7 @@ testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-column
 
 # Update the result of the test case in github mayadata-io/e2e-openshift repository.
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 3-functional "Check if the application is successfully deployed and JIVA Controller, Replica pods are scheduled on OpenEBS namespace" $testResult $pipeline_id "$current_time" $commit_id $gitToken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 3-functional "Check if the application is successfully deployed and JIVA Controller, Replica pods are scheduled on OpenEBS namespace" $testResult $pipeline_id "$current_time" $commit_id $gitToken
 exit 1;
 fi
 
@@ -120,7 +120,7 @@ current_time=$(eval $time)
 # Update the e2e cr once the job is completed
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-openebs-ns jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:$testResult
 
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 3-functional "Check if the application is successfully deployed and JIVA Controller, Replica pods are scheduled on OpenEBS namespace" $testResult $pipeline_id "$current_time" $commit_id $gitToken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 3-functional "Check if the application is successfully deployed and JIVA Controller, Replica pods are scheduled on OpenEBS namespace" $testResult $pipeline_id "$current_time" $commit_id $gitToken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

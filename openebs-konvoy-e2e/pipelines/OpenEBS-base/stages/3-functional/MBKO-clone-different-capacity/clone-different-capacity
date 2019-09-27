@@ -34,7 +34,7 @@ cp experiments/functional/clone-creation/run_litmus_test.yml run_diff_vol_size_c
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
- | specAttribute     | kind   |         default value               | test specifc value                               |
+ | specAttribute     | kind   |         default value               | test specific value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | busybox-snap                                     |    
  | appPVC            | env    | openebs-busybox                     | busybox-snapshot                                 |
@@ -70,14 +70,14 @@ rc_val=$(echo $?)
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id MBKO 3-functional "Check if the clone can't be created with different volume capacity" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id MBKO 3-functional "Check if the clone can't be created with different volume capacity" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-different-capacity jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
 
-# python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id MBKO 3-functional "Check if the clone can't be created with different volume capacity" Pass $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id MBKO 3-functional "Check if the clone can't be created with different volume capacity" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;
