@@ -9,18 +9,18 @@ stages:
   # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
-konvoy-cluster:
+SUTP-konvoy-cluster:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-SETUP
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/SUTP-cluster-setup/cluster-setup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/SUTP-cluster-setup/cluster-setup
 
 ## Setup OpenEBS control plane
 
-openebs-konvoy-deploy:
+XJGT-OPENEBS-KONVOY-DEPLOY:
   image: openebs/openshift-ci:latest
   stage: PROVIDER-INFRA-SETUP
   tags: 
@@ -28,10 +28,54 @@ openebs-konvoy-deploy:
   dependencies:
     - konvoy-cluster
   script: 
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup
 
-# openebs-sc-deploy:
+PIGE-OPENEBS-SC-DEPLOY:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/PIGE-storage-policies/openebs-sc
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/PIGE-storage-policies/openebs-sc
+
+GZTK-STRIPED-POOL:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GZTK-create-striped-pool/create-striped-pool
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GZTK-create-striped-pool/create-striped-pool
+
+GCLC-MIRRORED-POOL:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GCLC-create-mirrored-pool/create-mirrored-pool
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GCLC-create-mirrored-pool/create-mirrored-pool
+
+AMHE-RAIDZ1-POOL:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
+
+# KSDJ-RAIDZ2-POOL:
 #   image: openebs/openshift-ci:latest
 #   stage: PROVIDER-INFRA-SETUP
 #   tags: 
@@ -39,8 +83,30 @@ openebs-konvoy-deploy:
 #   dependencies:
 #     - konvoy-cluster
 #   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
+#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
+#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
+
+OQEW-NFSv4-PROVISION:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
+ 
+HODS-CSI-PROVISIONER:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
 
 ## Define a job template for app deployers
 
@@ -327,7 +393,7 @@ openebs-konvoy-deploy:
 #    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
 #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
 
-konvoy-cleanup:
+ISTV-konvoy-cleanup:
   when: always
   stage: CLUSTER-CLEANUP
   dependencies: 
@@ -335,5 +401,5 @@ konvoy-cleanup:
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/cluster-cleanup/cluster-cleanup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/cluster-cleanup/cluster-cleanup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/ISTV-cluster-cleanup/cluster-cleanup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/ISTV-cluster-cleanup/cluster-cleanup
