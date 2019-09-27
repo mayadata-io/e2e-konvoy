@@ -26,7 +26,7 @@ XJGT-OPENEBS-KONVOY-DEPLOY:
   tags: 
     - k8s-konvoy
   dependencies:
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   script: 
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup
@@ -37,7 +37,7 @@ PIGE-OPENEBS-SC-DEPLOY:
   tags: 
     - k8s-konvoy
   dependencies:
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/PIGE-storage-policies/openebs-sc
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/PIGE-storage-policies/openebs-sc
@@ -48,7 +48,7 @@ GZTK-STRIPED-POOL:
   tags: 
     - k8s-konvoy
   dependencies:
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GZTK-create-striped-pool/create-striped-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GZTK-create-striped-pool/create-striped-pool
@@ -59,7 +59,7 @@ GCLC-MIRRORED-POOL:
   tags: 
     - k8s-konvoy
   dependencies:
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GCLC-create-mirrored-pool/create-mirrored-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GCLC-create-mirrored-pool/create-mirrored-pool
@@ -70,7 +70,7 @@ AMHE-RAIDZ1-POOL:
   tags: 
     - k8s-konvoy
   dependencies:
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
@@ -81,7 +81,7 @@ AMHE-RAIDZ1-POOL:
 #   tags: 
 #     - k8s-konvoy
 #   dependencies:
-#     - konvoy-cluster
+#     - SUTP-konvoy-cluster
 #   script:
 #    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
 #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
@@ -92,7 +92,7 @@ OQEW-NFSv4-PROVISION:
   tags: 
     - k8s-konvoy
   dependencies:
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
@@ -103,7 +103,7 @@ HODS-CSI-PROVISIONER:
   tags: 
     - k8s-konvoy
   dependencies:
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
@@ -116,7 +116,7 @@ HODS-CSI-PROVISIONER:
 #   tags: 
 #     - k8s-konvoy
 #   dependencies:
-#     - konvoy-cluster
+#     - SUTP-konvoy-cluster
   
 ## Define the app deployer jobs
 
@@ -213,7 +213,7 @@ HODS-CSI-PROVISIONER:
 #     - k8s-konvoy
 #   when: always
 #   dependencies:
-#     - konvoy-cluster  
+#     - SUTP-konvoy-cluster  
 
 # app-replica-scale-{cassandra-jiva}:
 #   extends: .func_test_template #dependencies: cassandra-jiva
@@ -285,7 +285,7 @@ HODS-CSI-PROVISIONER:
 #     - k8s-konvoy
 #   when: always
 #   dependencies:
-#     - konvoy-cluster 
+#     - SUTP-konvoy-cluster 
   
 # repl-kill-{percona-jiva}:
 #   extends: .chaos_test_template #dependencies: percona-jiva
@@ -346,7 +346,7 @@ HODS-CSI-PROVISIONER:
 # #   image: openebs/openshift-ci:latest
 # #   stage: APP-DEPROVISION
 # #   dependencies:
-# #     - konvoy-cluster
+# #     - SUTP-konvoy-cluster
 # #   tags: 
 # #     - k8s-konvoy
 # #   when: always
@@ -397,7 +397,7 @@ ISTV-konvoy-cleanup:
   when: always
   stage: CLUSTER-CLEANUP
   dependencies: 
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   tags: 
     - k8s-konvoy 
   script:
