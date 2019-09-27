@@ -16,14 +16,14 @@ while [ -z "$job_name" ]; do
   sleep 5
   job_name=$(eval ${jobNameCmd});
 done
-chmod 755 ../openebs-konvoy-e2e/utils/error_handler
-bash ../openebs-konvoy-e2e/utils/error_handler ${retcode} msg="Unable to run litmusbook, exiting" action="exit"
+chmod 755 ../Openshift-EE/utils/error_handler
+bash ../Openshift-EE/utils/error_handler ${retcode} msg="Unable to run litmusbook, exiting" action="exit"
 
 ## Obtain the litmus pod name 
 
 litmusPodCmd="kubectl get pod --no-headers -n litmus -o jsonpath='{.items[?(@.metadata.labels.job-name==\"${job_name}\")].metadata.name}'"
 litmus_pod=$(eval ${litmusPodCmd}); retcode=$?
-bash ../openebs-konvoy-e2e/utils/error_handler ${retcode} msg="Unable to find litmus test runner pod, exiting" action="exit"
+bash ../Openshift-EE/utils/error_handler ${retcode} msg="Unable to find litmus test runner pod, exiting" action="exit"
 
 ## Wait till the ansibletest container terminates && also confirm job completion status. This is done to ensure
 ## that execution of auxiliary containers such as loggers is completed. Getting the ansibletest ccontainer to completed state 
@@ -36,13 +36,16 @@ jobStateCmd="kubectl get pod ${litmus_pod} --no-headers -n litmus -o custom-colu
 
 while true; do
   cstate=$(eval ${containerStateCmd}); rc=$?
-  if [[ $rc -eq 0 && ! -z $cstate ]]; then
-    if [[ ! $cstate =~ 'terminated' ]]; then
-      sleep 10
-    else break;
+  if [[ $rc -eq 0 && ! $cstate ]]; then
+    sleep 10
+    else if [[ $rc -eq 0 && ! -z $cstate ]]; then
+      if [[ ! $cstate =~ 'terminated' ]]; then
+        sleep 10
+      else break;
+      fi
+    else
+      echo "unable to get litmus container status"; exit 1
     fi
-  else
-    echo "unable to get litmus container status"; exit 1
   fi
 done
 

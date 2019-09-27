@@ -175,8 +175,9 @@ HODS-CSI-PROVISIONER:
 #      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
 
 ISTV-konvoy-cleanup:
-  when: always
+  image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP
+  when: always  
   dependencies: 
     - SUTP-konvoy-cluster
   tags: 
