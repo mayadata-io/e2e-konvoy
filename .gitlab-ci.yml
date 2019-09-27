@@ -9,27 +9,27 @@ stages:
   # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
-konvoy-cluster:
+SUTP-konvoy-cluster:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-SETUP
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/P7Q4-cluster-setup/cluster-setup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/SUTP-cluster-setup/cluster-setup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/SUTP-cluster-setup/cluster-setup
 
 ## Setup OpenEBS control plane
 
-openebs-konvoy-deploy:
+XJGT-openebs-konvoy-deploy:
   image: openebs/openshift-ci:latest
   stage: PROVIDER-INFRA-SETUP
   tags: 
     - k8s-konvoy
   dependencies:
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   script: 
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/O21Y-openebs-deploy/infra-setup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup
 
 # openebs-sc-deploy:
 #   image: openebs/openshift-ci:latest
@@ -37,7 +37,7 @@ openebs-konvoy-deploy:
 #   tags: 
 #     - k8s-konvoy
 #   dependencies:
-#     - konvoy-cluster
+#     - SUTP-konvoy-cluster
 #   script:
 #    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
 #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/ZNSF-storage-policies/setup-sc
@@ -50,7 +50,7 @@ openebs-konvoy-deploy:
 #   tags: 
 #     - k8s-konvoy
 #   dependencies:
-#     - konvoy-cluster
+#     - SUTP-konvoy-cluster
   
 ## Define the app deployer jobs
 
@@ -147,7 +147,7 @@ openebs-konvoy-deploy:
     - k8s-konvoy
   when: always
   dependencies:
-    - konvoy-cluster  
+    - SUTP-konvoy-cluster  
 
 AVNT-jiva-replica-scaleup:
   extends: .func_test_template
@@ -315,7 +315,7 @@ XZDZ-STS-Volume-Distribution:
 #     - k8s-konvoy
 #   when: always
 #   dependencies:
-#     - konvoy-cluster 
+#     - SUTP-konvoy-cluster 
   
 # repl-kill-{percona-jiva}:
 #   extends: .chaos_test_template #dependencies: percona-jiva
@@ -376,7 +376,7 @@ XZDZ-STS-Volume-Distribution:
 # #   image: openebs/openshift-ci:latest
 # #   stage: APP-DEPROVISION
 # #   dependencies:
-# #     - konvoy-cluster
+# #     - SUTP-konvoy-cluster
 # #   tags: 
 # #     - k8s-konvoy
 # #   when: always
@@ -423,13 +423,13 @@ XZDZ-STS-Volume-Distribution:
 #    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
 #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/deprovision/cassandra-app-deprovision-jiva
 
-konvoy-cleanup:
+ISTV-konvoy-cleanup:
   when: always
   stage: CLUSTER-CLEANUP
   dependencies: 
-    - konvoy-cluster
+    - SUTP-konvoy-cluster
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/cluster-cleanup/cluster-cleanup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/cluster-cleanup/cluster-cleanup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/ISTV-cluster-cleanup/cluster-cleanup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/ISTV-cluster-cleanup/cluster-cleanup
