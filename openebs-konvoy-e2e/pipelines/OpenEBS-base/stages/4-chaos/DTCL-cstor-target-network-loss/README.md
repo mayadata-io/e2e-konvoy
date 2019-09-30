@@ -23,3 +23,6 @@ This test induces network loss on cstor-target conatiner and check if it doesn't
 Application should be running successfully.
 
 #### Test Result
+| Job ID |   Test Description         | Execution Time |Test Result   |
+ |---------|---------------------------| --------------|--------|
+ |    <a href="https://gitlab.openebs.ci/openebs/e2e-konvoy/-/jobs/90322">90322</a>   |  Induce cstor target network loss and check if it gets recovered successfully           |  Mon Sep 30 22:17:32 IST 2019     |<a href="https://e2e-logs.openebs100.io/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-7d,mode:quick,to:now))&_a=(columns:!(_source),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:cluster-logs,key:commit_id,negate:!f,params:(query:'038d3ae24ce0c7364f36918c475e07a98fd15ed0',type:phrase),type:phrase,value:'038d3ae24ce0c7364f36918c475e07a98fd15ed0'),query:(match:(commit_id:(query:'038d3ae24ce0c7364f36918c475e07a98fd15ed0',type:phrase)))),('$state':(store:appState),meta:(alias:!n,disabled:!f,index:cluster-logs,key:pipeline_id,negate:!f,params:(query:'3378',type:phrase),type:phrase,value:'3378'),query:(match:(pipeline_id:(query:'3378',type:phrase))))),index:cluster-logs,interval:auto,query:(language:lucene,query:''),sort:!('@timestamp',desc))">Fail</a>  |
