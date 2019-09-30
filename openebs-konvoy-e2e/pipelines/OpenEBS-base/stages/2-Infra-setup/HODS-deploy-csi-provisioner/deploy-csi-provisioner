@@ -1,0 +1,72 @@
+#!/bin/bash
+set -x
+pod() {
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+}
+
+node() {
+
+time="date"
+current_time=$(eval $time)
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+commit_id=$(echo $3)
+case_id=HODS
+source ~/.profile
+gittoken=$(echo "$github_token")
+
+present_dir=$(pwd)
+echo $present_dir
+
+#pooling over previous job to complete
+echo "***********Applying openebs-storage-clas********"
+bash openebs-konvoy-e2e/utils/pooling jobname:s2-j7-nfsv4-provision
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=csi-provision metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test.."
+sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
+-e 's/value: openebs-csi-cstor-sparse/value: openebs-cstor-disk/g' \
+-e 's/cstor-sparse-pool/cstor-block-disk-pool-stripe/g' providers/csi-provisioner/run_litmus_test.yml
+run_test=providers/csi-provisioner/run_litmus_test.yml
+
+cat $run_test
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:csi-provisioner' job=$run_test
+
+echo "Dumping state of cluster post job run"; echo ""
+bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
+
+cd ..
+bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j8-csi-provisioner $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+#################
+## GET RESULT  ##
+#################
+rc_val=$(echo $?)
+
+## Check the test status & result from the litmus result custom resource
+source ~/.profile
+gittoken=$(echo "$github_token")
+testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id HODS 2-Infra-setup "Deploy-csi-provisioner" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+
+current_time=$(eval $time)
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass 
+
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id HODS 2-Infra-setup "Deploy-csi-provisioner" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+
+if [ "$rc_val" != "0" ]; then
+exit 1;
+fi
+
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4
+else
+  pod
+fi
