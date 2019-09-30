@@ -3,9 +3,8 @@
 stages:
   - CLUSTER-SETUP
   - PROVIDER-INFRA-SETUP
-  # - STATEFUL-APP-DEPLOY
   - APP-FUNC-TEST
-  # - APP-CHAOS-TEST
+  - APP-CHAOS-TEST
   # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
@@ -241,69 +240,135 @@ HODS-CSI-PROVISIONER:
 
 # ## Define job template for chaos jobs 
 
-# .chaos_test_template:
-#   image: openebs/openshift-ci:latest
-#   stage: APP-CHAOS-TEST
-#   tags: 
-#     - k8s-konvoy
-#   when: always
-#   dependencies:
-#     - SUTP-konvoy-cluster 
+.chaos_test_template:
+  image: openebs/openshift-ci:latest
+  stage: APP-CHAOS-TEST
+  tags: 
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - SUTP-konvoy-cluster 
   
-# repl-kill-{percona-jiva}:
-#   extends: .chaos_test_template #dependencies: percona-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/volume-replica-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/volume-replica-failure
+MCDE-App-Kill:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MCDE-app-kill/app-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MCDE-app-kill/app-kill
 
-# ## Single replica failure
-# single-repl-kill-{percona-jiva}:
-#   extends: .chaos_test_template #dependencies: percona-jiva-single-replica
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/single-replica-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/jiva/single-replica-failure
+UJOI-cStor-Pool-Kill:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/UJOI-cstor-pool-kill/cstor-pool-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/UJOI-cstor-pool-kill/cstor-pool-kill
 
-# ctrl-kill-{mongo-jiva}:
-#   extends: .chaos_test_template #dependencies: mongo-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/volume-controller-failure
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/jiva/volume-controller-failure
+DBVQ-cStor-Pool-Delete:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DBVQ-cstor-pool-delete/cstor-pool-delete
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DBVQ-cstor-pool-delete/cstor-pool-delete
 
-#      #repl-disconnect-{jenkins-jiva}:
-#      #  extends: .chaos_test_template #dependencies: jenkins-jiva
-#      #  script:
-#      #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
-#      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/jiva/volume-replica-network-delay
+ACME-cStor-target-kill:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-target-kill/target-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-target-kill/target-kill
 
-#      #ctrl-disconnect-{postgres-jiva}:
-#      #  extends: .chaos_test_template #dependencies: postgres-jiva
-#      #  script:
-#      #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
-#      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/postgres/chaos/jiva/volume-controller-network-delay
+OHQP-Target-Network-Delay:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/GFL0-target-network-delay/target-network-delay
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/GFL0-target-network-delay/target-network-delay
 
-#      #app-kill-{jenkins-cstor}:
-#      #  extends: .chaos_test_template #dependencies: jenkins-cstor
-#      #  script:
-#      #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
-#      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/chaos/cstor/application-pod-failure
+DTCL-Target-Network-Loss:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DTCL-target-network-loss/target-network-loss
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DTCL-target-network-loss/target-network-loss
 
-#      #app-kill-{cassandra-jiva}:
-#      #  extends: .chaos_test_template #dependencies: mongo-jiva
-#      #  script:
-#      #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
-#      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/chaos/jiva/application-pod-failure
+HVFC-Snap-Rebuild-single-replica:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/HVFC-snap-rebuild-single-rep/snap-rebuild-single-rep
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/HVFC-snap-rebuild-single-rep/snap-rebuild-single-rep
 
-#      #tgt-kill-{percona-cstor}:
-#      #  extends: .chaos_test_template #dependencies: percona-cstor
-#      #  script:
-#      #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
-#      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/percona/chaos/cstor/volume-target-failure
+# QKFK-Snap-Rebuild-multiple-replica:
+#   extends: .chaos_test_template
+#   script: 
+#     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QKFK-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
+#     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QKFK-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
 
-#      #tgt-disconnect-{mongo-cstor}:
-#      #  extends: .chaos_test_template #dependencies: mongo-cstor
-#      #  script:
-#      #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
-#      #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/mongo/chaos/cstor/volume-target-network-delay
+      #WQFI-Clone-Rebuild-before-snapshot-rebuild:
+      #  extends: .chaos_test_template
+      #  script: 
+      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/WQFI-clone-pre-snap-rebuild/clone-pre-rebuild
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/WQFI-clone-pre-snap-rebuild/clone-pre-rebuild
+
+      #VGEA-Clone-Rebuild-during-snapshot-rebuild:
+      #  extends: .chaos_test_template
+      #  script: 
+      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/VGEA-clone-during-snap-rebuild/clone-during-rebuild
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/VGEA-clone-during-snap-rebuild/clone-during-rebuild
+
+# QURH-Clone-Rebuild-post-snapshot-rebuild:
+#   extends: .chaos_test_template
+#   script: 
+#     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QURH-clone-post-snap-rebuild/clone-post-rebuild
+#     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QURH-clone-post-snap-rebuild/clone-post-rebuild
+
+      #I9VM-Pool-n/w-Loss:
+      #  extends: .chaos_test_template
+      #  script: 
+      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/I9VM-pool-network-loss/pool-network-loss
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/I9VM-pool-network-loss/pool-network-loss
+
+      #8PI6-Pool-n/w-Delay:
+      #  extends: .chaos_test_template
+      #  script: 
+      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/8PI6-pool-network-delay/pool-network-delay
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/8PI6-pool-network-delay/pool-network-delay
+
+# 2HXA-volume-mgmt-kill:
+#   extends: .chaos_test_template
+#   script: 
+#     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/2HXA-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill
+#     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/2HXA-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill
+
+
+NSCD-Jiva-App-Kill:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/NSCD-Jiva-app-kill/jiva-app-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/NSCD-Jiva-app-kill/jiva-app-kill
+
+MVET-Jiva-single-replica-failure:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MVET-jiva-single-replica-failure/single-replica-failure
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MVET-jiva-single-replica-failure/single-replica-failure
+
+FQFO-Jiva-controller-kill:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-kill/controller-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-kill/controller-kill
+
+TZZP-Jiva-controller-network-delay:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/TZZP-Jiva-controller-network-delay/controller-network-delay
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/TZZP-Jiva-controller-network-delay/controller-network-delay
+
+REUZ-Jiva-replica-failure:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/REUZ-Jiva-replica-failure/jiva-replica-failure
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/REUZ-Jiva-replica-failure/jiva-replica-failure
+
+ZGNK-Jiva-replica-node-affinity:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ZGNK-jiva-replica-node-affinity/replica-node-affinity
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ZGNK-jiva-replica-node-affinity/replica-node-affinity
 
 ISTV-konvoy-cleanup:
   image: openebs/openshift-ci:latest
