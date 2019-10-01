@@ -293,6 +293,12 @@ HVFC-Snap-Rebuild-single-replica:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/HVFC-snap-rebuild-single-rep/snap-rebuild-single-rep
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/HVFC-snap-rebuild-single-rep/snap-rebuild-single-rep
 
+LICZ-clone-post-snap-rebuild:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/LICZ-clone-post-snap-rebuild/clone-post-snap-rebuild
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/LICZ-clone-post-snap-rebuild/clone-post-snap-rebuild
+    
 # QKFK-Snap-Rebuild-multiple-replica:
 #   extends: .chaos_test_template
 #   script: 
