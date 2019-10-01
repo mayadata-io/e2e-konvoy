@@ -74,6 +74,40 @@ AMHE-RAIDZ1-POOL:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
 
+# KSDJ-RAIDZ2-POOL:
+#   image: openebs/openshift-ci:latest
+#   stage: PROVIDER-INFRA-SETUP
+#   tags: 
+#     - k8s-konvoy
+#   dependencies:
+#     - SUTP-konvoy-cluster
+#   script:
+#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
+#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
+
+OQEW-NFSv4-PROVISION:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - SUTP-konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
+ 
+HODS-CSI-PROVISIONER:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - SUTP-konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
+
+# ## Define job template for func jobs    
 .func_test_template:
   image: openebs/openshift-ci:latest
   stage: APP-FUNC-TEST
@@ -179,6 +213,12 @@ XZDZ-STS-Volume-Distribution:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XZDZ-STS-Volume-Distribution/STS-Volume-Distribution
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XZDZ-STS-Volume-Distribution/STS-Volume-Distribution
 
+SZRL-jiva-snapshot:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
+    
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
 #   script:
@@ -205,38 +245,6 @@ XZDZ-STS-Volume-Distribution:
 
 # volume-memory-consumption-{memcheck-jiva}:  
 #   extends: .func_test_template 
-# KSDJ-RAIDZ2-POOL:
-#   image: openebs/openshift-ci:latest
-#   stage: PROVIDER-INFRA-SETUP
-#   tags: 
-#     - k8s-konvoy
-#   dependencies:
-#     - SUTP-konvoy-cluster
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
-
-OQEW-NFSv4-PROVISION:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
- 
-HODS-CSI-PROVISIONER:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
 
 # ## Define job template for chaos jobs 
 
@@ -379,5 +387,5 @@ ISTV-konvoy-cleanup:
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/ISTV-cluster-cleanup/cluster-cleanup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/ISTV-cluster-cleanup/cluster-cleanup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/ISTV-cluster-cleanup/cluster-cleanup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/ISTV-cluster-cleanup/cluster-cleanup
