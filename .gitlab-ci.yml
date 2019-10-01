@@ -278,14 +278,8 @@ DBVQ-cStor-Pool-Delete:
 ACME-cStor-target-kill:
   extends: .chaos_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-target-kill/target-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-target-kill/target-kill
-
-OHQP-Target-Network-Delay:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/GFL0-target-network-delay/target-network-delay
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/GFL0-target-network-delay/target-network-delay
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
 
 DTCL-Target-Network-Loss:
   extends: .chaos_test_template
