@@ -20,7 +20,7 @@ echo $present_dir
 
 #pooling over previous job to complete
 echo "***********Applying openebs-storage-clas********"
-bash openebs-konvoy-e2e/utils/pooling jobname:s2-j7-nfsv4-provision
+bash openebs-konvoy-e2e/utils/pooling jobname:s2-j7-policies
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=csi-provision metadata="")
@@ -29,8 +29,8 @@ echo $test_name
 cd litmus
 echo "Running the litmus test.."
 sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
--e 's/value: openebs-csi-cstor-sparse/value: openebs-cstor-disk/g' \
--e 's/cstor-sparse-pool/cstor-block-disk-pool-stripe/g' providers/csi-provisioner/run_litmus_test.yml
+-e 's/value: openebs-csi-cstor-sparse/value: openebs-cstor-csi/g' \
+-e 's/cstor-sparse-pool/cstor-cspc-disk-pool/g' providers/csi-provisioner/run_litmus_test.yml
 run_test=providers/csi-provisioner/run_litmus_test.yml
 
 cat $run_test

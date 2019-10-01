@@ -20,8 +20,8 @@ echo $present_dir
 
 #pooling over previous job to complete
 echo "***********Applying openebs-storage-clas********"
-bash openebs-konvoy-e2e/utils/pooling jobname:s2-j4-cstor-raidz1-pool
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j6-policies jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/pooling jobname:s2-j6-cstor-cspc-striped-pool
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j7-policies jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-storage-policies metadata="")
 echo $test_name
@@ -40,7 +40,7 @@ echo "Dumping state of cluster post job run"; echo ""
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
 
 cd ..
-bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j6-policies $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j7-policies $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 #################
 ## GET RESULT  ##
 #################
@@ -53,7 +53,7 @@ testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-column
 #python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PIGE 2-Infra-setup "Create K8s storage classes adhering the policies supported by OpenEBS" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 current_time=$(eval $time)
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j6-policies jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass 
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j7-policies jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass 
 
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PIGE 2-Infra-setup "Create K8s storage classes adhering the policies supported by OpenEBS" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
