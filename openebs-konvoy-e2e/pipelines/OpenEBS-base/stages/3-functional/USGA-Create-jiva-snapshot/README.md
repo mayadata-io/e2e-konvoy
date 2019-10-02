@@ -23,3 +23,6 @@ The goal of this test is to ensure that the snapshot can be created for Jiva Vol
 - The volume snapshot should be created successfully.
 
 #### Test Result
+| Job ID |   Test Description         | Execution Time |Test Result   |
+ |---------|---------------------------| --------------|--------|
+ |    <a href="https://gitlab.openebs.ci/openebs/e2e-konvoy/-/jobs/90588">90588</a>   |  Check if the clone can be created using jiva volume snapshot           |  Wed Oct  2 08:42:05 IST 2019     |<a href="https://e2e-logs.openebs100.io/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-7d,mode:quick,to:now))&_a=(columns:!(_source),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:cluster-logs,key:commit_id,negate:!f,params:(query:'4d5066dddd88c4b57dec1e9eed367c2385e91758',type:phrase),type:phrase,value:'4d5066dddd88c4b57dec1e9eed367c2385e91758'),query:(match:(commit_id:(query:'4d5066dddd88c4b57dec1e9eed367c2385e91758',type:phrase)))),('$state':(store:appState),meta:(alias:!n,disabled:!f,index:cluster-logs,key:pipeline_id,negate:!f,params:(query:'3386',type:phrase),type:phrase,value:'3386'),query:(match:(pipeline_id:(query:'3386',type:phrase))))),index:cluster-logs,interval:auto,query:(language:lucene,query:''),sort:!('@timestamp',desc))">Fail</a>  |
