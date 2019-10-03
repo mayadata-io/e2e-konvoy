@@ -128,6 +128,12 @@ HODS-CSI-PROVISIONER:
   dependencies:
     - SUTP-konvoy-cluster  
 
+VQDN-deploy-percona-csi:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-percona-csi/deploy-percona-csi
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-percona-csi/deploy-percona-csi
+
 AVNT-jiva-replica-scaleup:
   extends: .func_test_template
   script: 

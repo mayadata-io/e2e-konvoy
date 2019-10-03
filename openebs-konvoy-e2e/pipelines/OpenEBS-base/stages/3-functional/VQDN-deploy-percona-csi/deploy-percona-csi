@@ -1,0 +1,84 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-percona-csi/deploy-percona-csi node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+}
+
+node() {
+source ~/.profile
+gittoken=$(echo "$github_token")
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+commit_id=$(echo $3)
+case_id=VQDN
+
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:deploy-percona-csi jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:deploy-percona-csi jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+
+################
+# LitmusBook 1 #
+################
+
+
+echo "****Deploying Percona Application using CSI****"
+
+run_id="csi";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for Percona Deployment.."
+cp apps/percona/deployers/run_litmus_test.yml deploy_csi_percona.yml
+
+sed -i -e 's/value: app-percona-ns/value: percona-csi/g' \
+-e 's/app: percona-deployment/app: percona-deployment-csi/g' \
+-e 's/generateName: litmus-percona-/generateName: litmus-percona-csi-/g' \
+-e 's/value: openebs-standard/value: openebs-cstor-csi/g' deploy_csi_percona.yml
+
+cat deploy_csi_percona.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:percona-deployment-csi' job=deploy_csi_percona.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:deploy-percona-csi $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VQDN 3-functional "Provision application using CSI and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 2 #
+################
+
+echo "****Percona Loadgen****"
+
+run_id="csi";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-loadgen metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for Percona Loadgen..."
+cp apps/percona/workload/run_litmus_test.yml loadgen_csi_percona.yml
+
+sed -i -e 's/loadgen: percona-csi-loadjob/loadgen: percona-csi-loadjob/g' \
+-e 's/generateName: percona-csi-loadgen-/generateName: percona-csi-loadgen-/g' \
+-e 's/value: app-percona-ns/value: percona-csi/g' loadgen_csi_percona.yml
+
+cat loadgen_csi_percona.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='loadgen:percona-csi-loadjob' job=loadgen_csi_percona.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:deploy-percona-csi $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VQDN 3-functional "Loadgen on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
