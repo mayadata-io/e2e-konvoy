@@ -235,7 +235,37 @@ SZRL-jiva-snapshot:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
-    
+
+CYLK-Jiva-Data-Integrity:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CYLK-Jiva-Data-Integrity/data-integrity
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CYLK-Jiva-Data-Integrity/data-integrity
+  
+KUPE-Jiva-Memory-Consumption:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUPE-Jiva-Memory-Consumption/memory-consumption
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUPE-Jiva-Memory-Consumption/memory-consumption
+
+VSVT-cstor-memory-consumption:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-cstor-memory-consumption/memory-consumption
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-cstor-memory-consumption/memory-consumption
+
+ZBNN-App-Target-affinity:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
+
+ZYKP-cstor-Data-Integrity:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
+
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
 #   script:
@@ -315,7 +345,37 @@ LICZ-clone-post-snap-rebuild:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/LICZ-clone-post-snap-rebuild/clone-post-snap-rebuild
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/LICZ-clone-post-snap-rebuild/clone-post-snap-rebuild
-    
+
+CUVR-cstor-volume-istgt-kill:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/CUVR-cstor-volume-istgt-kill/cstor-volume-istgt-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/CUVR-cstor-volume-istgt-kill/cstor-volume-istgt-kill
+
+DENK-nfs-app-kill:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DENK-nfs-app-kill/nfs-app-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DENK-nfs-app-kill/nfs-app-kill
+
+ENEY-cstor-volume-mgmt-kill:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ENEY-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ENEY-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill
+
+OBDR-snap-rebuild-multiple-rep:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/OBDR-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/OBDR-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
+
+SHOZ-target-network-delay:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/SHOZ-target-network-delay/target-network-delay
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/SHOZ-target-network-delay/target-network-delay
+
 # QKFK-Snap-Rebuild-multiple-replica:
 #   extends: .chaos_test_template
 #   script: 
