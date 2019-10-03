@@ -42,6 +42,11 @@ sed -i -e 's/value: app-percona-ns/value: percona-csi/g' \
 -e 's/generateName: litmus-percona-/generateName: litmus-percona-csi-/g' \
 -e 's/value: openebs-standard/value: openebs-cstor-csi/g' deploy_csi_percona.yml
 
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' deploy_csi_percona.yml
+
 cat deploy_csi_percona.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:percona-deployment-csi' job=deploy_csi_percona.yml
@@ -70,6 +75,11 @@ cp apps/percona/workload/run_litmus_test.yml loadgen_csi_percona.yml
 sed -i -e 's/loadgen: percona-csi-loadjob/loadgen: percona-csi-loadjob/g' \
 -e 's/generateName: percona-csi-loadgen-/generateName: percona-csi-loadgen-/g' \
 -e 's/value: app-percona-ns/value: percona-csi/g' loadgen_csi_percona.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' loadgen_csi_percona.yml
 
 cat loadgen_csi_percona.yml
 
