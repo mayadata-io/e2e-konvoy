@@ -248,11 +248,11 @@ KUPE-Jiva-Memory-Consumption:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUPE-Jiva-Memory-Consumption/memory-consumption
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUPE-Jiva-Memory-Consumption/memory-consumption
 
-VSVT-memory-consumption:
+VSVT-cstor-memory-consumption:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-memory-consumption/memory-consumption
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-memory-consumption/memory-consumption
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-cstor-memory-consumption/memory-consumption
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-cstor-memory-consumption/memory-consumption
 
 ZBNN-App-Target-affinity:
   extends: .func_test_template
@@ -260,11 +260,11 @@ ZBNN-App-Target-affinity:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
 
-ZYKP-Data-Integrity:
+ZYKP-cstor-Data-Integrity:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-Data-Integrity/Data-Integrity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-Data-Integrity/Data-Integrity
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
 
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
