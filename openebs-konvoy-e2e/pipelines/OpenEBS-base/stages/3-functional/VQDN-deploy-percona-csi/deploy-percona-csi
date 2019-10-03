@@ -92,3 +92,11 @@ if [ "$?" != "0" ]; then
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VQDN 3-functional "Loadgen on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
+
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4
+else
+  pod
+fi
