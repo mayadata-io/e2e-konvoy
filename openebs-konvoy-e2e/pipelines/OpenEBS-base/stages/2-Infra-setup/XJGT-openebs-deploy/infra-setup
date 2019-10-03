@@ -43,15 +43,15 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j1-openebs-deploy jobphase:Runni
 # bash openebs-konvoy-e2e/utils/e2e-cr jobname:bdd-cstor-volume-clone-provisioning jobphase:Waiting
 # bash openebs-konvoy-e2e/utils/e2e-cr jobname:bdd-cstor-snapshot-provisioning jobphase:Waiting
 # bash openebs-konvoy-e2e/utils/e2e-cr jobname:bdd-cstor-volume-provisioning jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j6-policies jobphase:Waiting 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j2-cstor-striped-pool jobphase:Waiting 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j3-cstor-mirrored-pool jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j4-cstor-raidz1-pool jobphase:Waiting
-#bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j5-cstor-raidz2-pool jobphase:Waiting
-#bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-striped-pool jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j7-nfsv4-provision jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j5-cstor-raidz2-pool jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j6-cstor-cspc-striped-pool jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j7-policies jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Waiting
-#bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv3-provision jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv4-provision jobphase:Waiting
+#bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j10-nfsv3-provision jobphase:Waiting
 
 source ~/.profile
 

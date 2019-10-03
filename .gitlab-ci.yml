@@ -74,16 +74,16 @@ AMHE-RAIDZ1-POOL:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
 
-# KSDJ-RAIDZ2-POOL:
-#   image: openebs/openshift-ci:latest
-#   stage: PROVIDER-INFRA-SETUP
-#   tags: 
-#     - k8s-konvoy
-#   dependencies:
-#     - SUTP-konvoy-cluster
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
+KSDJ-RAIDZ2-POOL:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - SUTP-konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
 
 OQEW-NFSv4-PROVISION:
   image: openebs/openshift-ci:latest
@@ -95,6 +95,17 @@ OQEW-NFSv4-PROVISION:
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
+
+BRUC-CSPC-STRIPE-POOL:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - SUTP-konvoy-cluster
+  script:
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/BRUC-create-cspc-stripe-pool/create-cspc-stripe-pool
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/BRUC-create-cspc-stripe-pool/create-cspc-stripe-pool
  
 HODS-CSI-PROVISIONER:
   image: openebs/openshift-ci:latest
