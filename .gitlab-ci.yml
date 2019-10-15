@@ -128,11 +128,11 @@ HODS-CSI-PROVISIONER:
   dependencies:
     - SUTP-konvoy-cluster  
 
-VQDN-deploy-percona-csi:
+VQDN-deploy-busybox-csi:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-percona-csi/deploy-percona-csi
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-percona-csi/deploy-percona-csi
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
 
 AVNT-jiva-replica-scaleup:
   extends: .func_test_template
@@ -327,6 +327,12 @@ ACME-cStor-target-kill:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
+
+ABZF-cStor-volume-resize:
+  extends: .chaos_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ABZF-csi-volume-resize/csi-volume-resize
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ABZF-csi-volume-resize/csi-volume-resize
 
 DTCL-Target-Network-Loss:
   extends: .chaos_test_template
