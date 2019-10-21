@@ -2,13 +2,14 @@
 set -x
 
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
+releaseTag=$(echo $4)
 case_id=THOJ
 
 source ~/.profile
@@ -21,7 +22,7 @@ present_dir=$(pwd)
 echo $present_dir
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cvr-migration jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:cvr-migration jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:cvr-migration jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ###########Deploying Busybox Application
 
@@ -136,6 +137,7 @@ cp experiments/functional/cstor-volume-migration/run_litmus_test.yml busybox_vol
  # Update the environmental variables in litmus job spec.
 
 sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: cvr-migration/}' \
+-e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' \
 -e '/name: PVC_NAME/{n;s/.*/            value: busybox-cvr-migration/}' busybox_volume_migration.yml
 
 cat  busybox_volume_migration.yml
@@ -238,7 +240,7 @@ exit 1;
 fi
 
 current_time=$(eval $time)
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:cvr-migration jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:cvr-migration jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id THOJ 3-functional "Verify the CVR migrated successfully from one pool to another pool and check the volume status is healthy" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$return_count" != "0" ]; then
@@ -248,7 +250,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4
+  node $2 $3 $4 $5
 else
   pod
 fi

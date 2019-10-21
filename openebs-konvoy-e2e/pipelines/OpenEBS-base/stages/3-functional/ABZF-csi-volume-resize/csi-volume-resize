@@ -2,7 +2,7 @@
 set -x
 
 pod() {	
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ABZF-csi-volume-resize/csi-volume-resize node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ABZF-csi-volume-resize/csi-volume-resize node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -12,6 +12,7 @@ gittoken=$(echo "$github_token")
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
+releaseTag=$(echo $4)
 case_id=ABZF
 
 time="date"
@@ -22,7 +23,7 @@ echo $present_dir
 
 bash openebs-konvoy-e2e/utils/pooling jobname:deploy-busybox-csi
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Waiting init_time:"$current_time"
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 run_id="csi";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-volume-resize metadata=${run_id})
 echo $test_name
@@ -55,7 +56,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4
+  node $2 $3 $4 $5
 else
   pod
 fi
