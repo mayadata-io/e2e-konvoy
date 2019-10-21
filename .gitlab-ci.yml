@@ -266,6 +266,12 @@ ZYKP-cstor-Data-Integrity:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
 
+THOJ-CVR-migration:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
+
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
 #   script:
