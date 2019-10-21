@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$RELEASE_BRANCH'"' '"'$NDM_TAG'"' '"'$E_USER'"' '"'$E_PASSWORD'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$RELEASE_BRANCH'"' '"'$NDM_TAG'"' '"'$E_USER'"' '"'$E_PASSWORD'"'
 }
 
 node() {
