@@ -1,0 +1,98 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-deployment-cstor/percona-deployment-cstor node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+}
+
+node(){
+source ~/.profile
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+releaseTag=$(echo $4)
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-deployment-cstor jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-deployment-cstor jobphase:Running init_time:"$current_time" job_id:"$job_id" pipeline_id:"$pipeline_id" openebs_version:"$releaseTag"
+
+##Deploying percona Application
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for percona Deployment..."
+cp apps/percona/deployment/run_litmus_test.yml deploy_percona_cstor.yml
+
+sed -i -e 's/value: openebs-standard/value: openebs-cstor-disk/g' \
+-e 's/generateName: litmus-percona-/generateName: litmus-percona-cstor-/g' \
+-e 's/app: percona-deployment/app: percona-deployment-cstor/g' deploy_percona_cstor.yml
+
+cat deploy_percona_cstor.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app: percona-deployment-cstor' job=deploy_percona_cstor.yml
+
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:percona-deployment-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+##Loadgen on percona Application
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-loadgen metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for Loadgen for percona Application..."
+cp apps/percona/workload/run_litmus_test.yml loadgen_percona_cstor.yml
+
+sed -i -e 's/generateName: percona-loadgen-/generateName: percona-cstor-loadgen-/g' \
+-e 's/loadgen: percona-loadjob/loadgen: percona-cstor-loadjob/g' loadgen_percona_cstor.yml
+
+cat loadgen_percona_cstor.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='loadgen:percona-cstor-loadjob' job=loadgen_percona_cstor.yml
+
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:percona-deployment-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+##DATA-PERSISTENCE
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test to check data-persistence for percona Application..."
+cp experiments/functional/data-persistence/run_litmus_test.yml run_percona_cstor_data_persistence.yml
+
+sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-cstor/g' \
+-e 's/name: data-persistence-litmus/name: data-persistence-percona-cstor/g' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: app-percona-ns/}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
+-e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_percona_cstor_data_persistence.yml
+
+## Insert the set of variables for percona data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    dbuser: root \
+    dbpassword: k8sDem0 \
+    dbname: tdb
+' run_percona_cstor_data_persistence.yml
+
+cat run_percona_cstor_data_persistence.yml
+
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor' job=run_percona_cstor_data_persistence.yml
+
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:percona-deployment-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+
+}

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -10,10 +10,8 @@ time="date"
 current_time=$(eval $time)
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
-commit_id=$(echo $3)
-case_id=HODS
+releaseTag=$(echo $4)
 source ~/.profile
-gittoken=$(echo "$github_token")
 
 present_dir=$(pwd)
 echo $present_dir
@@ -21,7 +19,7 @@ echo $present_dir
 #pooling over previous job to complete
 echo "***********Applying openebs-storage-clas********"
 bash openebs-konvoy-e2e/utils/pooling jobname:s2-j7-policies
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag"
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=csi-provision metadata="")
 echo $test_name
@@ -41,7 +39,7 @@ echo "Dumping state of cluster post job run"; echo ""
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
 
 cd ..
-bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j8-csi-provisioner $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j8-csi-provisioner $test_name jobid:"$job_id" pipelineid:"$pipeline_id"
 
 #################
 ## GET RESULT  ##
@@ -50,14 +48,10 @@ rc_val=$(echo $?)
 
 ## Check the test status & result from the litmus result custom resource
 source ~/.profile
-gittoken=$(echo "$github_token")
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
-#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id HODS 2-Infra-setup "Deploy-csi-provisioner" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 current_time=$(eval $time)
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass 
-
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id HODS 2-Infra-setup "Deploy-csi-provisioner" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j8-csi-provisioner jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:$testResult 
 
 if [ "$rc_val" != "0" ]; then
 exit 1;
@@ -66,7 +60,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4
+  node $2 $3 $4 $5
 else
   pod
 fi

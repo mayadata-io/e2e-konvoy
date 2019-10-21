@@ -6,7 +6,7 @@ metadata:
   name: <test-name>
 spec:
   testResult: <test-result>
-  testcaseId: <case-id>
+  #testcaseId: <case-id>
   testStatus:
     phase: <test-phase>
     start_time: <test-init>

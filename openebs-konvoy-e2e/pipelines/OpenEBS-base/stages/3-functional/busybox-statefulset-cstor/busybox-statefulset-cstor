@@ -1,0 +1,98 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-cstor/busybox-statefulset-cstor node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+}
+
+node(){
+source ~/.profile
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+releaseTag=$(echo $4)
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-statefulset-cstor jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-statefulset-cstor jobphase:Running init_time:"$current_time" job_id:"$job_id" pipeline_id:"$pipeline_id" openebs_version:"$releaseTag"
+
+##Deploying BusyBox Application
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-app-busybox-ns metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for BusyBox statefulset..."
+cp apps/busybox/deployment/run_litmus_test.yml statefulset_busybox_cstor.yml
+
+sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
+-e 's/generateName: litmus-busybox-deploy-/generateName: busybox-statefulset-cstor-/g' \
+-e 's/app: busybox-litmus/app: busybox-litmus-cstor/g' statefulset_busybox_cstor.yml
+
+cat deploy_busybox_cstor.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-cstor' job=statefulset_busybox_cstor.yml
+
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-statefulset-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+##Deploying Liveness on BusyBox statefulset
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for Liveness for BusyBox statefulset..."
+cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_cstor.yml
+
+sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-liveness-cstor-/g' \
+-e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-cstor/g' liveness_busybox_cstor.yml
+
+cat liveness_busybox_cstor.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-liveness-cstor' job=liveness_busybox_cstor.yml
+
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+##DATA-PERSISTENCE
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test to check data-persistence for BusyBox Application..."
+cp experiments/functional/data-persistence/run_litmus_test.yml run_busybox_cstor_data_persistence.yml
+
+sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-cstor-/g' \
+-e 's/name: data-persistence-litmus/name: data-persistence-busybox-cstor/g' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: app-busybox-ns/}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
+-e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_busybox_cstor_data_persistence.yml
+
+## Insert the set of variables for busybox data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k \
+    blockcount: 1024 \
+    testfile: busybox_deployment_cstor
+' run_busybox_cstor_data_persistence.yml
+
+cat run_busybox_cstor_data_persistence.yml
+
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor' job=run_busybox_cstor_data_persistence.yml
+
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+
+}

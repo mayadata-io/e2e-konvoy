@@ -34,7 +34,7 @@ kubectl apply -f openebs-konvoy-e2e/utils/e2e-crd.yml
 
 echo "*****Deploying openebs*******"
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j1-openebs-deploy jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j1-openebs-deploy jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j1-openebs-deploy jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag"
 # bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-integration-test jobphase:Waiting
 # bash openebs-konvoy-e2e/utils/e2e-cr jobname:bdd-jiva-volume jobphase:Waiting
 # bash openebs-konvoy-e2e/utils/e2e-cr jobname:bdd-cstor-negative-invalid-storage-pool-claim jobphase:Waiting
@@ -135,23 +135,18 @@ bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='provider:openebs-runne
 echo "Dumping state of cluster post job run"; echo ""
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
 cd ..
-bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j1-openebs-deploy $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j1-openebs-deploy $test_name jobid:"$job_id" pipelineid:"$pipeline_id"
 #################
 ## GET RESULT  ##
 #################
 rc_val=$(echo $?)
-test_case_id="XJGT-$pipeline_id"
 
 ## Check the test status & result from the litmus result custom resource
 source ~/.profile
-gittoken=$(echo "$github_token")
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
-#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XJGT 2-Infra-setup "Deploy OpenEBS in openebs-konvoy-e2e-3.10 Cluster" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 current_time=$(eval $time)
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j1-openebs-deploy jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
-
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XJGT 2-Infra-setup "Deploy OpenEBS in openebs-konvoy-e2e-3.10 Cluster" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j1-openebs-deploy jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:$testResult
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

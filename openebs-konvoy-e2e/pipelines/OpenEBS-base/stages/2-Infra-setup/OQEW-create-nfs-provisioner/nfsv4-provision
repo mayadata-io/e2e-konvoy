@@ -2,7 +2,7 @@
 set -x
 pod() {
 
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 
 }
 
@@ -10,10 +10,8 @@ node() {
 
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
-case_id=OQEW
-commit_id=$(echo $3)
+releaseTag=$(echo $4)
 source ~/.profile
-gittoken=$(echo "$github_token")
 
 time="date"
 current_time=$(eval $time)
@@ -21,7 +19,7 @@ current_time=$(eval $time)
 #pooling over previous job to complete
 echo "*******Creating cstor-pool**************"
 bash openebs-konvoy-e2e/utils/pooling jobname:s2-j8-csi-provisioner
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv4-provision jobphase:Running init_time:"$current_time"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv4-provision jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag"
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=nfs-provision metadata="")
 echo $test_name
@@ -44,7 +42,7 @@ cat nfsv4-provision.yml
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:nfs-litmus' job=nfsv4-provision.yml
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
 cd ..
-bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j9-nfsv4-provision $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j9-nfsv4-provision $test_name jobid:"$job_id" pipelineid:"$pipeline_id"
 
 #################
 ## GET RESULT  ##
@@ -53,20 +51,18 @@ rc_val=$(echo $?)
 
 ## Check the test status & result from the litmus result custom resource
 source ~/.profile
-gittoken=$(echo "$github_token")
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 current_time=$(eval $time)
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv4-provision jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv4-provision jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id OQEW 2-Infra-setup "Create NFS provisioner vers 4.1 and corresponding storage class" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 if [ "$rc_val" != "0" ]; then
 exit 1;
 fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4
+  node $2 $3 $4 $5
 else
   pod
 fi
