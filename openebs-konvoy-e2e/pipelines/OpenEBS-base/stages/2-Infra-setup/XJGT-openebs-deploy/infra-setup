@@ -91,7 +91,7 @@ export OPENEBS_PROVISIONER_IMAGE=$releaseTag
 export SNAPSHOT_PROVISIONER_IMAGE=$releaseTag
 
 export CSPC_OPERATOR_IMAGE=$releaseTag
-######################################################
+
 export NODE_DISK_MANAGER_IMAGE=$ndmTag
 
 cd ../..
