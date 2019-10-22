@@ -2,14 +2,14 @@
 set -x
 
 pod(){
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-cstor-snapshot/busybox-cstor-snapshot node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-cstor-snapshot/busybox-cstor-snapshot node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"'
 }
 
 node(){
 source ~/.profile
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
-releaseTag=$(echo $4)
+releaseTag=$(echo $3)
 time="date"
 current_time=$(eval $time)
 
@@ -117,3 +117,9 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-snapshot-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
 }
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4
+else
+  pod
+fi

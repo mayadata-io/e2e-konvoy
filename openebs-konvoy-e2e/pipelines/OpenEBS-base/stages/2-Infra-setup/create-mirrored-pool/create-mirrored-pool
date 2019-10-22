@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-mirrored-pool/create-mirrored-pool node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-mirrored-pool/create-mirrored-pool node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"'
 
 }
 
@@ -9,7 +9,7 @@ node() {
 
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
-releaseTag=$(echo $4)
+releaseTag=$(echo $3)
 
 source ~/.profile
 
@@ -83,7 +83,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4 $5
+  node $2 $3 $4
 else
   pod
 fi
