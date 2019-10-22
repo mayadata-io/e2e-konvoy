@@ -62,23 +62,23 @@ cd e2e-infrastructure/env
 ######################################################
 
 ##exporting jiva-controller-image as env##
-export OPENEBS_IO_JIVA_CONTROLLER_IMAGE=openebs/jiva:$releaseTag
-##exporting jiva-replica-image as env#
-export OPENEBS_IO_JIVA_REPLICA_IMAGE=openebs/jiva:$releaseTag
+export OPENEBS_IO_JIVA_CONTROLLER_IMAGE=$(eval python env_exporter.py -o jcontroller -fp ../baseline/baseline)
+##exporting jiva-replica-image as env##
+export OPENEBS_IO_JIVA_REPLICA_IMAGE=$(eval python env_exporter.py -o jreplica -fp ../baseline/baseline)
 ##exporting m-apiserver as env##
-export MAYA_APISERVER_IMAGE=openebs/m-apiserver:$releaseTag
+export MAYA_APISERVER_IMAGE=$(eval python env_exporter.py -o mapi -fp ../baseline/baseline)
 ##exporting maya-volume-exporter as env##
-export OPENEBS_IO_VOLUME_MONITOR_IMAGE=openebs/m-exporter:$releaseTag
+export OPENEBS_IO_VOLUME_MONITOR_IMAGE=$(eval python env_exporter.py -o iovolume -fp ../baseline/baseline)
 ##exporting istgt-image as env##
-export OPENEBS_IO_CSTOR_VOLUME_MGMT_IMAGE=openebs/cstor-volume-mgmt:$releaseTag
+export OPENEBS_IO_CSTOR_VOLUME_MGMT_IMAGE=$(eval python env_exporter.py -o cvolmgmt -fp ../baseline/baseline)
 ##exporting zfs-image as env##
-export OPENEBS_IO_CSTOR_POOL_MGMT_IMAGE=openebs/cstor-pool-mgmt:$releaseTag
-
-export OPENEBS_IO_CSTOR_POOL_IMAGE=openebs/cstor-pool:$releaseTag
+export OPENEBS_IO_CSTOR_POOL_MGMT_IMAGE=$(eval python env_exporter.py -o cpoolmgmt -fp ../baseline/baseline)
 ##
-export OPENEBS_IO_CSTOR_TARGET_IMAGE=openebs/cstor-istgt:$releaseTag
+export OPENEBS_IO_CSTOR_POOL_IMAGE=$(eval python env_exporter.py -o cstorpool -fp ../baseline/baseline)
+##
+export OPENEBS_IO_CSTOR_TARGET_IMAGE=$(eval python env_exporter.py -o target -fp ../baseline/baseline)
 
-export OPENEBS_IO_CSTOR_POOL_EXPORTER_IMAGE=openebs/m-exporter:$releaseTag
+export OPENEBS_IO_CSTOR_POOL_EXPORTER_IMAGE=$(eval python env_exporter.py -o iovolume -fp ../baseline/baseline)
 
 export OPENEBS_LOCALPV_PROVISIONER_IMAGE=$releaseTag
 
@@ -91,7 +91,7 @@ export OPENEBS_PROVISIONER_IMAGE=$releaseTag
 export SNAPSHOT_PROVISIONER_IMAGE=$releaseTag
 
 export CSPC_OPERATOR_IMAGE=$releaseTag
-######################################################
+
 export NODE_DISK_MANAGER_IMAGE=$ndmTag
 
 cd ../..
