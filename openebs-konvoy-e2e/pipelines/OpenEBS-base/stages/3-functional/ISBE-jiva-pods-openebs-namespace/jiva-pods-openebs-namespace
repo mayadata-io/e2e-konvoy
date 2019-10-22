@@ -2,13 +2,14 @@
 set -x
 
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ISBE-jiva-pods-openebs-namespace/jiva-pods-openebs-namespace node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ISBE-jiva-pods-openebs-namespace/jiva-pods-openebs-namespace node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
 job_id=$1 #Gitlab job id Obtained from the gitlab env ($CI_JOB_ID).
 pipeline_id=$2 # Gitlab pipeline id Obtained from gitlab env ($CI_PIPELINE_ID).
 commit_id=$3 #Gitlab commit id Obtained fron gilab env ($CI_COMMIT_SHA).
+releaseTag=$4
 case_id=ISBE  #test case ID.
 gitlab_stage=3-functional # Gitlab stage where this test case is running.
 
@@ -26,7 +27,7 @@ echo $present_dir
 #Creating e2e custom resource result for the test.
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-openebs-ns jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-openebs-ns jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-openebs-ns jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 # Runnig LitmusBook to  deploy busybox and check the JIVA controller and replica pods scheduled on OpenEBS namespace.
 
@@ -118,7 +119,7 @@ fi
 
 current_time=$(eval $time)
 # Update the e2e cr once the job is completed
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-openebs-ns jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:$testResult
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-openebs-ns jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:$testResult
 
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 3-functional "Check if the application is successfully deployed and JIVA Controller, Replica pods are scheduled on OpenEBS namespace" $testResult $pipeline_id "$current_time" $commit_id $gitToken
 
@@ -129,7 +130,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4
+  node $2 $3 $4 $5
 else
   pod
 fi

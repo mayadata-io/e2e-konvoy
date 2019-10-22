@@ -2,13 +2,14 @@
 set -x
 
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ENEY-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ENEY-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
+releaseTag=$(echo $4)
 source ~/.profile
 gittoken=$(echo "$github_token")
 case_id=ENEY
@@ -20,7 +21,7 @@ present_dir=$(pwd)
 echo $present_dir
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:target-mgmt-kill jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:target-mgmt-kill jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:target-mgmt-kill jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 
 ################
@@ -130,22 +131,33 @@ run_id="mgmt";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testc
 echo $test_name
 
 cd litmus
-cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_targetmgmt_kill_test.yml
+cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_target_mgmt_kill_test.yml
 
 sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-mgmt-targetkill/g' \
+-e 's/name: target-failure/name: target-mgmt-kill/g' \
 -e 's/name: openebs-target-failure/name: openebs-target-mgmt-failure/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=target-mgmt-kill'\''/g' \
--e 's/value: app-percona-ns/value: mgmt-kill/g' run_targetmgmt_kill_test.yml
+-e 's/value: app-percona-ns/value: mgmt-kill/g' run_target_mgmt_kill_test.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
-' run_targetmgmt_kill_test.yml
+' run_target_mgmt_kill_test.yml
+
+## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_target_mgmt_kill_test.yml
+
+## Insert the set of variables for busybox data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k\
+    blockcount: 1024\
+    testfile: targetmgmtkilltest
+' run_target_mgmt_kill_test.yml
 
 # Running the litmus test for Busybox Deployment Scaleup
-cat run_targetmgmt_kill_test.yml
+cat run_target_mgmt_kill_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-target-mgmt-failure' job=run_targetmgmt_kill_test.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-target-mgmt-failure' job=run_target_mgmt_kill_test.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:target-mgmt-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -264,7 +276,7 @@ exit 1;
 fi
 
 current_time=$(eval $time)
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:target-mgmt-kill jobphase:Completed end_time:"$current_time" test_result:Pass jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:target-mgmt-kill jobphase:Completed end_time:"$current_time" test_result:Pass jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ENEY 4-chaos "Induce failure on cstor-pool-mgmt container in cstor-pool pod and check if it doesn't affect the application availability" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
@@ -273,7 +285,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4
+  node $2 $3 $4 $5
 else
   pod
 fi

@@ -6,13 +6,14 @@ echo $CI_JOB_ID
 ###clone e2e-openshift-repo
 echo "cloning e2e-openshift repo*************"
 #sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b konvoy-onprem https://github.com/mayadata-io/e2e-konvoy.git'
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/QUSX-create-cstor-snapshot/create-cstor-snapshot node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/QUSX-create-cstor-snapshot/create-cstor-snapshot node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
+releaseTag=$(echo $4)
 case_id=QUSX
 
 source ~/.profile
@@ -25,7 +26,7 @@ present_dir=$(pwd)
 echo $present_dir
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot-clone jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-different-capacity jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-parent-volume-delete jobphase:Waiting
@@ -187,7 +188,7 @@ fi
 # fi
 
 current_time=$(eval $time)
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:snapshot jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id QUSX 3-functional "Verify if the snapshot can be created for persistent volume" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
@@ -198,7 +199,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4
+  node $2 $3 $4 $5
 else
   pod
 fi
