@@ -188,11 +188,11 @@ QUSX-create-cstor-snapshot:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/QUSX-create-cstor-snapshot/create-cstor-snapshot
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/QUSX-create-cstor-snapshot/create-cstor-snapshot
 
-TIXL-fill-volume:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
+# TIXL-fill-volume:
+#   extends: .func_test_template
+#   script: 
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
 
 UAFE-rwx-app-deploy:
   extends: .func_test_template
@@ -272,6 +272,12 @@ THOJ-CVR-migration:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
 
+ABZF-cStor-volume-resize:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ABZF-csi-volume-resize/csi-volume-resize
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ABZF-csi-volume-resize/csi-volume-resize
+
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
 #   script:
@@ -333,12 +339,6 @@ ACME-cStor-target-kill:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
-
-ABZF-cStor-volume-resize:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ABZF-csi-volume-resize/csi-volume-resize
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ABZF-csi-volume-resize/csi-volume-resize
 
 DTCL-Target-Network-Loss:
   extends: .chaos_test_template
