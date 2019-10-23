@@ -120,6 +120,7 @@ sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-istgt-targetkill/g' \
 -e 's/cstor-volume-mgmt/cstor-istgt/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=istgt-kill'\''/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/value: app-percona-ns/value: istgt-kill/g' run_targetistgt_kill_test.yml
 
 sed -i '/command:/i \
