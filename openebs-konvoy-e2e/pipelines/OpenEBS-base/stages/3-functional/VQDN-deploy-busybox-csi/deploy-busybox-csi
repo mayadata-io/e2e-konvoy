@@ -89,15 +89,18 @@ bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybo
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:deploy-busybox-csi $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+return_count=$(echo $?)
+current_time=$(eval $time)
 
-if [ "$?" != "0" ]; then
+if [ "$return_count" != "0" ]; then
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:deploy-busybox-csi jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VQDN 3-functional "Liveness on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
-current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:deploy-busybox-csi jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VQDN 3-functional "Liveness on application and verify the status" Pass $pipeline_id "$current_time" $commit_id $gittoken
+
 if [ "$return_count" != "0" ]; then
 exit 1;
 fi
