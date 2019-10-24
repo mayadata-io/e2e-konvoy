@@ -334,7 +334,7 @@ DBVQ-cStor-Pool-Delete:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DBVQ-cstor-pool-delete/cstor-pool-delete
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DBVQ-cstor-pool-delete/cstor-pool-delete
 
-ACME-cStor-target-kill:
+ACME-cStor-target-failure:
   extends: .chaos_test_template
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
