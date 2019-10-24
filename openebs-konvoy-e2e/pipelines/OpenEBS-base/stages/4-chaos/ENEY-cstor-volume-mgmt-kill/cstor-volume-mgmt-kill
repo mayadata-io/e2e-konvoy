@@ -138,7 +138,7 @@ sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-mgmt-targetkill/g' \
 -e 's/name: openebs-target-failure/name: openebs-target-mgmt-failure/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=target-mgmt-kill'\''/g' \
 -e 's/value: docker/value: containerd/g' \
--e 's/value: app-percona-ns/value: mgmt-kill/g' run_targetmgmt_kill_test.yml
+-e 's/value: app-percona-ns/value: mgmt-kill/g' run_target_mgmt_kill_test.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
