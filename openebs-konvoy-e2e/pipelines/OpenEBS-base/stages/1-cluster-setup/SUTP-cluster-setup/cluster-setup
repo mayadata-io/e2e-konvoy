@@ -1,8 +1,4 @@
 #!/bin/bash
-set -x
-
-#time="date"
-#current_time=$(eval $time)
 
 time="$(TZ=IST date)"
 current_time=$time
@@ -43,12 +39,10 @@ sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 kubectl get p
 
 echo "cloning e2e-konvoy repo*************"
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b release-branch https://github.com/mayadata-io/e2e-konvoy.git'
-# sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'python3 e2e-konvoy/openebs-konvoy-e2e/utils/result/result_update.py '"'$CI_JOB_ID'"' SUTP 1-cluster-setup "Configure D2IQ-Konvoy cluster" Pass '"'$CI_PIPELINE_ID'"' '"'$current_time'"' '"'$CI_COMMIT_SHA'"' '"'$gittoken'"''
 else
 echo "All nodes are not ready"
 echo "******Cluster is in Unhealthy state*******"
 echo "cloning e2e-konvoy repo*************"
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b release-branch https://github.com/mayadata-io/e2e-konvoy.git'
-# sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'python3 e2e-konvoy/openebs-konvoy-e2e/utils/result/result_update.py '"'$CI_JOB_ID'"' SUTP 1-cluster-setup "Configure D2IQ-Konvoy cluster" Fail '"'$CI_PIPELINE_ID'"' '"'$current_time'"' '"'$CI_COMMIT_SHA'"' '"'$gittoken'"''
 exit;
 fi
