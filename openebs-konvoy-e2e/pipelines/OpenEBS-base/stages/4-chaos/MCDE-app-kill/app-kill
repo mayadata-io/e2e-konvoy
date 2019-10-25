@@ -135,6 +135,7 @@ cd litmus
 cp experiments/chaos/app_pod_failure/run_litmus_test.yml appkill.yml
 
 sed -i -e 's/app=jenkins-app/app=app-kill/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/value: app-jenkins-ns/value: app-kill/g' appkill.yml
 
 echo "Running the litmus test for Busybox Deployment application pod kill.."
