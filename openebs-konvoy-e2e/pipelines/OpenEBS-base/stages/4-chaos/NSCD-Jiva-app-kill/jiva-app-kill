@@ -141,6 +141,7 @@ EOF
 
 sed -i -e 's/value: '\''app=jenkins-app'\''/value: '\''app=bb-app-kill-jiva'\''/g' \
 -e 's/generateName: application-pod-failure/generateName: application-pod-failure-jiva/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/name: application-pod-failure/name: application-pod-failure-jiva/g' \
 -e 's/value: app-jenkins-ns/value: app-kill-jiva/g' app_kill_jiva.yml
 
