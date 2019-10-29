@@ -29,6 +29,7 @@ echo "Running the litmus test for BusyBox statefulset..."
 cp apps/busybox/deployment/run_litmus_test.yml statefulset_busybox_jiva.yml
 
 sed -i -e 's/value: openebs-jiva-sparse/value: openebs-jiva-default/g' \
+-e 's/value: app-busybox-ns/value: bb-jiva-statefulset/g' \
 -e 's/generateName: litmus-busybox-deploy-/generateName: busybox-statefulset-jiva-/g' \
 -e 's/app: busybox-litmus/app: busybox-litmus-jiva/g' statefulset_busybox_jiva.yml
 
@@ -51,6 +52,7 @@ echo "Running the litmus test for Liveness for BusyBox statefulset..."
 cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_jiva.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-liveness-jiva-/g' \
+-e 's/value: app-busybox-ns/value: bb-jiva-statefulset/g' \
 -e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-jiva/g' liveness_busybox_jiva.yml
 
 cat liveness_busybox_jiva.yml
@@ -73,7 +75,7 @@ cp experiments/functional/data-persistence/run_litmus_test.yml run_busybox_jiva_
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-jiva-/g' \
 -e 's/name: data-persistence-litmus/name: data-persistence-busybox-jiva/g' \
--e '/name: APP_NAMESPACE/{n;s/.*/            value: app-busybox-ns/}' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-jiva-statefulset/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_busybox_jiva_data_persistence.yml

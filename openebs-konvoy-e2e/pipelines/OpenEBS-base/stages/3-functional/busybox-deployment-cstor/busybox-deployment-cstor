@@ -21,22 +21,21 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:R
 
 ##Deploying BusyBox Application
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-app-busybox-ns metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-bb-cstor-deployment metadata="")
 echo $test_name
 
 cd litmus
-echo "Running the litmus test for BusyBox Deployment..."
 cp apps/busybox/deployment/run_litmus_test.yml deploy_busybox_cstor.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
 -e 's/value: statefulset/value: deployment/g' \
+-e 's/value: app-busybox-ns/value: bb-cstor-deployment/g' \
 -e 's/generateName: litmus-busybox-deploy-/generateName: busybox-deployment-cstor-/g' \
--e 's/app: busybox-litmus/app: busybox-litmus-cstor/g' deploy_busybox_cstor.yml
+-e 's/app: busybox-litmus/app: busybox-deployment-cstor/g' deploy_busybox_cstor.yml
 
 cat deploy_busybox_cstor.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-cstor' job=deploy_busybox_cstor.yml
-
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deployment-cstor' job=deploy_busybox_cstor.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -44,20 +43,24 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-cstor $te
 
 ##Deploying Liveness on BusyBox Application
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata="")
+run_id="deployment-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata="")
 echo $test_name
 
 cd litmus
-echo "Running the litmus test for Liveness for BusyBox Application..."
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_cstor.yml
+cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_deployment_cstor.yml
 
-sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-liveness-cstor-/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-cstor/g' liveness_busybox_cstor.yml
+sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-deployment-liveness-cstor-/g' \
+-e 's/value: app-busybox-ns/value: bb-cstor-deployment/g' \
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-deployment-liveness-cstor/g' liveness_busybox_cstor.yml
 
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' liveness_busybox_deployment_cstor.yml
+            
 cat liveness_busybox_cstor.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-liveness-cstor' job=liveness_busybox_cstor.yml
-
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-deployment-liveness-cstor' job=liveness_busybox_cstor.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -65,7 +68,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-cstor $te
 
 ##DATA-PERSISTENCE
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="bb-deployment-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
 echo $test_name
 
 cd litmus
@@ -74,7 +77,7 @@ cp experiments/functional/data-persistence/run_litmus_test.yml run_busybox_cstor
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-cstor-/g' \
 -e 's/name: data-persistence-litmus/name: data-persistence-busybox-cstor/g' \
--e '/name: APP_NAMESPACE/{n;s/.*/            value: app-busybox-ns/}' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-cstor-deployment/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_busybox_cstor_data_persistence.yml
@@ -86,6 +89,11 @@ sed -i '/parameters.yml: |/a \
     testfile: busybox_deployment_cstor
 ' run_busybox_cstor_data_persistence.yml
 
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_busybox_cstor_data_persistence.yml
+
 cat run_busybox_cstor_data_persistence.yml
 
 bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor' job=run_busybox_cstor_data_persistence.yml
@@ -94,6 +102,16 @@ cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash Openshift-EE/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash Openshift-EE/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 

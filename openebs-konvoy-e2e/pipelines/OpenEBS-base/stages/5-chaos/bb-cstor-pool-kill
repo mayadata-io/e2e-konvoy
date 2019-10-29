@@ -1,0 +1,47 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-controller-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"'
+}
+
+node(){
+source ~/.profile
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+releaseTag=$(echo $3)
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-cstor-pool-kill jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-cstor-pool-kill jobphase:Running init_time:"$current_time" job_id:"$job_id" pipeline_id:"$pipeline_id" openebs_version:"$releaseTag"
+
+echo "*******Performing cStor Pool kill**********"
+
+run_id="kill";test_name=$(bash Openshift-EE/utils/generate_test_name testcase=openebs-pool-failure metadata=${run_id})
+echo $test_name
+
+cd litmus
+cp experiments/chaos/openebs_pool_failure/run_litmus_test.yml poolkill.yml
+
+sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
+-e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
+-e 's/value: app-percona-ns/value: bb-cstor-deployment/g' poolkill.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' poolkill.yml
+
+echo "Running the litmus test for Busybox Deployment application pod kill.."
+cat poolkill.yml
+
+bash ../Openshift-EE/utils/litmus_job_runner label='name:openebs-pool-failure' job=poolkill.yml
+cd ..
+bash Openshift-EE/utils/dump_cluster_state;
+bash Openshift-EE/utils/event_updater jobname:bb-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+}

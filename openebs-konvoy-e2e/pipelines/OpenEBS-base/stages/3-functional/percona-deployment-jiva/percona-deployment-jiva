@@ -29,6 +29,7 @@ echo "Running the litmus test for percona Deployment..."
 cp apps/percona/deployment/run_litmus_test.yml deploy_percona_jiva.yml
 
 sed -i -e 's/value: openebs-standard/value: openebs-jiva-default/g' \
+-e 's/value: app-percona-ns/value: percona-jiva/g' \
 -e 's/generateName: litmus-percona-/generateName: litmus-percona-jiva-/g' \
 -e 's/app: percona-deployment/app: percona-deployment-jiva/g' deploy_percona_jiva.yml
 
@@ -51,6 +52,7 @@ echo "Running the litmus test for Loadgen for percona Application..."
 cp apps/percona/workload/run_litmus_test.yml loadgen_percona_jiva.yml
 
 sed -i -e 's/generateName: percona-loadgen-/generateName: percona-jiva-loadgen-/g' \
+-e 's/value: app-percona-ns/value: percona-jiva/g' \
 -e 's/loadgen: percona-loadjob/loadgen: percona-jiva-loadjob/g' loadgen_percona_jiva.yml
 
 cat loadgen_percona_jiva.yml
@@ -73,7 +75,7 @@ cp experiments/functional/data-persistence/run_litmus_test.yml run_percona_jiva_
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-jiva/g' \
 -e 's/name: data-persistence-litmus/name: data-persistence-percona-jiva/g' \
--e '/name: APP_NAMESPACE/{n;s/.*/            value: app-percona-ns/}' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-jiva/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_percona_jiva_data_persistence.yml

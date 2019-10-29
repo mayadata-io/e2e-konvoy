@@ -1,0 +1,59 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-controller-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"'
+}
+
+node(){
+source ~/.profile
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+releaseTag=$(echo $3)
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-controller-kill jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-controller-kill jobphase:Running init_time:"$current_time" job_id:"$job_id" pipeline_id:"$pipeline_id" openebs_version:"$releaseTag"
+
+## Performing controller kill
+
+run_id="delete";test_name=$(bash Openshift-EE/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
+echo $test_name
+
+cd litmus
+cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_ctrl_kill_test.yml
+
+sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
+-e 's/generateName: openebs-target-failure/generateName: openebs-controller-failure/g' \
+-e 's/openebs-target-failure/openebs-controller-failure/g' \
+-e 's/name: target-failure/name: ctrl-failure/g' \
+-e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
+-e 's/value: app-percona-ns/value: bb-jiva-deployment/g' run_ctrl_kill_test.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_ctrl_kill_test.yml
+
+## Replace the value of DATA_PERSISTENCE with application name in litmus experiment.
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_ctrl_kill_test.yml
+
+## Insert the set of variables for busybox data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k\
+    blockcount: 1024\
+    testfile: ctrlkilltest
+' run_ctrl_kill_test.yml
+
+cat run_ctrl_kill_test.yml
+
+bash ../Openshift-EE/utils/litmus_job_runner label='name:openebs-target-failure' job=run_ctrl_kill_test.yml
+cd ..
+bash Openshift-EE/utils/dump_cluster_state;
+bash Openshift-EE/utils/event_updater jobname:bb-controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+}

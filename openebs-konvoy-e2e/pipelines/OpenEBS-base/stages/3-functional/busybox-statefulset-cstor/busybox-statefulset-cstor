@@ -29,6 +29,7 @@ echo "Running the litmus test for BusyBox statefulset..."
 cp apps/busybox/deployment/run_litmus_test.yml statefulset_busybox_cstor.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
+-e 's/value: app-busybox-ns/value: bb-cstor-statefulset/g' \
 -e 's/generateName: litmus-busybox-deploy-/generateName: busybox-statefulset-cstor-/g' \
 -e 's/app: busybox-litmus/app: busybox-litmus-cstor/g' statefulset_busybox_cstor.yml
 
@@ -51,6 +52,7 @@ echo "Running the litmus test for Liveness for BusyBox statefulset..."
 cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_cstor.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-liveness-cstor-/g' \
+-e 's/value: app-busybox-ns/value: bb-cstor-statefulset/g' \
 -e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-cstor/g' liveness_busybox_cstor.yml
 
 cat liveness_busybox_cstor.yml
@@ -73,7 +75,7 @@ cp experiments/functional/data-persistence/run_litmus_test.yml run_busybox_cstor
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-cstor-/g' \
 -e 's/name: data-persistence-litmus/name: data-persistence-busybox-cstor/g' \
--e '/name: APP_NAMESPACE/{n;s/.*/            value: app-busybox-ns/}' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-cstor-statefulset/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_busybox_cstor_data_persistence.yml
