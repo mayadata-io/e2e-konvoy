@@ -188,11 +188,11 @@ QUSX-create-cstor-snapshot:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/QUSX-create-cstor-snapshot/create-cstor-snapshot
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/QUSX-create-cstor-snapshot/create-cstor-snapshot
 
-TIXL-fill-volume:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
+# TIXL-fill-volume:
+#   extends: .func_test_template
+#   script: 
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
 
 UAFE-rwx-app-deploy:
   extends: .func_test_template
