@@ -21,7 +21,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-controller-kill jobphase:Running
 
 ## Performing controller kill
 
-run_id="delete";test_name=$(bash Openshift-EE/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
+run_id="ctrl-kill";test_name=$(bash Openshift-EE/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
 echo $test_name
 
 cd litmus

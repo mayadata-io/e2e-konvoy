@@ -89,14 +89,20 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:percona-controller-nw-delay 
 ## Performing controller-network-delay test ##
 ##########################################
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-controller-network-delay metadata="")
+run_id="percona-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata="")
 echo $test_name
 
 cd litmus
 cp experiments/chaos/openebs_controller_network_delay/run_litmus_test.yml run_percona_controller_nw_delay.yml
 
 sed -i -e 's/openebs-controller-network-delay/percona-controller-nw-delay/g' \
+-e 's/name: target-failure/name: percona-controller-failure-configmap/g' \
 -e 's/value: app-percona-ns/value: percona-jiva/g' run_percona_controller_nw_delay.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_percona_controller_nw_delay.yml   
 
 ## Replace the value of DATA_PERSISTENCE with application name in litmus experiment.
 sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_percona_controller_nw_delay.yml

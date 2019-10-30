@@ -28,15 +28,14 @@ cd litmus
 cp apps/busybox/deployment/run_litmus_test.yml deploy_busybox_jiva.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
--e 's/value: app-busybox-ns/value: bb-jiva-deployment/g' \
 -e 's/value: statefulset/value: deployment/g' \
+-e 's/value: app-busybox-ns/value: bb-jiva-deployment/g' \
 -e 's/generateName: litmus-busybox-deploy-/generateName: busybox-deployment-jiva-/g' \
 -e 's/app: busybox-litmus/app: busybox-deployment-jiva/g' deploy_busybox_jiva.yml
 
 cat deploy_busybox_jiva.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deployment-jiva' job=deploy_busybox_jiva.yml
-
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -48,22 +47,20 @@ run_id="deployment-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test
 echo $test_name
 
 cd litmus
-echo "Running the litmus test for Liveness for BusyBox Application..."
 cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_deployment_jiva.yml
 
-sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-liveness-jiva-/g' \
+sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-deployment-liveness-jiva-/g' \
 -e 's/value: app-busybox-ns/value: bb-jiva-deployment/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-jiva/g' liveness_busybox_deployment_jiva.yml
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-deployment-liveness-jiva/g' liveness_busybox_deployment_jiva.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
 ' liveness_busybox_deployment_jiva.yml
-
+            
 cat liveness_busybox_deployment_jiva.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-liveness-jiva' job=liveness_busybox_deployment_jiva.yml
-
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-deployment-liveness-jiva' job=lliveness_busybox_deployment_jiva.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -71,35 +68,50 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-jiva $tes
 
 ##DATA-PERSISTENCE
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="bb-deployment-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
 echo $test_name
 
 cd litmus
 echo "Running the litmus test to check data-persistence for BusyBox Application..."
-cp experiments/functional/data-persistence/run_litmus_test.yml run_busybox_jiva_data_persistence.yml
+cp experiments/functional/data-persistence/run_litmus_test.yml bb_jiva_deployment_data_persistence.yml
 
-sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-jiva-/g' \
--e 's/name: data-persistence-litmus/name: data-persistence-busybox-jiva/g' \
+sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-deployment-jiva-/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-busybox-deployment-jiva/g' \
+-e 's/name: data-persistence/name: bb-jiva-deployment-configmap/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-jiva-deployment/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
--e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_busybox_jiva_data_persistence.yml
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' bb_jiva_deployment_data_persistence.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     blocksize: 4k \
     blockcount: 1024 \
     testfile: busybox_deployment_jiva
-' run_busybox_jiva_data_persistence.yml
+' bb_jiva_deployment_data_persistence.yml
 
-cat run_busybox_jiva_data_persistence.yml
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' bb_jiva_deployment_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-jiva' job=run_busybox_jiva_data_persistence.yml
+cat bb_jiva_deployment_data_persistence.yml
 
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-deployment-jiva' job=bb_jiva_deployment_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-jiva $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash Openshift-EE/utils/e2e-cr jobname:busybox-deployment-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash Openshift-EE/utils/e2e-cr jobname:busybox-deployment-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 

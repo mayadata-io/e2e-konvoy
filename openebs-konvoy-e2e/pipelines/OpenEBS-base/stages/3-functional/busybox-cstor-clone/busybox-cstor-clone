@@ -2,7 +2,7 @@
 set -x
 
 pod(){
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-cstor-snapshot/busybox-cstor-snapshot node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' 
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-cstor-clone/busybox-cstor-clone node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' 
 }
 
 node(){
@@ -21,22 +21,22 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-cstor-clone jobphase:Runnin
 
 ##Deploying BusyBox Application
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-app-busybox-ns metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-bb-cstor-clone metadata="")
 echo $test_name
 
 cd litmus
 echo "Running the litmus test for BusyBox Deployment..."
-cp apps/busybox/deployment/run_litmus_test.yml deploy_busybox_cstor.yml
+cp apps/busybox/deployment/run_litmus_test.yml deploy_busybox_cstor_clone.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
+-e 's/value: app-busybox-ns/value: bb-cstor-clone/g'
 -e 's/value: statefulset/value: deployment/g' \
--e 's/generateName: litmus-busybox-deploy-/generateName: busybox-deploy-cstor-/g' \
--e 's/app: busybox-litmus/app: busybox-litmus-cstor/g' deploy_busybox_cstor.yml
+-e 's/generateName: litmus-busybox-deploy-/generateName: busybox-deploy-cstor-clone/g' \
+-e 's/app: busybox-litmus/app: busybox-litmus-cstor-clone/g' deploy_busybox_cstor_clone.yml
 
-cat deploy_busybox_cstor.yml
+cat deploy_busybox_cstor_clone.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-cstor' job=deploy_busybox_cstor.yml
-
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-cstor' job=deploy_busybox_cstor_clone.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -44,20 +44,25 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_na
 
 ##Deploying Liveness on BusyBox Application
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata="")
+run_id="cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata="")
 echo $test_name
 
 cd litmus
 echo "Running the litmus test for Liveness for BusyBox Application..."
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_cstor.yml
+cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_cstor_clone.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-liveness-cstor-/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-cstor/g' liveness_busybox_cstor.yml
+-e 's/value: app-busybox-ns/value: bb-cstor-clone/g' \
+-e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-cstor/g' liveness_busybox_cstor_clone.yml
 
-cat liveness_busybox_cstor.yml
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' liveness_busybox_cstor_clone.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-liveness-cstor' job=liveness_busybox_cstor.yml
+cat liveness_busybox_cstor_clone.yml
 
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-liveness-cstor' job=liveness_busybox_cstor_clone.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -65,19 +70,25 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_na
 
 ##DATA-PERSISTENCE
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
 echo $test_name
 
 cd litmus
 echo "Running the litmus test to check data-persistence for BusyBox Application..."
 cp experiments/functional/data-persistence/run_litmus_test.yml run_busybox_cstor_data_persistence.yml
 
-sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-cstor-/g' \
--e 's/name: data-persistence-litmus/name: data-persistence-busybox-cstor/g' \
--e '/name: APP_NAMESPACE/{n;s/.*/            value: app-busybox-ns/}' \
+sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-cstor-clone-/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-busybox-cstor-clone/g' \
+-e 's/name: data-persistence/name: bb-cstor-clone-configmap/g' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-cstor-clone/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_busybox_cstor_data_persistence.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' bb_cstor_clone_data_persistence.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
@@ -88,8 +99,7 @@ sed -i '/parameters.yml: |/a \
 
 cat run_busybox_cstor_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor' job=run_busybox_cstor_data_persistence.yml
-
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor-clone' job=run_busybox_cstor_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -97,7 +107,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_na
 
 ##Snapshot creation
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-snapshot metadata="")
+run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-snapshot metadata="")
 echo $test_name
 
 cd litmus
@@ -105,21 +115,25 @@ echo "Running the litmus test for Creating snapshot for Busybox cstor applicatio
 cp experiments/functional/snapshot-creation/run_litmus_test.yml run_bb_cstor_snapshot.yml
 
 sed -i -e 's/generateName: litmus-snapshot-/generateName: bb-cstor-snapshot-/g' \
+-e 's/value: app-busybox-ns/value: bb-cstor-clone/g' \
 -e 's/app: snapshot-litmus/app: bb-cstor-snapshot/g' run_bb_cstor_snapshot.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_bb_cstor_snapshot.yml
 
 cat run_bb_cstor_snapshot.yml
 
 bash openebs-konvoy-e2e/utils/litmus_job_runner label='app:bb-cstor-snapshot' job=run_bb_cstor_snapshot.yml
-
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
-
 ##clone-creation
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-clone metadata="")
+run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-clone metadata="")
 echo $test_name
 
 cd litmus
@@ -127,16 +141,31 @@ echo "Running the litmus test for Creating clone for Busybox application..."
 cp experiments/functional/clone-creation/run_litmus_test.yml run_bb_clone.yml
 
 sed -i -e 's/generatName: litmus-clone-/generateName: litmus-busybox-clone-/g' \
+-e 's/value: app-busybox-ns/value: bb-cstor-clone/g' \
 -e 's/app: litmus-clone/app: litmus-busybox-clone/g' run_bb_clone.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_bb_clone.yml
 
 cat run_bb_clone.yml
 
 bash openebs-konvoy-e2e/utils/litmus_job_runner label='app:litmus-busybox-clone' job=run_bb_clone.yml
-
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash Openshift-EE/utils/e2e-cr jobname:busybox-cstor-clone jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash Openshift-EE/utils/e2e-cr jobname:busybox-cstor-clone jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 

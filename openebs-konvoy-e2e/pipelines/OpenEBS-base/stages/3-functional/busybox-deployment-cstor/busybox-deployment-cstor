@@ -51,16 +51,16 @@ cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_deployment_cstor
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-deployment-liveness-cstor-/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-deployment/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-deployment-liveness-cstor/g' liveness_busybox_cstor.yml
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-deployment-liveness-cstor/g' liveness_busybox_deployment_cstor.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
 ' liveness_busybox_deployment_cstor.yml
             
-cat liveness_busybox_cstor.yml
+cat liveness_busybox_deployment_cstor.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-deployment-liveness-cstor' job=liveness_busybox_cstor.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-deployment-liveness-cstor' job=lliveness_busybox_deployment_cstor.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -73,31 +73,31 @@ echo $test_name
 
 cd litmus
 echo "Running the litmus test to check data-persistence for BusyBox Application..."
-cp experiments/functional/data-persistence/run_litmus_test.yml run_busybox_cstor_data_persistence.yml
+cp experiments/functional/data-persistence/run_litmus_test.yml bb_cstor_deployment_data_persistence.yml
 
-sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-cstor-/g' \
--e 's/name: data-persistence-litmus/name: data-persistence-busybox-cstor/g' \
+sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-deployment-cstor-/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-busybox-deployment-cstor/g' \
+-e 's/name: data-persistence/name: bb-cstor-deployment-configmap/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-cstor-deployment/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
--e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_busybox_cstor_data_persistence.yml
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' bb_cstor_deployment_data_persistence.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     blocksize: 4k \
     blockcount: 1024 \
     testfile: busybox_deployment_cstor
-' run_busybox_cstor_data_persistence.yml
+' bb_cstor_deployment_data_persistence.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
-' run_busybox_cstor_data_persistence.yml
+' bb_cstor_deployment_data_persistence.yml
 
-cat run_busybox_cstor_data_persistence.yml
+cat bb_cstor_deployment_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor' job=run_busybox_cstor_data_persistence.yml
-
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-deployment-cstor' job=bb_cstor_deployment_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;

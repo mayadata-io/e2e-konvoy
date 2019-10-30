@@ -35,8 +35,7 @@ sed -i -e 's/value: openebs-standard/value: openebs-jiva-default/g' \
 
 cat deploy_percona_jiva.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app: percona-deployment-jiva' job=deploy_percona_jiva.yml
-
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:percona-deployment-jiva' job=deploy_percona_jiva.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -44,7 +43,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:percona-deployment-jiva $tes
 
 ##Loadgen on percona Application
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-loadgen metadata="")
+run_id="jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-loadgen metadata="")
 echo $test_name
 
 cd litmus
@@ -55,10 +54,14 @@ sed -i -e 's/generateName: percona-loadgen-/generateName: percona-jiva-loadgen-/
 -e 's/value: app-percona-ns/value: percona-jiva/g' \
 -e 's/loadgen: percona-loadjob/loadgen: percona-jiva-loadjob/g' loadgen_percona_jiva.yml
 
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' loadgen_percona_jiva.yml
+
 cat loadgen_percona_jiva.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='loadgen:percona-jiva-loadjob' job=loadgen_percona_jiva.yml
-
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -66,7 +69,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:percona-deployment-jiva $tes
 
 ##DATA-PERSISTENCE
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="percona-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
 echo $test_name
 
 cd litmus
@@ -74,11 +77,17 @@ echo "Running the litmus test to check data-persistence for percona Application.
 cp experiments/functional/data-persistence/run_litmus_test.yml run_percona_jiva_data_persistence.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-jiva/g' \
--e 's/name: data-persistence-litmus/name: data-persistence-percona-jiva/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-percona-jiva/g' \
+-e 's/name: data-persistence/name: percona-jiva-configmap/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-jiva/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_percona_jiva_data_persistence.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_percona_jiva_data_persistence.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
@@ -90,11 +99,20 @@ sed -i '/parameters.yml: |/a \
 cat run_percona_jiva_data_persistence.yml
 
 bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva' job=run_percona_jiva_data_persistence.yml
-
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:percona-deployment-jiva $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash Openshift-EE/utils/e2e-cr jobname:percona-deployment-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash Openshift-EE/utils/e2e-cr jobname:percona-deployment-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 
