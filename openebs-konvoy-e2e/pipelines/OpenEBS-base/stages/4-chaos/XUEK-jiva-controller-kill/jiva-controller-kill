@@ -30,7 +30,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-controller-kill jobphase:Runni
 
 echo "Deploying Busybox Application..."
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-jiva-controller-kill metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-jiva-ctrl-kill metadata="")
 echo $test_name
 
 cd litmus
@@ -179,7 +179,7 @@ fi
 
 echo "Deprovisioning Busybox Application..."
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-jiva-controller-kill metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-jiva-ctrl-kill metadata="")
 echo $test_name
 
 cd litmus
