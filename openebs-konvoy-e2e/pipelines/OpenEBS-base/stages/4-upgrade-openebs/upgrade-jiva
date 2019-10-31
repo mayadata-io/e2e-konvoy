@@ -1,0 +1,71 @@
+#!/bin/bash
+set -x
+pod() {
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-jiva node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' '"'$FROM_VERSION'"' '"'$TO_VERSION'"' '"'$UPGRADE_IMAGE_TAG'"' '"'$NEW_NDM_TAG'"'
+}
+
+node() {
+
+time="date"
+current_time=$(eval $time)
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+releaseTag=$(echo $3)
+from_version=$(echo $4)
+to_version=$(echo $5)
+upgrade_imageTag=$(echo $6)
+new_ndmTag=$(echo $7)
+source ~/.profile
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/pooling jobname:upgrade-control-plane
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:upgrade-jiva jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag"
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-upgrade metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test.."
+
+sed -i '/name: UPGRADE_JIVA/{n;s/.*/            value: "true"/}' \
+-e '/name: FROM_VERSION/{n;s/.*/            value: $from_version/}' \
+-e '/name: TO_VERSION/{n;s/.*/            value: $to_version/}' \
+-e '/name: UPGRADE_IMAGE_TAG/{n;s/.*/            value: $upgrade_imageTag/}' \
+-e '/name: NEW_NDM_TAG/{n;s/.*/            value: $new_ndmTag/}' \
+-e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' providers/openebs/upgrade/run_litmus_test.yml
+run_test=providers/openebs/upgrade/run_litmus_test.yml
+
+cat $run_test
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:openebs-upgrade' job=$run_test
+
+echo "Dumping state of cluster post job run"; echo ""
+bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
+
+cd ..
+bash openebs-konvoy-e2e/utils/event_updater jobname:upgrade-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id"
+#################
+## GET RESULT  ##
+#################
+rc_val=$(echo $?)
+
+## Check the test status & result from the litmus result custom resource
+source ~/.profile
+testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+
+current_time=$(eval $time)
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:upgrade-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:$testResult
+
+if [ "$rc_val" != "0" ]; then
+exit 1;
+fi
+
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4 $5 $6 $7 $8
+else
+  pod
+fi
