@@ -32,10 +32,10 @@ cd litmus
 echo "Running the litmus test.."
 
 sed -i -e '/name: UPGRADE_CONTROL_PLANE/{n;s/.*/            value: "true"/}' \
--e '/name: FROM_VERSION/{n;s/.*/            value: $from_version/}' \
--e '/name: TO_VERSION/{n;s/.*/            value: $to_version/}' \
--e '/name: UPGRADE_IMAGE_TAG/{n;s/.*/            value: $upgrade_imageTag/}' \
--e '/name: NEW_NDM_TAG/{n;s/.*/            value: $new_ndmTag/}' \
+-e '/name: FROM_VERSION/{n;s/.*/            value: '"'$from_version'"'/}' \
+-e '/name: TO_VERSION/{n;s/.*/            value: '"'$to_version'"'/}' \
+-e '/name: UPGRADE_IMAGE_TAG/{n;s/.*/            value: '"'$upgrade_imageTag'"'/}' \
+-e '/name: NEW_NDM_TAG/{n;s/.*/            value: '"'$new_ndmTag'"'/}' \
 -e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' providers/openebs/upgrade/run_litmus_test.yml
 run_test=providers/openebs/upgrade/run_litmus_test.yml
 

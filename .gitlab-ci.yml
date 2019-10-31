@@ -4,8 +4,8 @@ stages:
   - CLUSTER-SETUP
   - PROVIDER-INFRA-SETUP
   - APP-FUNC-TEST
+  - UPGRADE-OPENEBS
   - APP-CHAOS-TEST
-  # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
 konvoy-cluster:
@@ -25,7 +25,7 @@ OPENEBS-KONVOY-DEPLOY:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script: 
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup
@@ -36,7 +36,7 @@ OPENEBS-SC-DEPLOY:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/storage-policies/openebs-sc
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/storage-policies/openebs-sc
@@ -47,7 +47,7 @@ STRIPED-POOL:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-striped-pool/create-striped-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-striped-pool/create-striped-pool
@@ -58,7 +58,7 @@ MIRRORED-POOL:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-mirrored-pool/create-mirrored-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-mirrored-pool/create-mirrored-pool
@@ -69,7 +69,7 @@ RAIDZ1-POOL:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-raidz1-pool/create-raidz1-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-raidz1-pool/create-raidz1-pool
@@ -80,7 +80,7 @@ RAIDZ2-POOL:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-raidz2-pool/create-raidz2-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-raidz2-pool/create-raidz2-pool
@@ -91,7 +91,7 @@ NFSv4-PROVISION:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-nfs-provisioner/nfsv4-provision
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-nfs-provisioner/nfsv4-provision
@@ -102,7 +102,7 @@ CSPC-STRIPE-POOL:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-cspc-stripe-pool/create-cspc-stripe-pool
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-cspc-stripe-pool/create-cspc-stripe-pool
@@ -113,7 +113,7 @@ CSI-PROVISIONER:
   tags: 
     - k8s-konvoy
   dependencies:
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/deploy-csi-provisioner/deploy-csi-provisioner
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/deploy-csi-provisioner/deploy-csi-provisioner
@@ -126,7 +126,7 @@ CSI-PROVISIONER:
     - k8s-konvoy
   when: always
   dependencies:
-    - SUTP-konvoy-cluster  
+    - konvoy-cluster  
 
 busybox-deployment-cstor:
   extends: .func_test_template
@@ -181,6 +181,33 @@ busybox-jiva-snapshot:
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-jiva-snapshot/busybox-jiva-snapshot
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-jiva-snapshot/busybox-jiva-snapshot
+
+.upgrade_openebs:
+  image: openebs/openshift-ci:latest
+  stage: UPGRADE-OPENEBS
+  tags: 
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - konvoy-cluster 
+
+upgrade-control-plane:
+  extends: .upgrade_openebs
+  scripts:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-control-plane
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-control-plane
+
+upgrade-cstor:
+  extends: .upgrade_openebs
+  scripts:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-cstor
+
+upgrade-jiva:
+  extends: .upgrade_openebs
+  scripts:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-jiva
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-jiva
 
 .chaos_test_template:
   image: openebs/openshift-ci:latest
