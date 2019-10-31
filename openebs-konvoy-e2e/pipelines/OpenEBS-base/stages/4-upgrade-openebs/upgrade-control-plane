@@ -31,17 +31,18 @@ echo $test_name
 cd litmus
 echo "Running the litmus test.."
 
+cp providers/openebs/upgrade/run_litmus_test.yml upgrade_control_plane.yml
+
 sed -i -e '/name: UPGRADE_CONTROL_PLANE/{n;s/.*/            value: "true"/}' \
 -e '/name: FROM_VERSION/{n;s/.*/            value: '"'$from_version'"'/}' \
 -e '/name: TO_VERSION/{n;s/.*/            value: '"'$to_version'"'/}' \
 -e '/name: UPGRADE_IMAGE_TAG/{n;s/.*/            value: '"'$upgrade_imageTag'"'/}' \
 -e '/name: NEW_NDM_TAG/{n;s/.*/            value: '"'$new_ndmTag'"'/}' \
--e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' providers/openebs/upgrade/run_litmus_test.yml
-run_test=providers/openebs/upgrade/run_litmus_test.yml
+-e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' upgrade_control_plane.yml
 
-cat $run_test
+cat upgrade_control_plane.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:openebs-upgrade' job=$run_test
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:openebs-upgrade' job=upgrade_control_plane.yml
 
 echo "Dumping state of cluster post job run"; echo ""
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;

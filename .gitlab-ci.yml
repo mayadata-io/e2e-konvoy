@@ -85,38 +85,38 @@ RAIDZ2-POOL:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-raidz2-pool/create-raidz2-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-raidz2-pool/create-raidz2-pool
 
-NFSv4-PROVISION:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-nfs-provisioner/nfsv4-provision
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-nfs-provisioner/nfsv4-provision
+# NFSv4-PROVISION:
+#   image: openebs/openshift-ci:latest
+#   stage: PROVIDER-INFRA-SETUP
+#   tags: 
+#     - k8s-konvoy
+#   dependencies:
+#     - konvoy-cluster
+#   script:
+#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-nfs-provisioner/nfsv4-provision
+#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-nfs-provisioner/nfsv4-provision
 
-CSPC-STRIPE-POOL:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - konvoy-cluster
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-cspc-stripe-pool/create-cspc-stripe-pool
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-cspc-stripe-pool/create-cspc-stripe-pool
+# CSPC-STRIPE-POOL:
+#   image: openebs/openshift-ci:latest
+#   stage: PROVIDER-INFRA-SETUP
+#   tags: 
+#     - k8s-konvoy
+#   dependencies:
+#     - konvoy-cluster
+#   script:
+#     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-cspc-stripe-pool/create-cspc-stripe-pool
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-cspc-stripe-pool/create-cspc-stripe-pool
  
-CSI-PROVISIONER:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/deploy-csi-provisioner/deploy-csi-provisioner
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/deploy-csi-provisioner/deploy-csi-provisioner
+# CSI-PROVISIONER:
+#   image: openebs/openshift-ci:latest
+#   stage: PROVIDER-INFRA-SETUP
+#   tags: 
+#     - k8s-konvoy
+#   dependencies:
+#     - konvoy-cluster
+#   script:
+#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/deploy-csi-provisioner/deploy-csi-provisioner
+#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/deploy-csi-provisioner/deploy-csi-provisioner
 
 # ## Define job template for func jobs    
 .func_test_template:
