@@ -1,0 +1,226 @@
+#!/bin/bash
+set -x
+
+pod() {	
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+}
+
+node() {
+source ~/.profile
+gittoken=$(echo "$github_token")
+
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+commit_id=$(echo $3)
+releaseTag=$(echo $4)
+case_id=XUEK
+
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-controller-kill jobphase:Waiting 
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-controller-kill jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
+
+################
+# LitmusBook 1 #
+################
+
+echo "Deploying Busybox Application..."
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-jiva-ctrl-kill metadata="")
+echo $test_name
+
+cd litmus
+cp apps/busybox/deployers/run_litmus_test.yml busybox_jiva_ctrl_kill.yml
+
+sed -i -e 's/app: busybox-litmus/app: deploy-busybox-jiva-ctrl-kill/g' \
+-e 's/app=busybox-sts/app=jiva-ctrl-kill/g' \
+-e 's/value: statefulset/value: deployment/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
+-e 's/value: openebs-busybox/value: openebs-bb-jiva-ctrlkill/g' \
+-e 's/value: app-busybox-ns/value: jiva-ctrl-kill/g' busybox_jiva_ctrl_kill.yml
+
+cat busybox_jiva_ctrl_kill.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-ctrl-kill' job=busybox_jiva_ctrl_kill.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XUEK 4-chaos "Deploy Busybox application..." Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 2 #
+################
+
+echo "Liveness on Busybox Application..."
+
+run_id="ctrl-con-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+echo $test_name
+
+cd litmus
+cp apps/busybox/liveness/run_litmus_test.yml bb_liveness_jiva_ctrl_kill.yml
+
+sed -i -e 's/value: app-busybox-ns/value: jiva-ctrl-kill/g' \
+-e 's/app=busybox-sts/app=jiva-ctrl-kill/g' \
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-jiva-ctrlkill/g' bb_liveness_jiva_ctrl_kill.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' bb_liveness_jiva_ctrl_kill.yml
+
+cat bb_liveness_jiva_ctrl_kill.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-jiva-ctrlkill' job=bb_liveness_jiva_ctrl_kill.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XUEK 4-chaos "Liveness on Busybox application..." Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 3 #
+################
+
+echo "Performing jiva-controller-kill..."
+
+run_id="jiva-controller";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-failure metadata="")
+echo $test_name
+ 
+cd litmus
+cp experiments/chaos/openebs-target-failure/run_litmus_test.yml run_jiva_ctrl_kill.yml
+
+sed -i -e 's/value: percona-mysql-claim/value: busybox-jiva-ctrl-kill/g' \
+-e 's/generateName: openebs-target-failure/generateName: openebs-jiva-ctrl-kill/g' \
+-e 's/name: openebs-target-failure/name: openebs-jiva-ctrl-kill/g' \
+-e 's/name: target-failure/name: jiva-ctrl-kill/g' \
+-e 's/target-zrepl-kill/jiva-ctrl-kill/g' \
+-e 's/value: '\''name=percona'\''/value: '\''app=jiva-ctrl-kill'\''/g' \
+-e 's/value: app-percona-ns/value: jiva-ctrl-kill/g' run_jiva_ctrl_kill.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_jiva_ctrl_kill.yml
+
+## Replace the value of DATA_PERSISTENCE with application name in litmus experiment.
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_ctrl_kill_test.yml
+
+## Insert the set of variables for busybox data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k\
+    blockcount: 1024\
+    testfile: jiva-ctrl-kill-test
+' run_ctrl_kill_test.yml
+
+cat run_jiva_ctrl_kill.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-jiva-ctrl-kill' job=run_jiva_ctrl_kill.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XUEK 4-chaos "Induce failure on JIVA controller container and check if it gets scheduled immediately and the application is available" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 4 #
+################
+
+echo "Deprovisioning Busybox Liveness..."
+
+run_id="deprovision-ctrl-con-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+echo $test_name
+
+cd litmus
+cp apps/busybox/liveness/run_litmus_test.yml bb_liveness_deprovision_jiva_ctrl_kill.yml
+
+sed -i -e 's/value: app-busybox-ns/value: jiva-ctrl-kill/g' \
+-e 's/app=busybox-sts/app=jiva-ctrl-kill/g' \
+-e 's/value: provision/value: deprovision/g' \
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-deprovision-jiva-ctrlkill/g' bb_liveness_deprovision_jiva_ctrl_kill.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' bb_liveness_deprovision_jiva_ctrl_kill.yml
+
+cat bb_liveness_deprovision_jiva_ctrl_kill.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-deprovision-jiva-ctrlkill' job=bb_liveness_deprovision_jiva_ctrl_kill.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XUEK 4-chaos "Deprovisioning Busybox Liveness..." Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 5 #
+################
+
+echo "Deprovisioning Busybox Application..."
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-jiva-ctrl-kill metadata="")
+echo $test_name
+
+cd litmus
+cp apps/busybox/deployers/run_litmus_test.yml deprovision_bb_jiva_ctrl_kill.yml
+
+-e 's/app: busybox-litmus/app: busybox-deprovision-jiva-ctrl-kill/g' \
+-e 's/app=busybox-sts/app=jiva-ctrl-kill/g' \
+-e 's/value: statefulset/value: deployment/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
+-e 's/value: openebs-busybox/value: openebs-bb-jiva-ctrlkill/g' \
+-e 's/value: app-busybox-ns/value: jiva-ctrl-kill/g' \
+-e 's/value: provision/value: deprovision/g' deprovision_bb_jiva_ctrl_kill.yml
+
+cat deprovision_bb_jiva_ctrl_kill.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deprovision-jiva-ctrl-kill' job=deprovision_bb_jiva_ctrl_kill.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-controller-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller container and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-controller-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
+
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller container and check if it gets scheduled immediately and the application is available' Pass $pipeline_id "$current_time" $commit_id $gittoken
+
+if [ "$rc_val" != "0" ]; then
+exit 1;
+fi
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4 $5
+else
+  pod
+fi

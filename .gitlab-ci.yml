@@ -443,11 +443,18 @@ MVET-Jiva-single-replica-failure:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MVET-jiva-single-replica-failure/single-replica-failure
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MVET-jiva-single-replica-failure/single-replica-failure
 
-FQFO-Jiva-controller-kill:
+FQFO-Jiva-controller-failure:
   extends: .chaos_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-kill/controller-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-kill/controller-kill
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-failure/controller-failure
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-failure/controller-failure
+
+XUEK-Jiva-controller-kill:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill
+
 
 TZZP-Jiva-controller-network-delay:
   extends: .chaos_test_template

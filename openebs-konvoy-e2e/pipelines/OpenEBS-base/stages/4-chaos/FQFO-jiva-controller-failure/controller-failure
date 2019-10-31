@@ -2,7 +2,7 @@
 set -x
 
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-kill/controller-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-failure/controller-failure node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -27,8 +27,8 @@ echo $present_dir
 
 #Creating e2e custom resoure result fot the each stage of the test.
 
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Waiting init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Running init_time:"$current_time"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-failure jobphase:Waiting init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-failure jobphase:Running init_time:"$current_time"
 
 ################
 # LitmusBook 1 #
@@ -38,47 +38,47 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Running in
 #testcase name for the busybox deployers will be append with busybox-{{ action }}- {{ app-namespace }}
 #action will be provision or deprovision.
 #app namespaces is the name to deploy the busybox application.
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-ctrl-kill metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-ctrl-failure metadata="")
 echo $test_name
 
 cd litmus
 echo "Running the litmus test for Busybox Deployment.."
 
 #copy the content of deployer run_litmus_test.yml into a different file to update the test specific parametes.
-cp apps/busybox/deployers/run_litmus_test.yml busybox_ctrl_kill.yml
+cp apps/busybox/deployers/run_litmus_test.yml busybox_ctrl_failure.yml
 
 : << EOF
   --------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind     | default busybox value               | test specifc value                     |
   -----------------------------------------------------------------------------------------------------        |
- | Litmus job label  | label    | app: busybox-litmus                 | app: deploy-busybox-ctrl-kill          | 
- | Litmus job Name   | job name | generateName: litmus-busybox-deploy | generateName: busybox-deploy-ctrl-kill |
- | appLabel          | env      | app=busybox-sts                     | app=ctrl-kill                          |
+ | Litmus job label  | label    | app: busybox-litmus                 | app: deploy-busybox-ctrl-failure          | 
+ | Litmus job Name   | job name | generateName: litmus-busybox-deploy | generateName: busybox-deploy-ctrl-failure |
+ | appLabel          | env      | app=busybox-sts                     | app=ctrl-failure                          |
  | deploy type       | env      | statefulset                         | deployment                             |
  | storage class     | env      | openebs-cstor-sparse                | openebs-jiva-default                   |
- | pvcName           | env      | openebs-busybox                     | busybox-ctrl-kill                      | 
- | appNamespace      | env      | app-busybox-ns                      | ctrl-kill	                             | 
+ | pvcName           | env      | openebs-busybox                     | busybox-ctrl-failure                      | 
+ | appNamespace      | env      | app-busybox-ns                      | ctrl-failure	                             | 
   --------------------------------------------------------------------------------------------------------------
 EOF
 
-sed -i -e 's/app: busybox-litmus/app: deploy-busybox-ctrl-kill/g' \
--e 's/generateName: litmus-busybox-deploy/generateName: busybox-deploy-ctrl-kill/g' \
--e 's/app=busybox-sts/app=ctrl-kill/g' \
+sed -i -e 's/app: busybox-litmus/app: deploy-busybox-ctrl-failure/g' \
+-e 's/generateName: litmus-busybox-deploy/generateName: busybox-deploy-ctrl-failure/g' \
+-e 's/app=busybox-sts/app=ctrl-failure/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
--e 's/value: openebs-busybox/value: busybox-ctrl-kill/g' \
--e 's/value: app-busybox-ns/value: ctrl-kill/g' busybox_ctrl_kill.yml
+-e 's/value: openebs-busybox/value: busybox-ctrl-failure/g' \
+-e 's/value: app-busybox-ns/value: ctrl-failure/g' busybox_ctrl_failure.yml
 
-cat busybox_ctrl_kill.yml
+cat busybox_ctrl_failure.yml
 
 # Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-ctrl-kill' job=busybox_ctrl_kill.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-ctrl-failure' job=busybox_ctrl_failure.yml
 cd ..
 
 #Get the cluster state Once the litmus jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 #Update the e2e event for the job
-bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 #Update the result of the test case in github openebs/e2e-openshift repository.
 if [ "$?" != "0" ]; then
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
@@ -89,12 +89,12 @@ fi
 # LitmusBook 2 #
 ################
 
-run_id="controller-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+run_id="controller-failure";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd litmus
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_controller_kill.yml
+cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_controller_failure.yml
 
 # Update the environmental variables in litmus job spec.
 
@@ -102,30 +102,30 @@ cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_controller_kill.yml
   ---------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                               |
   ---------------------------------------------------------------------------------------------------------------------|
- | appNamespace      | env    | app-busybox-ns                      | ctrl-kill                                        | 
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-controller-kill       |
- | appLabel          | env    | app=busybox-sts                     | app=ctrl-kill                                    | 
+ | appNamespace      | env    | app-busybox-ns                      | ctrl-failure                                        | 
+ | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-controller-failure       |
+ | appLabel          | env    | app=busybox-sts                     | app=ctrl-failure                                    | 
   ----------------------------------------------------------------------------------------------------------------------
 EOF
 
-sed -i -e 's/value: app-busybox-ns/value: ctrl-kill/g' \
--e 's/app=busybox-sts/app=ctrl-kill/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-controller-kill/g' busybox_loadgen_controller_kill.yml
+sed -i -e 's/value: app-busybox-ns/value: ctrl-failure/g' \
+-e 's/app=busybox-sts/app=ctrl-failure/g' \
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-controller-failure/g' busybox_loadgen_controller_failure.yml
 
-cat busybox_loadgen_controller_kill.yml
+cat busybox_loadgen_controller_failure.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
-' busybox_loadgen_controller_kill.yml
+' busybox_loadgen_controller_failure.yml
 
 # Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-controller-kill' job=busybox_loadgen_controller_kill.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-controller-failure' job=busybox_loadgen_controller_failure.yml
 cd ..
 # Get the cluster state Once the litmus jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
-bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 4-chaos "Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available" Fail $pipeline_id "$current_time" $commit_id $gittoken
@@ -142,48 +142,48 @@ run_id="jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testc
 echo $test_name
 
 cd litmus
-cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_ctrl_kill_test.yml
+cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_ctrl_failure_test.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value                 | test specifc value                       |
   ---------------------------------------------------------------------------------------------------------------|
- | pvcName           | env    | value: percona-mysql-claim            | value: busybox-ctrl-kill                 | 
+ | pvcName           | env    | value: percona-mysql-claim            | value: busybox-ctrl-failure                 | 
  | Litmus Job name   | name   | generateName: openebs-target-failure  | generateName: openebs-controller-failure |
  | Litmus job label  | label  | openebs-target-failure                | openebs-controller-failure               |
- | appLabel          | env    | value: name=percona                   | value:     app=ctrl-kill                 |
- | appNamespace      | env    | app-percon-ns                         | ctrl-kill                                | 
+ | appLabel          | env    | value: name=percona                   | value:     app=ctrl-failure                 |
+ | appNamespace      | env    | app-percon-ns                         | ctrl-failure                                | 
   ----------------------------------------------------------------------------------------------------------------
 EOF
 
-sed -i -e 's/value: percona-mysql-claim/value: busybox-ctrl-kill/g' \
+sed -i -e 's/value: percona-mysql-claim/value: busybox-ctrl-failure/g' \
 -e 's/generateName: openebs-target-failure/generateName: openebs-controller-failure/g' \
 -e 's/openebs-target-failure/openebs-controller-failure/g' \
 -e 's/name: target-failure/name: ctrl-failure/g' \
--e 's/value: '\''name=percona'\''/value: '\''app=ctrl-kill'\''/g' \
--e 's/value: app-percona-ns/value: ctrl-kill/g' run_ctrl_kill_test.yml
+-e 's/value: '\''name=percona'\''/value: '\''app=ctrl-failure'\''/g' \
+-e 's/value: app-percona-ns/value: ctrl-failure/g' run_ctrl_failure_test.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
-' run_ctrl_kill_test.yml
+' run_ctrl_failure_test.yml
 
 ## Replace the value of DATA_PERSISTENCE with application name in litmus experiment.
-sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_ctrl_kill_test.yml
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_ctrl_failure_test.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     blocksize: 4k\
     blockcount: 1024\
-    testfile: ctrlkilltest
-' run_ctrl_kill_test.yml
+    testfile: ctrlfailuretest
+' run_ctrl_failure_test.yml
 
-cat run_ctrl_kill_test.yml
+cat run_ctrl_failure_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-controller-failure' job=run_ctrl_kill_test.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-controller-failure' job=run_ctrl_failure_test.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
-bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
@@ -195,12 +195,12 @@ fi
 # LitmusBook 4 #
 ################
 
-run_id="deprovision-controller-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+run_id="deprovision-controller-failure";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd litmus
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_controller_kill.yml
+cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_controller_failure.yml
 
 # Update the environmental variables in litmus job spec.
 
@@ -208,30 +208,30 @@ cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_control
   -----------------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                                      |
   ----------------------------------------------------------------------------------------------------------------------------|
- | appNamespace      | env    | app-busybox-ns                      | ctrl-kill                                               | 
- | appLabel          | env    | app=busybox-sts                     | app=ctrl-kill                                           |
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-deprovision-controller-kill   |
+ | appNamespace      | env    | app-busybox-ns                      | ctrl-failure                                               | 
+ | appLabel          | env    | app=busybox-sts                     | app=ctrl-failure                                           |
+ | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-deprovision-controller-failure   |
  | action            | env    | provision                           | deprovision                                             | 
   -----------------------------------------------------------------------------------------------------------------------------
 EOF
 
-sed -i -e 's/value: app-busybox-ns/value: ctrl-kill/g' \
--e 's/app=busybox-sts/app=ctrl-kill/g' \
+sed -i -e 's/value: app-busybox-ns/value: ctrl-failure/g' \
+-e 's/app=busybox-sts/app=ctrl-failure/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-deprovision-controller-kill/g' busybox_loadgen_deprovision_controller_kill.yml
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-deprovision-controller-failure/g' busybox_loadgen_deprovision_controller_failure.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
-' busybox_loadgen_deprovision_controller_kill.yml
+' busybox_loadgen_deprovision_controller_failure.yml
 
-cat busybox_loadgen_deprovision_controller_kill.yml
+cat busybox_loadgen_deprovision_controller_failure.yml
 # Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-deprovision-controller-kill' job=busybox_loadgen_deprovision_controller_kill.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-deprovision-controller-failure' job=busybox_loadgen_deprovision_controller_failure.yml
 cd ..
 # Get the cluster state Once the litmus jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
-bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 rc_val=$(echo $?)
 
@@ -249,54 +249,55 @@ fi
 
 echo "********Deprovisioning Busybox Application*******"
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-ctrl-kill metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-ctrl-failure metadata="")
 echo $test_name
 
 cd litmus
-cp apps/busybox/deployers/run_litmus_test.yml deprovision_ctrl_kill.yml
+cp apps/busybox/deployers/run_litmus_test.yml deprovision_ctrl_failure.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                         |
   ---------------------------------------------------------------------------------------------------------------|
- | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-deprovision-ctrl-kill|
- | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-deprovision-ctrl-kill         |
- | appLabel          | env    | app=busybox-sts                     | app=ctrl-kill                              |
+ | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-deprovision-ctrl-failure|
+ | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-deprovision-ctrl-failure         |
+ | appLabel          | env    | app=busybox-sts                     | app=ctrl-failure                              |
  | deploy type       | env    | statefulset                         | deployment                                 |
  | storage clas      | env    | openebs-cstor-sparse                | openebs-jiva-default                       |
- | pvcName           | env    | openebs-busybox                     | busybox-ctrl-kill                          | 
- | appNamespace      | env    | app-busybox-ns                      | ctrl-kill                                  | 
+ | pvcName           | env    | openebs-busybox                     | busybox-ctrl-failure                          | 
+ | appNamespace      | env    | app-busybox-ns                      | ctrl-failure                                  | 
  | Action            | env    | value: provision                    | value: deprovision                         |
   ----------------------------------------------------------------------------------------------------------------
 EOF
 
-sed -i -e 's/generateName: litmus-busybox-deploy/generateName: busybox-deprovision-ctrl-kill/g' \
--e 's/app: busybox-litmus/app: busybox-deprovision-ctrl-kill/g' \
--e 's/app=busybox-sts/app=ctrl-kill/g' \
+sed -i -e 's/generateName: litmus-busybox-deploy/generateName: busybox-deprovision-ctrl-failure/g' \
+-e 's/app: busybox-litmus/app: busybox-deprovision-ctrl-failure/g' \
+-e 's/app=busybox-sts/app=ctrl-failure/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
--e 's/value: openebs-busybox/value: busybox-ctrl-kill/g' \
--e 's/value: app-busybox-ns/value: ctrl-kill/g' \
--e 's/value: provision/value: deprovision/g' deprovision_ctrl_kill.yml
+-e 's/value: openebs-busybox/value: busybox-ctrl-failure/g' \
+-e 's/value: app-busybox-ns/value: ctrl-failure/g' \
+-e 's/value: provision/value: deprovision/g' deprovision_ctrl_failure.yml
 
-cat deprovision_ctrl_kill.yml
+cat deprovision_ctrl_failure.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deprovision-ctrl-kill' job=deprovision_ctrl_kill.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deprovision-ctrl-failure' job=deprovision_ctrl_failure.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
-bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 rc_val=$(echo $?)
 current_time=$(eval $time)
+
 # testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-failure jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-failure jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Pass $pipeline_id "$current_time" $commit_id $gittoken
 
