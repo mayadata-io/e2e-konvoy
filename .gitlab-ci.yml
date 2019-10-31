@@ -4,7 +4,7 @@ stages:
   - CLUSTER-SETUP
   - PROVIDER-INFRA-SETUP
   - APP-FUNC-TEST
-  # - APP-CHAOS-TEST
+  - APP-CHAOS-TEST
   # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
@@ -128,12 +128,6 @@ CSI-PROVISIONER:
   dependencies:
     - SUTP-konvoy-cluster  
 
-VQDN-deploy-busybox-csi:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
-
 busybox-deployment-cstor:
   extends: .func_test_template
   script:
@@ -188,14 +182,83 @@ busybox-jiva-snapshot:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-jiva-snapshot/busybox-jiva-snapshot
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-jiva-snapshot/busybox-jiva-snapshot
 
-ISTV-konvoy-cleanup:
+.chaos_test_template:
+  image: openebs/openshift-ci:latest
+  stage: APP-CHAOS-TEST
+  tags: 
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - konvoy-cluster
+    
+busybox-controller-kill:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-controller-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-controller-kill
+
+busybox-target-kill:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-target-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-target-kill
+
+busybox-cstor-pool-kill:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-kill
+
+busybox-cstor-pool-delete:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-delete
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-delete
+
+busybox-cstor-sts-verify-data-persistence:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
+
+busybox-jiva-sts-verify-data-persistence:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
+
+busybox-deployment-target-network-delay:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-target-nw-delay
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-target-nw-delay
+
+busybox-deployment-controller-network-delay:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-controller-nw-delay
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-controller-nw-delay
+
+percona-target-network-delay:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-target-nw-delay
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-target-nw-delay
+
+percona-controller-network-delay:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-controller-nw-delay
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-controller-nw-delay
+
+konvoy-cleanup:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP
   when: always  
   dependencies: 
-    - SUTP-konvoy-cluster
+    - konvoy-cluster
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/ISTV-cluster-cleanup/cluster-cleanup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/ISTV-cluster-cleanup/cluster-cleanup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-cleanup/cluster-cleanup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-cleanup/cluster-cleanup/cluster-cleanup

@@ -29,13 +29,23 @@ cp experiments/chaos/openebs_pool_failure/run_litmus_test.yml pooldelete.yml
 
 sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
 -e 's/name: openebs-pool-failure/name: openebs-pool-delete/g' \
+-e 's/generateName: openebs-pool-failure-/generateName: openebs-pool-delete-/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
 -e 's/pool-kill/pool-delete/g' \
--e 's/value: app-percona-ns/value: bb-cstor-deployment/g' pooldelete.yml
+-e 's/name: pool-failure/name: pool-delete-configmap/g' \
+-e 's/value: app-percona-ns/value: bb-cstor-deployment/g' \
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' pooldelete.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
+' pooldelete.yml
+
+## Insert the set of variables for busybox data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k \
+    blockcount: 1024 \
+    testfile: bb-cstor-pool-delete
 ' pooldelete.yml
 
 cat pooldelete.yml
@@ -43,6 +53,22 @@ cat pooldelete.yml
 bash ../Openshift-EE/utils/litmus_job_runner label='name:openebs-pool-delete' job=pooldelete.yml
 cd ..
 bash Openshift-EE/utils/dump_cluster_state;
-bash Openshift-EE/utils/event_updater jobname:bb-cstor-pool-delete $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash Openshift-EE/utils/event_updater jobname:bb-cstor-pool-delete $test_name jobid:"$job_id" pipelineid:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash Openshift-EE/utils/e2e-cr jobname:bb-cstor-pool-delete jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash Openshift-EE/utils/e2e-cr jobname:bb-cstor-pool-delete jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4
+else
+  pod
+fi

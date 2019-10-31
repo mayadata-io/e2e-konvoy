@@ -23,30 +23,35 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-controller-nw-delay jobphas
 # Verifying Data-persistence #
 ##############################
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="percona-jiva-verify";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
 echo $test_name
 
 cd litmus
 echo "Running Litmus Book for verifying data-persistence against percona application."
-cp experiments/functional/data-persistence/run_litmus_test.yml run_verify_data_persistence.yml
+cp experiments/functional/data-persistence/run_litmus_test.yml percona_jiva_verify_data_persistence.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-jiva-/g' \
 -e 's/name: data-persistence-litmus/name: data-persistence-percona-jiva/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-jiva/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: VERIFY/}' \
--e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_verify_data_persistence.yml
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' percona_jiva_verify_data_persistence.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
     dbname: tdb
-' run_verify_data_persistence.yml
+' percona_jiva_verify_data_persistence.yml
 
-cat run_verify_data_persistence.yml
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' percona_jiva_verify_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva' job=run_verify_data_persistence.yml
+cat percona_jiva_verify_data_persistence.yml
+
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva' job=percona_jiva_verify_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -57,29 +62,29 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:percona-controller-nw-delay 
 # Delete Files after Verify Data-Persistence #
 ##############################################
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="percona-jiva-delete";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
 echo $test_name
 
 cd litmus
-cp experiments/functional/data-persistence/run_litmus_test.yml run_delete_data_files.yml
+cp experiments/functional/data-persistence/run_litmus_test.yml percona_jiva_delete_data_files.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-jiva-/g' \
 -e 's/name: data-persistence-litmus/name: data-persistence-percona-jiva/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-jiva/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: DELETE/}' \
--e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_delete_data_files.yml
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' percona_jiva_delete_data_files.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
     dbname: tdb
-' run_delete_data_files.yml
+' percona_jiva_delete_data_files.yml
 
-cat run_delete_data_files.yml
+cat percona_jiva_delete_data_files.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva' job=run_verify_data_persistence.yml
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva' job=percona_jiva_delete_data_files.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -89,7 +94,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:percona-controller-nw-delay 
 ## Performing controller-network-delay test ##
 ##########################################
 
-run_id="percona-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata="")
+run_id="percona-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -97,6 +102,7 @@ cp experiments/chaos/openebs_controller_network_delay/run_litmus_test.yml run_pe
 
 sed -i -e 's/openebs-controller-network-delay/percona-controller-nw-delay/g' \
 -e 's/name: target-failure/name: percona-controller-failure-configmap/g' \
+-e 's/name: target-network-delay/name: controller-network-delay/g' \
 -e 's/value: app-percona-ns/value: percona-jiva/g' run_percona_controller_nw_delay.yml
 
 sed -i '/command:/i \

@@ -21,7 +21,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-target-kill jobphase:Running ini
 
 ## Performing target failure
 
-run_id="delete";test_name=$(bash Openshift-EE/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
+run_id="cstor-kill";test_name=$(bash Openshift-EE/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -30,6 +30,7 @@ cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_target_kill_
 sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
 -e 's/target-zrepl-kill/target-delete/g' \
+-e 's/name: target-failure/name: target-kill-configmap/g' \
 -e 's/value: app-percona-ns/value: bb-cstor-deployment/g' run_target_kill_test.yml
 
 sed -i '/command:/i \
@@ -53,6 +54,22 @@ cat run_target_kill_test.yml
 bash ../Openshift-EE/utils/litmus_job_runner label='name:openebs-target-failure' job=run_target_kill_test.yml
 cd ..
 bash Openshift-EE/utils/dump_cluster_state;
-bash Openshift-EE/utils/event_updater jobname:bb-target-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash Openshift-EE/utils/event_updater jobname:bb-target-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash Openshift-EE/utils/e2e-cr jobname:bb-target-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash Openshift-EE/utils/e2e-cr jobname:bb-target-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4
+else
+  pod
+fi

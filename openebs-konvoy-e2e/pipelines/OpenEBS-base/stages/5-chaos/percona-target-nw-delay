@@ -23,30 +23,35 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-target-nw-delay jobphase:Ru
 # Verifying Data-persistence #
 ##############################
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="percona-cstor-verify";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
 echo $test_name
 
 cd litmus
 echo "Running Litmus Book for verifying data-persistence against percona application."
-cp experiments/functional/data-persistence/run_litmus_test.yml run_verify_data_persistence.yml
+cp experiments/functional/data-persistence/run_litmus_test.yml percona_cstor_verify_data_persistence.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-cstor-/g' \
 -e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-cstor/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: VERIFY/}' \
--e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_verify_data_persistence.yml
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' percona_cstor_verify_data_persistence.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
     dbname: tdb
-' run_verify_data_persistence.yml
+' percona_cstor_verify_data_persistence.yml
 
-cat run_verify_data_persistence.yml
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' percona_cstor_verify_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor' job=run_verify_data_persistence.yml
+cat percona_cstor_verify_data_persistence.yml
+
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor' job=percona_cstor_verify_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -57,29 +62,34 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:percona-target-nw-delay $tes
 # Delete Files after Verify Data-Persistence #
 ##############################################
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="percona-cstor-delete";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
 echo $test_name
 
 cd litmus
-cp experiments/functional/data-persistence/run_litmus_test.yml run_delete_data_files.yml
+cp experiments/functional/data-persistence/run_litmus_test.yml percona_cstor_delete_data_files.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-cstor-/g' \
 -e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-cstor/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: DELETE/}' \
--e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_delete_data_files.yml
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' percona_cstor_delete_data_files.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
     dbname: tdb
-' run_delete_data_files.yml
+' percona_cstor_delete_data_files.yml
 
-cat run_delete_data_files.yml
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' percona_cstor_delete_data_files.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor' job=run_verify_data_persistence.yml
+cat percona_cstor_delete_data_files.yml
+
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor' job=percona_cstor_delete_data_files.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -89,7 +99,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:percona-target-nw-delay $tes
 ## Performing Target-network-delay test ##
 ##########################################
 
-run_id="percona-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata="")
+run_id="percona-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata=${run_id})
 echo $test_name
 
 cd litmus
