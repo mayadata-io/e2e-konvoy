@@ -18,7 +18,7 @@ echo $present_dir
 
 #pooling over previous job to complete
 echo "***********Applying openebs-storage-clas********"
-bash openebs-konvoy-e2e/utils/pooling jobname:s2-j6-cstor-cspc-striped-pool
+bash openebs-konvoy-e2e/utils/pooling jobname:s2-j5-cstor-raidz2-pool
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j7-policies jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag"
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-storage-policies metadata="")
