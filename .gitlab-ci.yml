@@ -193,19 +193,19 @@ busybox-jiva-snapshot:
 
 upgrade-control-plane:
   extends: .upgrade_openebs
-  scripts:
+  script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-control-plane
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-control-plane
 
 upgrade-cstor:
   extends: .upgrade_openebs
-  scripts:
+  script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-cstor
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-cstor
 
 upgrade-jiva:
   extends: .upgrade_openebs
-  scripts:
+  script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-jiva
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-jiva
 
