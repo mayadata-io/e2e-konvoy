@@ -1,14 +1,14 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' '"'$RELEASE_BRANCH'"' '"'$NDM_TAG'"' '"'$E_USER'"' '"'$E_PASSWORD'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$RELEASE_BRANCH'"' '"'$NDM_TAG'"' '"'$E_USER'"' '"'$E_PASSWORD'"'
 }
 
 node() {
 job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
-releaseTag=$(echo $3)
+releaseTag=$(echo $4)
 releaseBranch=$(echo $5)
 ndmTag=$(echo $6)
 case_id=XJGT
@@ -155,7 +155,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4 $6 $7 $8 $9
+  node $2 $3 $4 $5 $6 $7 $8 $9
 else
   pod
 fi

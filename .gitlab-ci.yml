@@ -219,61 +219,61 @@ upgrade-jiva:
     - konvoy-cluster
     
 busybox-controller-kill:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-controller-kill
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-controller-kill
 
 busybox-target-kill:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-target-kill
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-target-kill
 
 busybox-cstor-pool-kill:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-kill
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-kill
 
 busybox-cstor-pool-delete:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-delete
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-delete
 
 busybox-cstor-sts-verify-data-persistence:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
 
 busybox-jiva-sts-verify-data-persistence:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
 
 busybox-deployment-target-network-delay:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-target-nw-delay
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-target-nw-delay
 
 busybox-deployment-controller-network-delay:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-controller-nw-delay
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-controller-nw-delay
 
 percona-target-network-delay:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-target-nw-delay
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-target-nw-delay
 
 percona-controller-network-delay:
-  extends: .func_test_template
+  extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-controller-nw-delay
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-controller-nw-delay
