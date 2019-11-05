@@ -26,7 +26,7 @@ echo $test_name
 
 cd litmus
 echo "Running the litmus test for BusyBox statefulset..."
-cp apps/busybox/deployment/run_litmus_test.yml statefulset_busybox_cstor.yml
+cp apps/busybox/deployers/run_litmus_test.yml statefulset_busybox_cstor.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-statefulset/g' \
@@ -48,7 +48,7 @@ echo $test_name
 
 cd litmus
 echo "Running the litmus test for Liveness for BusyBox statefulset..."
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_statefulset_cstor.yml
+cp apps/busybox/liveness/run_litmus_test.yml liveness_busybox_statefulset_cstor.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-statefulset-liveness-cstor-/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-statefulset/g' \

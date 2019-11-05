@@ -25,7 +25,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-pr
 echo $test_name
 
 cd litmus
-cp apps/busybox/deployment/run_litmus_test.yml deploy_busybox_jiva.yml
+cp apps/busybox/deployers/run_litmus_test.yml deploy_busybox_jiva.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
 -e 's/value: statefulset/value: deployment/g' \
@@ -47,7 +47,7 @@ run_id="deployment-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test
 echo $test_name
 
 cd litmus
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_deployment_jiva.yml
+cp apps/busybox/liveness/run_litmus_test.yml liveness_busybox_deployment_jiva.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-deployment-liveness-jiva-/g' \
 -e 's/value: app-busybox-ns/value: bb-jiva-deployment/g' \

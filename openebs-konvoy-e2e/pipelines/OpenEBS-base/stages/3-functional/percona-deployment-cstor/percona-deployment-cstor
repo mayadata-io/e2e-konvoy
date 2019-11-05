@@ -21,7 +21,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-deployment-cstor jobphase:R
 
 ##Deploying percona Application
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata="")
+run_id="cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata="")
 echo $test_name
 
 cd litmus
@@ -32,6 +32,11 @@ sed -i -e 's/value: openebs-standard/value: openebs-cstor-disk/g' \
 -e 's/value: app-percona-ns/value: percona-cstor/g' \
 -e 's/generateName: litmus-percona-/generateName: litmus-percona-cstor-/g' \
 -e 's/app: percona-deployment/app: percona-deployment-cstor/g' deploy_percona_cstor.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' deploy_percona_cstor.yml
 
 cat deploy_percona_cstor.yml
 
