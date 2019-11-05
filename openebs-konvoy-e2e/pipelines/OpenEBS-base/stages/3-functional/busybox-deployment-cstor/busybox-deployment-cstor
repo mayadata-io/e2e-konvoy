@@ -25,7 +25,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-pr
 echo $test_name
 
 cd litmus
-cp apps/busybox/deployment/run_litmus_test.yml deploy_busybox_cstor.yml
+cp apps/busybox/deployers/run_litmus_test.yml deploy_busybox_cstor.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
 -e 's/value: statefulset/value: deployment/g' \

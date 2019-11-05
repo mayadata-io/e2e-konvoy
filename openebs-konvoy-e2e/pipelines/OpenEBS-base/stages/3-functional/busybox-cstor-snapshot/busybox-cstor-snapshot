@@ -21,12 +21,12 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-snapshot-cstor jobphase:Run
 
 ##Deploying BusyBox Application
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-app-busybox-ns metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-bb-cstor-snapshot metadata="")
 echo $test_name
 
 cd litmus
 echo "Running the litmus test for BusyBox Deployment..."
-cp apps/busybox/deployment/run_litmus_test.yml deploy_busybox_cstor_snapshot.yml
+cp apps/busybox/deployers/run_litmus_test.yml deploy_busybox_cstor_snapshot.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-snapshot/g' \
