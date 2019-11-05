@@ -37,9 +37,11 @@ sed -i '/name: UPGRADE_CSTOR/{n;s/.*/            value: "true"/}' \
 -e '/name: NEW_NDM_TAG/{n;s/.*/            value: '"'$new_ndmTag'"'/}' \
 -e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' upgrade-cstor.yml
 
+sed -i -e 's/app: openebs-upgrade/app: openebs-cstor-upgrade/g' upgrade-cstor.yml
+
 cat upgrade-cstor.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:openebs-upgrade' job=upgrade-cstor.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:openebs-cstor-upgrade' job=upgrade-cstor.yml
 
 echo "Dumping state of cluster post job run"; echo ""
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
