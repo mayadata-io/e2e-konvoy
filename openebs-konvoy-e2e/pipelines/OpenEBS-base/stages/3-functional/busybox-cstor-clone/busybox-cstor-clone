@@ -29,7 +29,7 @@ echo "Running the litmus test for BusyBox Deployment..."
 cp apps/busybox/deployers/run_litmus_test.yml deploy_busybox_cstor_clone.yml
 
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
--e 's/value: app-busybox-ns/value: bb-cstor-clone/g'
+-e 's/value: app-busybox-ns/value: bb-cstor-clone/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/generateName: litmus-busybox-deploy-/generateName: busybox-deploy-cstor-clone/g' \
 -e 's/app: busybox-litmus/app: busybox-litmus-cstor-clone/g' deploy_busybox_cstor_clone.yml
@@ -42,9 +42,13 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
 ##Deploying Liveness on BusyBox Application
 
-run_id="cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata="")
+run_id="cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -68,9 +72,13 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
 ##DATA-PERSISTENCE
 
-run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -105,9 +113,13 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
 ##Snapshot creation
 
-run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-snapshot metadata="")
+run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-snapshot metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -131,9 +143,13 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-cstor-clone $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
 ##clone-creation
 
-run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-clone metadata="")
+run_id="bb-cstor-clone";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-clone metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -161,11 +177,11 @@ rc_val=$(echo $?)
 current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
-bash Openshift-EE/utils/e2e-cr jobname:busybox-cstor-clone jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-cstor-clone jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
 exit 1;
 fi
 
-bash Openshift-EE/utils/e2e-cr jobname:busybox-cstor-clone jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-cstor-clone jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 

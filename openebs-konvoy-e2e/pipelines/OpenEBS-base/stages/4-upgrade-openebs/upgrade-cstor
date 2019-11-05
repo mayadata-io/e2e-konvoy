@@ -30,7 +30,7 @@ cd litmus
 echo "Running the litmus test.."
 
 cp providers/openebs/upgrade/run_litmus_test.yml upgrade-cstor.yml
-sed -i '/name: UPGRADE_CSTOR/{n;s/.*/            value: "true"/}' \
+sed -i -e '/name: UPGRADE_CSTOR/{n;s/.*/            value: "true"/}' \
 -e '/name: FROM_VERSION/{n;s/.*/            value: '"'$from_version'"'/}' \
 -e '/name: TO_VERSION/{n;s/.*/            value: '"'$to_version'"'/}' \
 -e '/name: UPGRADE_IMAGE_TAG/{n;s/.*/            value: '"'$upgrade_imageTag'"'/}' \
