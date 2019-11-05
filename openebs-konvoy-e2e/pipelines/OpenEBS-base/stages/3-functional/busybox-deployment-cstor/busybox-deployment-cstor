@@ -41,9 +41,13 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
 ##Deploying Liveness on BusyBox Application
 
-run_id="deployment-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata="")
+run_id="deployment-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -60,15 +64,19 @@ sed -i '/command:/i \
             
 cat liveness_busybox_deployment_cstor.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-deployment-liveness-cstor' job=lliveness_busybox_deployment_cstor.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-deployment-liveness-cstor' job=liveness_busybox_deployment_cstor.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:busybox-deployment-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
 ##DATA-PERSISTENCE
 
-run_id="bb-deployment-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="bb-deployment-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -107,11 +115,11 @@ rc_val=$(echo $?)
 current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
-bash Openshift-EE/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
 exit 1;
 fi
 
-bash Openshift-EE/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 

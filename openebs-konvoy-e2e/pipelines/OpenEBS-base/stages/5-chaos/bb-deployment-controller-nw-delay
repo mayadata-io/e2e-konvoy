@@ -57,6 +57,9 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:bb-controller-nw-delay $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
 
 ##############################################
 # Delete Files after Verify Data-Persistence #
@@ -94,6 +97,10 @@ cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:bb-controller-nw-delay $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+if [ "$?" != "0" ]; then
+exit 1;
+fi
 
 ##########################################
 ## Performing controller-network-delay test ##
@@ -137,11 +144,11 @@ rc_val=$(echo $?)
 current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
-bash Openshift-EE/utils/e2e-cr jobname:bb-controller-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-controller-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
 exit 1;
 fi
 
-bash Openshift-EE/utils/e2e-cr jobname:bb-controller-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-controller-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 if [ "$1" == "node" ];then
   node $2 $3 $4

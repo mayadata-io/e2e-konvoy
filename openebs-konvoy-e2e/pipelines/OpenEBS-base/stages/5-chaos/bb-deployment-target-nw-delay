@@ -23,7 +23,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-target-nw-delay jobphase:Running
 # Verifying Data-persistence #
 ##############################
 
-run_id="bb-cstor-verify";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="bb-cstor-verify";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -57,12 +57,15 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:bb-target-nw-delay $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
 
 ##############################################
 # Delete Files after Verify Data-Persistence #
 ##############################################
 
-run_id="bb-cstor-delete";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata="")
+run_id="bb-cstor-delete";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -95,11 +98,15 @@ cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:bb-target-nw-delay $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
 
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
 ##########################################
 ## Performing Target-network-delay test ##
 ##########################################
 
-run_id="bb-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata="")
+run_id="bb-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -137,11 +144,11 @@ rc_val=$(echo $?)
 current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
-bash Openshift-EE/utils/e2e-cr jobname:bb-target-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-target-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
 exit 1;
 fi
 
-bash Openshift-EE/utils/e2e-cr jobname:bb-target-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-target-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 

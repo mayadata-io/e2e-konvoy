@@ -21,7 +21,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-cstor-pool-kill jobphase:Running
 
 echo "*******Performing cStor Pool kill**********"
 
-run_id="kill";test_name=$(bash Openshift-EE/utils/generate_test_name testcase=openebs-pool-failure metadata=${run_id})
+run_id="kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-pool-failure metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -49,20 +49,20 @@ sed -i '/parameters.yml: |/a \
 
 cat poolkill.yml
 
-bash ../Openshift-EE/utils/litmus_job_runner label='name:openebs-pool-kill' job=poolkill.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-pool-kill' job=poolkill.yml
 cd ..
-bash Openshift-EE/utils/dump_cluster_state;
-bash Openshift-EE/utils/event_updater jobname:bb-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id"
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:bb-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id"
 
 rc_val=$(echo $?)
 current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
-bash Openshift-EE/utils/e2e-cr jobname:bb-cstor-pool-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-cstor-pool-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
 exit 1;
 fi
 
-bash Openshift-EE/utils/e2e-cr jobname:bb-cstor-pool-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-cstor-pool-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 
