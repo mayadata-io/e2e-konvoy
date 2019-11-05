@@ -49,7 +49,7 @@ sed -i '/parameters.yml: |/a \
 
 cat poolkill.yml
 
-bash ../Openshift-EE/utils/litmus_job_runner label='name:openebs-pool-failure' job=poolkill.yml
+bash ../Openshift-EE/utils/litmus_job_runner label='name:openebs-pool-kill' job=poolkill.yml
 cd ..
 bash Openshift-EE/utils/dump_cluster_state;
 bash Openshift-EE/utils/event_updater jobname:bb-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id"

@@ -47,7 +47,7 @@ run_id="deployment-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test
 echo $test_name
 
 cd litmus
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_deployment_jiva.yml
+cp apps/busybox/liveness/run_litmus_test.yml liveness_busybox_deployment_jiva.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-deployment-liveness-jiva-/g' \
 -e 's/value: app-busybox-ns/value: bb-jiva-deployment/g' \

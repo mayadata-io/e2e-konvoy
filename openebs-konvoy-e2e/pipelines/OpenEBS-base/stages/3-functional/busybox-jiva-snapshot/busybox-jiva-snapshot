@@ -49,7 +49,7 @@ echo $test_name
 
 cd litmus
 echo "Running the litmus test for Liveness for BusyBox Application..."
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_jiva_snapshot.yml
+cp apps/busybox/liveness/run_litmus_test.yml liveness_busybox_jiva_snapshot.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-liveness-jiva-snapshot/g' \
 -e 's/value: app-busybox-ns/value: bb-jiva-snapshot/g' \
@@ -99,7 +99,7 @@ sed -i '/parameters.yml: |/a \
 
 cat bb_jiva_snapshot_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-jiva' job=bb_jiva_snapshot_data_persistence.yml
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-jiva-snapshot' job=bb_jiva_snapshot_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -116,6 +116,7 @@ cp experiments/functional/snapshot-creation/run_litmus_test.yml run_bb_jiva_snap
 
 sed -i -e 's/generateName: litmus-snapshot-/generateName: bb-jiva-snapshot-/g' \
 -e 's/value: app-busybox-ns/value: bb-jiva-snapshot/g' \
+-e 's/value: snapshot-busybox/value: snapshot-busybox-jiva/g' \
 -e 's/app: snapshot-litmus/app: bb-jiva-snapshot/g' run_bb_jiva_snapshot.yml
 
 sed -i '/command:/i \

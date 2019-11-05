@@ -47,7 +47,7 @@ run_id="deployment-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_tes
 echo $test_name
 
 cd litmus
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_deployment_cstor.yml
+cp apps/busybox/liveness/run_litmus_test.yml liveness_busybox_deployment_cstor.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-deployment-liveness-cstor-/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-deployment/g' \

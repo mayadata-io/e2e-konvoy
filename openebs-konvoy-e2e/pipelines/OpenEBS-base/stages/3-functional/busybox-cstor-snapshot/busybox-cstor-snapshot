@@ -49,7 +49,7 @@ echo $test_name
 
 cd litmus
 echo "Running the litmus test for Liveness for BusyBox Application..."
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_cstor_snapshot.yml
+cp apps/busybox/liveness/run_litmus_test.yml liveness_busybox_cstor_snapshot.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: busybox-liveness-cstor-snapshot/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-snapshot/g' \
@@ -99,7 +99,7 @@ sed -i '/parameters.yml: |/a \
 
 cat bb_cstor_snapshot_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor' job=bb_cstor_snapshot_data_persistence.yml
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor-snapshot' job=bb_cstor_snapshot_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -116,6 +116,7 @@ cp experiments/functional/snapshot-creation/run_litmus_test.yml run_bb_cstor_sna
 
 sed -i -e 's/generateName: litmus-snapshot-/generateName: bb-cstor-snapshot-/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-snapshot/g' \
+-e 's/value: snapshot-busybox/value: snapshot-busybox-cstor/g' \
 -e 's/app: snapshot-litmus/app: bb-cstor-snapshot/g' run_bb_cstor_snapshot.yml
 
 sed -i '/command:/i \
@@ -135,11 +136,11 @@ rc_val=$(echo $?)
 current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
-bash Openshift-EE/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+bash Openshift-EE/utils/e2e-cr jobname:busybox-snapshot-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
 exit 1;
 fi
 
-bash Openshift-EE/utils/e2e-cr jobname:busybox-deployment-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+bash Openshift-EE/utils/e2e-cr jobname:busybox-snapshot-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
 }
 

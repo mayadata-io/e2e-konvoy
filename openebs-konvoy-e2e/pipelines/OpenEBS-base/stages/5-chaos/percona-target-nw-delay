@@ -31,7 +31,7 @@ echo "Running Litmus Book for verifying data-persistence against percona applica
 cp experiments/functional/data-persistence/run_litmus_test.yml percona_cstor_verify_data_persistence.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-cstor-/g' \
--e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor-verify/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-cstor/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: VERIFY/}' \
@@ -51,7 +51,7 @@ sed -i '/command:/i \
 
 cat percona_cstor_verify_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor' job=percona_cstor_verify_data_persistence.yml
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor-verify' job=percona_cstor_verify_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -69,7 +69,7 @@ cd litmus
 cp experiments/functional/data-persistence/run_litmus_test.yml percona_cstor_delete_data_files.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-cstor-/g' \
--e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor-delete/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-cstor/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: DELETE/}' \
@@ -89,7 +89,7 @@ sed -i '/command:/i \
 
 cat percona_cstor_delete_data_files.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor' job=percona_cstor_delete_data_files.yml
+bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-cstor-delete' job=percona_cstor_delete_data_files.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;

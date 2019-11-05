@@ -49,7 +49,7 @@ echo $test_name
 
 cd litmus
 echo "Running the litmus test for Liveness for BusyBox Application..."
-cp apps/busybox/deployment/run_litmus_test.yml liveness_busybox_cstor_clone.yml
+cp apps/busybox/liveness/run_litmus_test.yml liveness_busybox_cstor_clone.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-liveness-cstor-/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-clone/g' \
