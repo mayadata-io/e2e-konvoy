@@ -2,7 +2,7 @@
 set -x
 
 pod(){
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-cstor-clone/busybox-cstor-clone node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' 
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-cstor-clone/busybox-cstor-clone node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' 
 }
 
 node(){
@@ -36,7 +36,7 @@ sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
 
 cat deploy_busybox_cstor_clone.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-cstor' job=deploy_busybox_cstor_clone.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-cstor-clone' job=deploy_busybox_cstor_clone.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
