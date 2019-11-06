@@ -117,7 +117,24 @@ cp experiments/chaos/openebs_target_network_delay/run_litmus_test.yml run_target
 
 sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-targetdelay/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=target-delay'\''/g' \
+-e 's/name: target-network-delay/name: target-network-delay-config/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/value: app-percona-ns/value: target-delay/g' run_targetdelay_test.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_targetdelay_test.yml
+
+## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_targetdelay_test.yml
+
+## Insert the set of variables for busybox data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k\
+    blockcount: 1024\
+    testfile: targetkilltest
+' run_targetdelay_test.yml
 
 echo "Running the litmus test for Busybox Deployment Scaleup.."
 cat run_targetdelay_test.yml
