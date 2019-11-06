@@ -51,7 +51,7 @@ sed -i '/command:/i \
 
 cat run_verify_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor-verify' job=run_verify_data_persistence.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor-verify' job=run_verify_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -92,7 +92,7 @@ sed -i '/command:/i \
 
 cat run_bb_delete_data_files.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor-delete' job=run_bb_delete_data_files.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-cstor-delete' job=run_bb_delete_data_files.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;

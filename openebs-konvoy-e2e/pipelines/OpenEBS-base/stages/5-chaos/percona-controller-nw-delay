@@ -51,7 +51,7 @@ sed -i '/command:/i \
 
 cat percona_jiva_verify_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva-verify' job=percona_jiva_verify_data_persistence.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva-verify' job=percona_jiva_verify_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -87,7 +87,7 @@ sed -i '/parameters.yml: |/a \
 
 cat percona_jiva_delete_data_files.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva-delete' job=percona_jiva_delete_data_files.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-jiva-delete' job=percona_jiva_delete_data_files.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -128,7 +128,7 @@ sed -i '/parameters.yml: |/a \
 
 cat run_percona_controller_nw_delay.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:percona-controller-nw-delay' job=run_percona_controller_nw_delay.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:percona-controller-nw-delay' job=run_percona_controller_nw_delay.yml
 cd..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
