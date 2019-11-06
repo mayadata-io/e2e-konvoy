@@ -133,7 +133,7 @@ sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_target
 sed -i '/parameters.yml: |/a \
     blocksize: 4k\
     blockcount: 1024\
-    testfile: targetkilltest
+    testfile: targetnetworkdelay
 ' run_targetdelay_test.yml
 
 echo "Running the litmus test for Busybox Deployment Scaleup.."

@@ -132,7 +132,7 @@ sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' poolkill.y
 sed -i '/parameters.yml: |/a \
     blocksize: 4k\
     blockcount: 1024\
-    testfile: targetkilltest
+    testfile: poolkill
 ' poolkill.yml
 
 echo "Running the litmus test for Busybox Deployment application pod kill.."
