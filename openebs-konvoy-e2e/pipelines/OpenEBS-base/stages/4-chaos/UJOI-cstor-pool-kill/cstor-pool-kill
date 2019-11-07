@@ -116,11 +116,23 @@ cp experiments/chaos/openebs_pool_failure/run_litmus_test.yml poolkill.yml
 sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-poolkill/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=pool-kill'\''/g' \
 -e 's/enable//g' \
+-e 's/name: pool-failure/name: cstor-pool-kill/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/value: app-percona-ns/value: pool-kill/g' poolkill.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
+' poolkill.yml
+
+## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' poolkill.yml
+
+## Insert the set of variables for busybox data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k\
+    blockcount: 1024\
+    testfile: poolkill
 ' poolkill.yml
 
 echo "Running the litmus test for Busybox Deployment application pod kill.."
