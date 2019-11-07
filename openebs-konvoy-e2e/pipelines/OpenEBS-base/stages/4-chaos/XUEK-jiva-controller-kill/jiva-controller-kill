@@ -100,7 +100,7 @@ run_id="jiva-controller";test_name=$(bash openebs-konvoy-e2e/utils/generate_test
 echo $test_name
  
 cd litmus
-cp experiments/chaos/openebs-target-failure/run_litmus_test.yml run_jiva_ctrl_kill.yml
+cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_jiva_ctrl_kill.yml
 
 sed -i -e 's/value: percona-mysql-claim/value: busybox-jiva-ctrl-kill/g' \
 -e 's/generateName: openebs-target-failure/generateName: openebs-jiva-ctrl-kill/g' \
