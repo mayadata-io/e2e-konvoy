@@ -102,7 +102,7 @@ echo $test_name
 cd litmus
 cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_jiva_ctrl_kill.yml
 
-sed -i -e 's/value: percona-mysql-claim/value: busybox-jiva-ctrl-kill/g' \
+sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-jiva-ctrlkill/g' \
 -e 's/generateName: openebs-target-failure/generateName: openebs-jiva-ctrl-kill/g' \
 -e 's/name: openebs-target-failure/name: openebs-jiva-ctrl-kill/g' \
 -e 's/name: target-failure/name: jiva-ctrl-kill/g' \
