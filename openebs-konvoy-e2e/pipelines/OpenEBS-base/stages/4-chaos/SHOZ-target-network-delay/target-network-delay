@@ -109,7 +109,7 @@ fi
 
 echo "*******Performing network delay on Target**********"
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata="")
+run_id="cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata=${run_id})
 echo $test_name
 
 cd litmus
