@@ -278,6 +278,12 @@ ABZF-cStor-volume-resize:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ABZF-csi-volume-resize/csi-volume-resize
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ABZF-csi-volume-resize/csi-volume-resize
 
+LCDG-backup-and-restore:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore
+
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
 #   script:
