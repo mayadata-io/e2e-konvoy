@@ -96,7 +96,7 @@ fi
 
 echo "Performing jiva-controller-kill..."
 
-run_id="jiva-controller";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-failure metadata="")
+run_id="jiva-controller";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
 echo $test_name
  
 cd litmus
@@ -116,14 +116,14 @@ sed -i '/command:/i \
 ' run_jiva_ctrl_kill.yml
 
 ## Replace the value of DATA_PERSISTENCE with application name in litmus experiment.
-sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_ctrl_kill_test.yml
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_jiva_ctrl_kill.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     blocksize: 4k\
     blockcount: 1024\
     testfile: jiva-ctrl-kill-test
-' run_ctrl_kill_test.yml
+' run_jiva_ctrl_kill.yml
 
 cat run_jiva_ctrl_kill.yml
 
