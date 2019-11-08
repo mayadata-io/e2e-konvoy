@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$FROM_VERSION'"' '"'$RELEASE_BRANCH'"' '"'$OLD_NDM_TAG'"' '"'$E_USER'"' '"'$E_PASSWORD'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$FROM_VERSION'"' '"'$OLD_NDM_TAG'"' '"'$E_USER'"' '"'$E_PASSWORD'"'
 }
 
 node() {
@@ -9,11 +9,10 @@ job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
 releaseTag=$(echo $4)
-releaseBranch=$(echo $5)
-ndmTag=$(echo $6)
+ndmTag=$(echo $5)
 case_id=XJGT
-elastic_user=$(echo $7)
-elastic_password=$(echo $8)
+elastic_user=$(echo $6)
+elastic_password=$(echo $7)
 
 time="date"
 current_time=$(eval $time)
@@ -56,45 +55,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j7-policies jobphase:Waiting
 
 source ~/.profile
 
-git clone -b $INFRA_BRANCH https://github.com/openebs/e2e-infrastructure.git
-cd e2e-infrastructure/env
-
 ######################################################
-
-##exporting jiva-controller-image as env##
-export OPENEBS_IO_JIVA_CONTROLLER_IMAGE=openebs/jiva:$releaseTag
-##exporting jiva-replica-image as env#
-export OPENEBS_IO_JIVA_REPLICA_IMAGE=openebs/jiva:$releaseTag
-##exporting m-apiserver as env##
-export MAYA_APISERVER_IMAGE=openebs/m-apiserver:$releaseTag
-##exporting maya-volume-exporter as env##
-export OPENEBS_IO_VOLUME_MONITOR_IMAGE=openebs/m-exporter:$releaseTag
-##exporting istgt-image as env##
-export OPENEBS_IO_CSTOR_VOLUME_MGMT_IMAGE=openebs/cstor-volume-mgmt:$releaseTag
-##exporting zfs-image as env##
-export OPENEBS_IO_CSTOR_POOL_MGMT_IMAGE=openebs/cstor-pool-mgmt:$releaseTag
-
-export OPENEBS_IO_CSTOR_POOL_IMAGE=openebs/cstor-pool:$releaseTag
-##
-export OPENEBS_IO_CSTOR_TARGET_IMAGE=openebs/cstor-istgt:$releaseTag
-
-export OPENEBS_IO_CSTOR_POOL_EXPORTER_IMAGE=openebs/m-exporter:$releaseTag
-
-export OPENEBS_LOCALPV_PROVISIONER_IMAGE=$releaseTag
-
-export OPENEBS_ADMISSION_SERVER_IMAGE=$releaseTag
-
-export OPENEBS_SNAPSHOT_OPERATOR_IMAGE=$releaseTag
-
-export OPENEBS_PROVISIONER_IMAGE=$releaseTag
-
-export SNAPSHOT_PROVISIONER_IMAGE=$releaseTag
-
-export CSPC_OPERATOR_IMAGE=$releaseTag
-######################################################
-export NODE_DISK_MANAGER_IMAGE=$ndmTag
-
-cd ../..
 
 echo "Generating test name***************************"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-provision metadata="")
@@ -105,15 +66,14 @@ echo $test_name
 git clone https://github.com/mayadata-io/litmus.git
 cd litmus
 
-wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/env-update/env.py # script to update openebs_setup.yaml
-python3 env.py -f providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml
+cp providers/openebs/installers/operator/openebs-provision/run_litmus_test.yml run_openebs_provision.yml
 
-echo "updated yaml"
 sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
--e "s/value: '10'/value: '20'/g" \
--e "s/value: master/value: $releaseBranch/g" providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml
+-e '/name: RELEASE_VERSION/{n;s/.*/            value: '"'$releaseTag'"'/}' \
+-e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' \
+-e '/name: NDM_TAG/{n;s/.*/            value: '"'$ndmTag'"'/}' run_openebs_provision.yml
 
-cat providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml
+cat run_openebs_provision.yml
 
 #################
 ## RUNNER MAIN ##
@@ -129,8 +89,7 @@ kubectl create cm kubeconfig --from-file=admin.conf -n litmus
 
 echo "Running litmus test for openebs deploy.."
 
-run_test=providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yaml
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='provider:openebs-runner' job=$run_test
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app: openebs-provision' job=run_openebs_provision.yml
 
 echo "Dumping state of cluster post job run"; echo ""
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -155,7 +114,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4 $5 $6 $7 $8 $9
+  node $2 $3 $4 $5 $6 $7 $8
 else
   pod
 fi
