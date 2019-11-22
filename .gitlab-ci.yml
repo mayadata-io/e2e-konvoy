@@ -284,6 +284,18 @@ LCDG-backup-and-restore:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore
 
+MSIT-CSI-cstor-snapshot:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MSIT-csi-cstor-snapshot/csi-cstor-snapshot
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MSIT-csi-cstor-snapshot/csi-cstor-snapshot
+
+MQVF-CSI-cstor-clone:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MQVF-csi-cstor-clone/csi-cstor-clone
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MQVF-csi-cstor-clone/csi-cstor-clone
+
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
 #   script:
