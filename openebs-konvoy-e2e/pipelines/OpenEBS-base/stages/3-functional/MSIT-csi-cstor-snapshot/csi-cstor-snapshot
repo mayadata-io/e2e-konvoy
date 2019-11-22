@@ -40,7 +40,7 @@ echo "Running the litmus test for Busybox Deployment.."
 cp apps/busybox/deployers/run_litmus_test.yml busybox_snap_clone.yml
 
 sed -i -e 's/app: busybox-litmus/app: deploy-busybox-snap-clone/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-csi-cstor-sparse/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-cstor-csi/g' \
 -e 's/value: openebs-busybox/value: csi-vol/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: app-busybox-ns/value: cstor-snap-clone/g' busybox_snap_clone.yml
