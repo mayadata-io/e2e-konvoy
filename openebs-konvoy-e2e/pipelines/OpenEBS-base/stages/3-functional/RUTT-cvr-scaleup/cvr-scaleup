@@ -20,6 +20,8 @@ current_time=$(eval $time)
 
 present_dir=$(pwd)
 echo $present_dir
+
+bash openebs-konvoy-e2e/utils/pooling jobname:cvr-migration
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cvr-scaleup jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cvr-scaleup jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
@@ -67,7 +69,6 @@ run_id="cvr-scaleup";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_nam
 echo $test_name
 
 cd litmus
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_cvr_scaleup.yml
 
 sed -i -e 's/value: app-busybox-ns/value: cvr-scaleup-ns/g' \
@@ -99,7 +100,6 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-cv
 echo $test_name
 
 cd litmus
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp experiments/functional/cvr-scaleup/run_litmus_test.yml cvr_scaleup.yml
 
  # Update the environmental variables in litmus job spec.
@@ -134,7 +134,6 @@ run_id="deprovision-cvr-scaleup";test_name=$(bash openebs-konvoy-e2e/utils/gener
 echo $test_name
 
 cd litmus
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_cvr_scaleup.yml
 
 sed -i -e 's/value: app-busybox-ns/value: cvr-scaleup-ns/g' \
@@ -168,7 +167,6 @@ echo $test_name
 
 cd litmus
 echo "Running the litmus test for Busybox deprovision.."
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/deployers/run_litmus_test.yml busybox_deprovision_cvr_scaleup.yml
 
 sed -i -e 's/app: busybox-litmus/app: deprovision-busybox-cvr-scaleup/g' \

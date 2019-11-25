@@ -82,7 +82,6 @@ run_id="cvr-migration";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_n
 echo $test_name
 
 cd litmus
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_cvr_migration.yml
 
 # Update the environmental variables in litmus job spec.
@@ -131,7 +130,6 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-volu
 echo $test_name
 
 cd litmus
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp experiments/functional/cstor-volume-migration/run_litmus_test.yml busybox_volume_migration.yml
 
  # Update the environmental variables in litmus job spec.
@@ -163,7 +161,6 @@ run_id="deprovision-cvr-migration";test_name=$(bash openebs-konvoy-e2e/utils/gen
 echo $test_name
 
 cd litmus
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_cvr_migration.yml
 
 # Update the environmental variables in litmus job spec.
