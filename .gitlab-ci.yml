@@ -134,6 +134,18 @@ VQDN-deploy-busybox-csi:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
 
+HZWT-cvr-scaledown:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/HZWT-cvr-scaledown/cvr-scaledown
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/HZWT-cvr-scaledown/cvr-scaledown
+
+RUTT-cvr-scaleup:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/RUTT-cvr-scaleup/cvr-scaleup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/RUTT-cvr-scaleup/cvr-scaleup
+
 AVNT-jiva-replica-scaleup:
   extends: .func_test_template
   script: 
