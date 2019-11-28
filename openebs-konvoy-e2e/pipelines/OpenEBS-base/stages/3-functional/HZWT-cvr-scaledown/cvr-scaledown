@@ -132,7 +132,7 @@ fi
 # LitmusBook 4 #
 ################
 
-run_id="-deprovision-cvr-scaledown";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+run_id="deprovision-cvr-scaledown";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -146,9 +146,9 @@ sed -i -e 's/value: app-busybox-ns/value: cvr-scaledown-ns/g' \
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
-' busybox_loadgen_deprovision_cvr_scaledown.yml.yml
+' busybox_loadgen_deprovision_cvr_scaledown.yml
 
-cat busybox_loadgen_deprovision_cvr_scaledown.yml.yml
+cat busybox_loadgen_deprovision_cvr_scaledown.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:bb-liveness-deprovision-cvr-scaledown' job=busybox_loadgen_deprovision_cvr_scaledown.yml
 cd ..
