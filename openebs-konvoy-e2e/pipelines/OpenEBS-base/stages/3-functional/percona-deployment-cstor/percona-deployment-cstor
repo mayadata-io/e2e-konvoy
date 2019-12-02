@@ -106,7 +106,7 @@ sed -i '/command:/i \
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
-    dbname: tdb
+    dbname: percona_deploy_cstor
 ' run_percona_cstor_data_persistence.yml
 
 cat run_percona_cstor_data_persistence.yml

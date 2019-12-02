@@ -46,7 +46,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 sed -i '/parameters.yml: |/a \
     blocksize: 4k \
     blockcount: 1024 \
-    testfile: busybox_deployment_cstor
+    testfile: busybox_statefulset_cstor
 ' run_verify_data_persistence.yml
 
 sed -i '/command:/i \
@@ -88,7 +88,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 sed -i '/parameters.yml: |/a \
     blocksize: 4k \
     blockcount: 1024 \
-    testfile: busybox_deployment_cstor
+    testfile: busybox_statefulset_cstor
 ' run_bb_delete_data_files.yml
 
 sed -i '/command:/i \

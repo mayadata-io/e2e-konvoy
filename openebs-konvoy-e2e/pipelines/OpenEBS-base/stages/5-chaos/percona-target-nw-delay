@@ -42,7 +42,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
-    dbname: tdb
+    dbname: percona_deployment_cstor
 ' percona_cstor_verify_data_persistence.yml
 
 sed -i '/command:/i \
@@ -84,7 +84,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
-    dbname: tdb
+    dbname: percona_deployment_cstor
 ' percona_cstor_delete_data_files.yml
 
 sed -i '/command:/i \
@@ -131,7 +131,7 @@ sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_percon
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
-    dbname: tdb
+    dbname: percona_target_nw_delay
 ' run_percona_target_nw_delay.yml
 
 cat run_percona_target_nw_delay.yml
