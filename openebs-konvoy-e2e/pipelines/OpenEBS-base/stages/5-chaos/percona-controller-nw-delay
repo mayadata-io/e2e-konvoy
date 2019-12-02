@@ -31,6 +31,7 @@ echo "Running Litmus Book for verifying data-persistence against percona applica
 cp experiments/functional/data-persistence/run_litmus_test.yml percona_jiva_verify_data_persistence.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-jiva-/g' \
+-e 's/name: data-persistence/name: percona-jiva-configmap/g' \
 -e 's/name: litmus-data-persistence/name: data-persistence-percona-jiva-verify/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-jiva/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
@@ -72,6 +73,7 @@ cd litmus
 cp experiments/functional/data-persistence/run_litmus_test.yml percona_jiva_delete_data_files.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-jiva-/g' \
+-e 's/name: data-persistence/name: percona-jiva-configmap/g' \
 -e 's/name: data-persistence-litmus/name: data-persistence-percona-jiva-delete/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-jiva/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
@@ -107,8 +109,7 @@ cd litmus
 cp experiments/chaos/openebs_controller_network_delay/run_litmus_test.yml run_percona_controller_nw_delay.yml
 
 sed -i -e 's/openebs-controller-network-delay/percona-controller-nw-delay/g' \
--e 's/name: target-failure/name: percona-controller-failure-configmap/g' \
--e 's/name: target-network-delay/name: controller-network-delay/g' \
+-e 's/name: target-network-delay/name: controller-network-delay-configmap/g' \
 -e 's/value: docker/value: containerd/g' \
 -e 's/value: app-percona-ns/value: percona-jiva/g' run_percona_controller_nw_delay.yml
 

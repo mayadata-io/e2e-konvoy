@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-jiva node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' '"'$FROM_VERSION'"' '"'$TO_VERSION'"' '"'$UPGRADE_IMAGE_TAG'"' '"'$NEW_NDM_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-jiva node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' '"'$FROM_VERSION'"' '"'$TO_VERSION'"' '"'$UPGRADE_IMAGE_TAG'"' '"'$NEW_NDM_TAG'"' '"'$DEPLOY_TYPE'"'
 }
 
 node() {
@@ -15,6 +15,8 @@ from_version=$(echo $4)
 to_version=$(echo $5)
 upgrade_imageTag=$(echo $6)
 new_ndmTag=$(echo $7)
+deploy_type=$(echo $8)
+
 source ~/.profile
 
 present_dir=$(pwd)
@@ -35,6 +37,7 @@ sed -i -e '/name: UPGRADE_JIVA/{n;s/.*/            value: "true"/}' \
 -e '/name: TO_VERSION/{n;s/.*/            value: '"'$to_version'"'/}' \
 -e '/name: UPGRADE_IMAGE_TAG/{n;s/.*/            value: '"'$upgrade_imageTag'"'/}' \
 -e '/name: NEW_NDM_TAG/{n;s/.*/            value: '"'$new_ndmTag'"'/}' \
+-e '/name: DEPLOY_TYPE/{n;s/.*/            value: '"'$deploy_type'"'/}' \
 -e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' upgrade-jiva.yml
 
 sed -i -e 's/app: openebs-upgrade/app: openebs-jiva-upgrade/g' upgrade-jiva.yml
@@ -67,7 +70,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4 $5 $6 $7 $8
+  node $2 $3 $4 $5 $6 $7 $8 $9
 else
   pod
 fi

@@ -31,6 +31,7 @@ cp apps/busybox/deployers/run_litmus_test.yml statefulset_busybox_cstor.yml
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-statefulset/g' \
 -e 's/generateName: litmus-busybox-deploy-/generateName: busybox-statefulset-cstor-/g' \
+-e 's/replicas=2/replicas=1/g' \
 -e 's/app: busybox-litmus/app: busybox-statefulset-cstor/g' statefulset_busybox_cstor.yml
 
 cat statefulset_busybox_cstor.yml
