@@ -32,6 +32,7 @@ sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
 -e 's/name: openebs-pool-failure/name: openebs-pool-kill/g' \
 -e 's/generateName: openebs-pool-failure-/generateName: openebs-pool-kill-/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/name: pool-failure/name: pool-kill-configmap/g' \
 -e 's/value: app-percona-ns/value: bb-cstor-deployment/g' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' poolkill.yml

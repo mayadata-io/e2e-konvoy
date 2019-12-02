@@ -32,6 +32,7 @@ sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
 -e 's/generateName: openebs-target-failure/generateName: openebs-controller-failure/g' \
 -e 's/openebs-target-failure/openebs-controller-failure/g' \
 -e 's/name: target-failure/name: ctrl-failure-configmap/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
 -e 's/value: app-percona-ns/value: bb-jiva-deployment/g' run_ctrl_kill_test.yml
 
