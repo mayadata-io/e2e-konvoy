@@ -33,7 +33,7 @@ git_token=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 '
 gittoken=$(echo $git_token | tr -d '"')
 
 
-if [ "$ready_nodes" -eq 8 ]; then
+if [ "$ready_nodes" -eq 6 ]; then
 echo "Number of nodes in ready state is $ready_nodes"
 echo "******Cluster is in Healthy state****"
 

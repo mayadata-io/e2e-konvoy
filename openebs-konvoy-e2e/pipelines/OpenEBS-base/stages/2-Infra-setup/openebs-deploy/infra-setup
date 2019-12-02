@@ -89,7 +89,7 @@ kubectl create cm kubeconfig --from-file=admin.conf -n litmus
 
 echo "Running litmus test for openebs deploy.."
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app: openebs-provision' job=run_openebs_provision.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:openebs-provision' job=run_openebs_provision.yml
 
 echo "Dumping state of cluster post job run"; echo ""
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
