@@ -34,7 +34,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 -e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor-verify/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-cstor/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
--e '/name: STATUS/{n;s/.*/           value: VERIFY/}' \
+-e '/name: STATUS/{n;s/.*/            value: VERIFY/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' percona_cstor_verify_data_persistence.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
@@ -75,7 +75,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 -e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor-delete/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-cstor/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
--e '/name: STATUS/{n;s/.*/           value: DELETE/}' \
+-e '/name: STATUS/{n;s/.*/            value: DELETE/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' percona_cstor_delete_data_files.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
@@ -114,6 +114,7 @@ cp experiments/chaos/openebs_target_network_delay/run_litmus_test.yml run_percon
 
 sed -i -e 's/openebs-target-network-delay/percona-target-nw-delay/g' \
 -e 's/name: target-failure/name: percona-target-failure-configmap/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/value: app-percona-ns/value: percona-cstor/g' run_percona_target_nw_delay.yml
 
 sed -i '/command:/i \

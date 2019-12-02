@@ -90,7 +90,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 -e 's/name: litmus-data-persistence/name: data-persistence-busybox-cstor-snapshot/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-cstor-snapshot/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
--e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
+-e '/name: STATUS/{n;s/.*/            value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' bb_cstor_snapshot_data_persistence.yml
 
 sed -i '/command:/i \

@@ -57,7 +57,7 @@ cp apps/busybox/liveness/run_litmus_test.yml liveness_busybox_cstor_clone.yml
 
 sed -i -e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-liveness-cstor-/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-clone/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-cstor/g' liveness_busybox_cstor_clone.yml
+-e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-liveness-cstor-clone/g' liveness_busybox_cstor_clone.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -66,7 +66,7 @@ sed -i '/command:/i \
 
 cat liveness_busybox_cstor_clone.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-liveness-cstor' job=liveness_busybox_cstor_clone.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-liveness-cstor-clone' job=liveness_busybox_cstor_clone.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -90,13 +90,13 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 -e 's/name: litmus-data-persistence/name: data-persistence-busybox-cstor-clone/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-cstor-clone/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
--e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
+-e '/name: STATUS/{n;s/.*/            value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_busybox_cstor_data_persistence.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
-' bb_cstor_clone_data_persistence.yml
+' run_busybox_cstor_data_persistence.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
@@ -128,7 +128,7 @@ cp experiments/functional/snapshot-creation/run_litmus_test.yml run_bb_cstor_sna
 
 sed -i -e 's/generateName: litmus-snapshot-/generateName: bb-cstor-snapshot-/g' \
 -e 's/value: app-busybox-ns/value: bb-cstor-clone/g' \
--e 's/app: snapshot-litmus/app: bb-cstor-snapshot/g' run_bb_cstor_snapshot.yml
+-e 's/app: snapshot-litmus/app: bb-cstor-clone-snapshot/g' run_bb_cstor_snapshot.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -137,7 +137,7 @@ sed -i '/command:/i \
 
 cat run_bb_cstor_snapshot.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:bb-cstor-snapshot' job=run_bb_cstor_snapshot.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:bb-cstor-clone-snapshot' job=run_bb_cstor_snapshot.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;

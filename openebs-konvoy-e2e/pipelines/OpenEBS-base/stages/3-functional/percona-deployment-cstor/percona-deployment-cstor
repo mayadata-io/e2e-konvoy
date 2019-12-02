@@ -94,7 +94,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 -e 's/name: litmus-data-persistence/name: data-persistence-percona-cstor/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-cstor/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
--e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
+-e '/name: STATUS/{n;s/.*/            value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_percona_cstor_data_persistence.yml
 
 sed -i '/command:/i \
