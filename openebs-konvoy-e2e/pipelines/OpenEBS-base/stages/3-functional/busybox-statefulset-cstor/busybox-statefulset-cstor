@@ -85,8 +85,8 @@ echo "Running the litmus test to check data-persistence for BusyBox Application.
 cp experiments/functional/data-persistence/run_litmus_test.yml bb_cstor_statefulset_data_persistence.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-statefulset-cstor-/g' \
--e 's/name: litmus-data-persistence/name: data-persistence-busybox-statefulset-cstor/g' \
 -e 's/name: data-persistence/name: bb-cstor-statefulset-configmap/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-busybox-statefulset-cstor/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-cstor-statefulset/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
 -e '/name: STATUS/{n;s/.*/           value: LOAD/}' \
@@ -101,7 +101,7 @@ sed -i '/parameters.yml: |/a \
 
 cat bb_cstor_statefulset_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-statefulset-cstor' job=bb_cstor_statefulset_data_persistence.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-statefulset-cstor' job=bb_cstor_statefulset_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;

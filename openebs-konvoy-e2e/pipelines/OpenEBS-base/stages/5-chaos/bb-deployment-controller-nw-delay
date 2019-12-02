@@ -2,7 +2,7 @@
 set -x
 
 pod(){
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-controller-nw-delay node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-deployment-controller-nw-delay node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"'
 }
 
 node(){
@@ -16,6 +16,7 @@ current_time=$(eval $time)
 present_dir=$(pwd)
 echo $present_dir
 
+bash openebs-konvoy-e2e/utils/pooling jobname:bb-controller-kill
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-controller-nw-delay jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-controller-nw-delay jobphase:Running init_time:"$current_time" job_id:"$job_id" pipeline_id:"$pipeline_id" openebs_version:"$releaseTag"
 
@@ -51,7 +52,7 @@ sed -i '/command:/i \
 
 cat bb_deployment_jiva_verify_data_persistence.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-jiva-verify' job=bb_deployment_jiva_verify_data_persistence.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-jiva-verify' job=bb_deployment_jiva_verify_data_persistence.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -92,7 +93,7 @@ sed -i '/command:/i \
 
 cat bb_deployment_jiva_delete_file.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-jiva-delete' job=bb_deployment_jiva_delete_file.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-busybox-jiva-delete' job=bb_deployment_jiva_delete_file.yml
 cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -134,7 +135,7 @@ sed -i '/parameters.yml: |/a \
 
 cat run_bb_controller_nw_delay.yml
 
-bash openebs-konvoy-e2e/utils/litmus_job_runner label='name:bb-deployment-controller-nw-delay' job=run_bb_controller_nw_delay.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:bb-deployment-controller-nw-delay' job=run_bb_controller_nw_delay.yml
 cd..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
