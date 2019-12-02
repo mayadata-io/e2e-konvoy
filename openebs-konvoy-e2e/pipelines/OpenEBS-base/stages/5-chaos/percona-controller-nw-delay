@@ -146,9 +146,11 @@ fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-controller-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
+}
+
 if [ "$1" == "node" ];then
   node $2 $3 $4
 else
   pod
 fi
-}
+
