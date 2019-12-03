@@ -116,7 +116,7 @@ cp experiments/chaos/openebs_target_network_delay/run_litmus_test.yml run_bb_con
 
 sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
 -e 's/name: target-network-delay/name: bb-ctrl-nw-delay-configmap/g' \
--e 's/openebs-controller-network-delay/bb-deployment-controller-nw-delay/g' \
+-e 's/openebs-target-network-delay/bb-deployment-controller-nw-delay/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
 -e 's/value: docker/value: containerd/g' \
 -e 's/value: app-percona-ns/value: bb-jiva-deployment/g' run_bb_controller_nw_delay.yml
