@@ -278,6 +278,24 @@ percona-controller-network-delay:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-controller-nw-delay
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-controller-nw-delay
 
+percona-cstor:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-cstor
+
+percona-jiva:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-jiva
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-jiva
+     
+clone-busybox-cstor:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-clone
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-clone
+      
 konvoy-cleanup:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP
