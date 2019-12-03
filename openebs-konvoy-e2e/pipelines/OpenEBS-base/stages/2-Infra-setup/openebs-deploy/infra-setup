@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$FROM_VERSION'"' '"'$OLD_NDM_TAG'"' '"'$E_USER'"' '"'$E_PASSWORD'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/openebs-deploy/infra-setup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$FROM_VERSION'"' '"'$OLD_NDM_TAG'"' '"'$E_USER'"' '"'$E_PASSWORD'"' '"'$DEPLOY_TYPE'"'
 }
 
 node() {
@@ -13,6 +13,7 @@ ndmTag=$(echo $5)
 case_id=XJGT
 elastic_user=$(echo $6)
 elastic_password=$(echo $7)
+deploy_type=$(echo $8)
 
 time="date"
 current_time=$(eval $time)
@@ -71,7 +72,8 @@ cp providers/openebs/installers/operator/openebs-provision/run_litmus_test.yml r
 sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
 -e '/name: RELEASE_VERSION/{n;s/.*/            value: '"'$releaseTag'"'/}' \
 -e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' \
--e '/name: NDM_TAG/{n;s/.*/            value: '"'$ndmTag'"'/}' run_openebs_provision.yml
+-e '/name: NDM_TAG/{n;s/.*/            value: '"'$ndmTag'"'/}' \
+-e '/name: DEPLOY_TYPE/{n;s/.*/            value: '"'$deploy_type'"'/}' run_openebs_provision.yml
 
 cat run_openebs_provision.yml
 
@@ -114,7 +116,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4 $5 $6 $7 $8
+  node $2 $3 $4 $5 $6 $7 $8 $9
 else
   pod
 fi
