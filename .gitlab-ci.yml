@@ -152,17 +152,17 @@ percona-deployment-jiva:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-deployment-jiva/percona-deployment-jiva
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-deployment-jiva/percona-deployment-jiva
 
-busybox-statefulset-cstor:
-  extends: .func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-cstor/busybox-statefulset-cstor
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-cstor/busybox-statefulset-cstor
+# busybox-statefulset-cstor:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-cstor/busybox-statefulset-cstor
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-cstor/busybox-statefulset-cstor
 
-busybox-statefulset-jiva:
-  extends: .func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-jiva/busybox-statefulset-jiva
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-jiva/busybox-statefulset-jiva
+# busybox-statefulset-jiva:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-jiva/busybox-statefulset-jiva
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-jiva/busybox-statefulset-jiva
 
 busybox-cstor-clone:
   extends: .func_test_template
@@ -242,17 +242,17 @@ busybox-cstor-pool-delete:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-delete
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-delete
 
-busybox-cstor-sts-verify-data-persistence:
-  extends: .chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
+# busybox-cstor-sts-verify-data-persistence:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
 
-busybox-jiva-sts-verify-data-persistence:
-  extends: .chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
+# busybox-jiva-sts-verify-data-persistence:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
 
 busybox-deployment-target-network-delay:
   extends: .chaos_test_template

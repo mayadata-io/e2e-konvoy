@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-control-plane node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' '"'$FROM_VERSION'"' '"'$TO_VERSION'"' '"'$UPGRADE_IMAGE_TAG'"' '"'$NEW_NDM_TAG'"' '"'$UPGRADE_TO_CI'"' '"'$DEPLOY_TYPE'"' '"'$HELM_REPO'"' '"'$HELM_BRANCH'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-upgrade-openebs/upgrade-control-plane node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' '"'$FROM_VERSION'"' '"'$TO_VERSION'"' '"'$UPGRADE_IMAGE_TAG'"' '"'$NEW_NDM_TAG'"' '"'$DEPLOY_TYPE'"' '"'$HELM_REPO'"' '"'$HELM_BRANCH'"' '"'$UPGRADE_TO_CI'"'
 }
 
 node() {
@@ -15,10 +15,11 @@ from_version=$(echo $4)
 to_version=$(echo $5)
 upgrade_imageTag=$(echo $6)
 new_ndmTag=$(echo $7)
-upgrade_to_ci=$(echo $8)
-deploy_type=$(echo $9)
-helm_repo=$(echo $10)
-helm_branch=$(echo $11)
+deploy_type=$(echo $8)
+helm_repo=$(echo $9)
+helm_branch=$(echo $10)
+upgrade_to_ci=$(echo $11)
+
 
 source ~/.profile
 

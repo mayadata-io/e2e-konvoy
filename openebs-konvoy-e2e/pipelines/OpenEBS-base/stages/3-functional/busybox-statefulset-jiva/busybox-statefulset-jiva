@@ -93,6 +93,11 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 -e '/name: STATUS/{n;s/.*/            value: LOAD/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' bb_jiva_statefulset_data_persistence.yml
 
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' bb_jiva_statefulset_data_persistence.yml
+             
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
     blocksize: 4k \

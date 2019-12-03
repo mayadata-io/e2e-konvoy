@@ -74,11 +74,16 @@ cp experiments/functional/data-persistence/run_litmus_test.yml percona_jiva_dele
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-jiva-/g' \
 -e 's/name: data-persistence/name: percona-jiva-configmap/g' \
--e 's/name: data-persistence-litmus/name: data-persistence-percona-jiva-delete/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-percona-jiva-delete/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-jiva/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
 -e '/name: STATUS/{n;s/.*/            value: DELETE/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' percona_jiva_delete_data_files.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' percona_jiva_delete_data_files.yml            
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
@@ -119,7 +124,7 @@ sed -i '/command:/i \
 ' run_percona_controller_nw_delay.yml   
 
 ## Replace the value of DATA_PERSISTENCE with application name in litmus experiment.
-sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_percona_controller_nw_delay.yml
+sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_percona_controller_nw_delay.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \

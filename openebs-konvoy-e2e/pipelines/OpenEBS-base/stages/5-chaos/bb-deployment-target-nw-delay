@@ -74,7 +74,7 @@ cp experiments/functional/data-persistence/run_litmus_test.yml bb_deployment_cst
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-cstor-/g' \
 -e 's/name: data-persistence/name: bb-cstor-deployment-configmap/g' \
--e 's/name: data-persistence-litmus/name: data-persistence-busybox-cstor-delay-delete/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-busybox-cstor-delay-delete/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-cstor-deployment/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
 -e '/name: STATUS/{n;s/.*/            value: DELETE/}' \
