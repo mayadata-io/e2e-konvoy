@@ -137,7 +137,7 @@ sed -i '/parameters.yml: |/a \
 cat run_percona_target_nw_delay.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:percona-target-nw-delay' job=run_percona_target_nw_delay.yml
-cd..
+cd ..
 
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:percona-target-nw-delay $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
