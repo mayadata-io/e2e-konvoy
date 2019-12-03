@@ -17,8 +17,8 @@ upgrade_imageTag=$(echo $6)
 new_ndmTag=$(echo $7)
 deploy_type=$(echo $8)
 helm_repo=$(echo $9)
-helm_branch=$(echo $10)
-upgrade_to_ci=$(echo $11)
+helm_branch=$(echo ${10})
+upgrade_to_ci=$(echo ${11})
 
 
 source ~/.profile
@@ -78,7 +78,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12
+  node $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12}
 else
   pod
 fi
