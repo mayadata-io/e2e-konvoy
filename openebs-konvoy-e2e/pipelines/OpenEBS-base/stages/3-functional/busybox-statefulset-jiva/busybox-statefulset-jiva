@@ -31,6 +31,7 @@ cp apps/busybox/deployers/run_litmus_test.yml statefulset_busybox_jiva.yml
 sed -i -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
 -e 's/value: app-busybox-ns/value: bb-jiva-statefulset/g' \
 -e 's/generateName: litmus-busybox-deploy-/generateName: busybox-statefulset-jiva-/g' \
+-e 's/replicas=2/replicas=1/g' \
 -e 's/app: busybox-litmus/app: busybox-statefulset-jiva/g' statefulset_busybox_jiva.yml
 
 cat statefulset_busybox_jiva.yml

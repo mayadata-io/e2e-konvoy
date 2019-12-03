@@ -31,6 +31,7 @@ echo "Running Litmus Book for verifying data-persistence against busybox applica
 cp experiments/functional/data-persistence/run_litmus_test.yml bb_deployment_jiva_verify_data_persistence.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-jiva-/g' \
+-e 's/name: data-persistence/name: bb-jiva-deployment-configmap/g' \
 -e 's/name: litmus-data-persistence/name: data-persistence-busybox-jiva-nw-delay-verify/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-jiva-deployment/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
@@ -72,6 +73,7 @@ cd litmus
 cp experiments/functional/data-persistence/run_litmus_test.yml bb_deployment_jiva_delete_file.yml
 
 sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-busybox-jiva-/g' \
+-e 's/name: data-persistence/name: bb-jiva-deployment-configmap/g' \
 -e 's/name: litmus-data-persistence/name: data-persistence-busybox-jiva-nw-delay-delete/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: bb-jiva-deployment/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: '\''app=busybox-sts'\''/}' \
@@ -113,6 +115,7 @@ cd litmus
 cp experiments/chaos/openebs_controller_network_delay/run_litmus_test.yml run_bb_controller_nw_delay.yml
 
 sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
+-e 's/name: target-network-delay/name: bb-ctrl-nw-delay-configmap/g' \
 -e 's/openebs-controller-network-delay/bb-deployment-controller-nw-delay/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
 -e 's/value: docker/value: containerd/g' \
@@ -151,9 +154,11 @@ fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:bb-controller-nw-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
 
+}
+
 if [ "$1" == "node" ];then
   node $2 $3 $4
 else
   pod
 fi
-}
+
