@@ -68,8 +68,6 @@ echo $test_name
 cd litmus
 cp experiments/functional/cstor-csi/csi-snapshot/run_litmus_test.yml run_snapshot_test.yml
 
-sed -i 's/value: app-percona-ns/value: cstor-snap-clone/g' run_snapshot_test.yml
-
 ## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
 sed -i -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: cstor-snap-clone/}' \
