@@ -87,7 +87,7 @@ sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: cstor-snap-clone/}' \
 
 ## Replace the job runner label for deprovision of clone
 sed -i -e 's/name: cstor-csi-clone/name: cstor-csi-clone-dep/g' \
--e 's/value: provision/value: deprovision/g' run_dep_clone_test.yml
+-e 's/provision/deprovision/g' run_dep_clone_test.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
