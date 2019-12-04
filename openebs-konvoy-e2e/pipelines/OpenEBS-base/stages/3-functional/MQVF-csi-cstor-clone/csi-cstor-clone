@@ -81,13 +81,12 @@ sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: cstor-snap-clone/}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' \
 -e '/name: STORAGE_CLASS_NAME/{n;s/.*/            value: openebs-cstor-csi/}' \
 -e '/name: APP_NAME/{n;s/.*/            value: busybox-clone/}' \
--e '/name: ACTION/{n;s/.*/            value: deprovision/}' \
 -e '/name: CLONED_PVC/{n;s/.*/            value: csi-clone/}' \
 -e '/name: APP_PVC/{n;s/.*/            value: csi-vol/}' run_dep_clone_test.yml
 
 ## Replace the job runner label for deprovision of clone
 sed -i -e 's/name: cstor-csi-clone/name: cstor-csi-clone-dep/g' \
--e 's/provision/deprovision/g' run_dep_clone_test.yml
+-e 's/value: '\''provision'\''/value: '\''deprovision'\''/g' run_dep_clone_test.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -127,7 +126,7 @@ cd litmus
 cp experiments/functional/cstor-csi/csi-snapshot/run_litmus_test.yml run_dep_snapshot_test.yml
 
 sed -i -e 's/name: cstor-csi-snapshot/name: cstor-csi-snapshot-dep/g' \
--e 's/value: provision/value: deprovision/g' run_dep_snapshot_test.yml
+-e 's/value: '\''provision'\''/value: '\''deprovision'\''/g' run_dep_snapshot_test.yml
 
 ## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
 sed -i -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' \
