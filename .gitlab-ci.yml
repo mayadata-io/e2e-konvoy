@@ -308,6 +308,18 @@ MQVF-CSI-cstor-clone:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MQVF-csi-cstor-clone/csi-cstor-clone
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MQVF-csi-cstor-clone/csi-cstor-clone
 
+NLEQ-Local-PV-hostpath:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
+
+ZDKG-Local-PV-device:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
+
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
 #   script:
