@@ -1,0 +1,63 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-clone node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"' 
+}
+
+node(){
+source ~/.profile
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+releaseTag=$(echo $3)
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-bb-cstor jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-bb-cstor jobphase:Running init_time:"$current_time" job_id:"$job_id" pipeline_id:"$pipeline_id" openebs_version:"$releaseTag"
+
+run_id="bb-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-clone metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for Creating clone for Busybox application..."
+cp experiments/functional/clone-creation/run_litmus_test.yml bb_clone.yml
+
+sed -i -e 's/generatName: litmus-clone-/generateName: litmus-busybox-clone-/g' \
+-e 's/value: app-busybox-ns/value: bb-cstor-snapshot/g' \
+-e 's/value: snapshot-busybox/value: snapshot-busybox-cstor/g' \
+-e 's/app: litmus-clone/app: busybox-clone/g' bb_clone.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' bb_clone.yml
+
+cat bb_clone.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-clone' job=bb_clone.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:clone-bb-cstor $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-bb-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-bb-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4
+else
+  pod
+fi
