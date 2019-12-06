@@ -467,6 +467,18 @@ REUZ-Jiva-replica-failure:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/REUZ-Jiva-replica-failure/jiva-replica-failure
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/REUZ-Jiva-replica-failure/jiva-replica-failure
 
+NLEQ-Local-PV-hostpath:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
+
+ZDKG-Local-PV-device:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
+
 ZGNK-Jiva-replica-node-affinity:
   extends: .chaos_test_template
   script:
