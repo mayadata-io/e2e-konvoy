@@ -28,7 +28,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:local-pv-device jobphase:Running in
 # LitmusBook 1 #
 ################
 
-run_id="localpv";test_name=$(${utils_path}/generate_test_name testcase=busybox-provision-busybox-device metadata=${run_id})
+run_id="localpv";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-busybox-device metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -48,7 +48,7 @@ sed -i '/command:/i \
 
 cat run_test_local_pv_device.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-local-pv-device' job=run_test_local_pv_device.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-local-pv-device' job=run_test_local_pv_device.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:local-pv-device $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -58,7 +58,7 @@ python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ZDKG 3-function
 exit 1;
 fi
 
-run_id="localpv";test_name=$(${utils_path}/generate_test_name testcase=busybox-deprovision-busybox-device metadata=${run_id})
+run_id="localpv";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-busybox-device metadata=${run_id})
 echo $test_name
 
 cd litmus
