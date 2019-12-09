@@ -55,6 +55,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:upgrade-cstor $test_name job
 ## GET RESULT  ##
 #################
 rc_val=$(echo $?)
+kubectl get pods -n openebs -o yaml | grep image | grep -v imageID | grep quay
 
 ## Check the test status & result from the litmus result custom resource
 source ~/.profile
