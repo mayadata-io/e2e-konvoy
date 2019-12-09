@@ -200,7 +200,7 @@ UAFE-rwx-app-deploy:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/UAFE-rwx-app-deploy/rwx-app-deploy
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/UAFE-rwx-app-deploy/rwx-app-deploy
 
-USGA-Create-jiva-clone:
+USGA-create-jiva-clone:
   extends: .func_test_template
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/USGA-create-jiva-clone/create-jiva-clone
