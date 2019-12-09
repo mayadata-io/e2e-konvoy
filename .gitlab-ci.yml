@@ -200,11 +200,11 @@ UAFE-rwx-app-deploy:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/UAFE-rwx-app-deploy/rwx-app-deploy
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/UAFE-rwx-app-deploy/rwx-app-deploy
 
-USGA-Create-jiva-snapshot:
+USGA-Create-jiva-clone:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/USGA-Create-jiva-snapshot/Create-jiva-snapshot
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/USGA-Create-jiva-snapshot/Create-jiva-snapshot
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/USGA-create-jiva-clone/create-jiva-clone
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/USGA-create-jiva-clone/create-jiva-clone
 
 WVFD-scale-sts-replicas:
   extends: .func_test_template
@@ -230,11 +230,11 @@ XZDZ-STS-Volume-Distribution:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XZDZ-STS-Volume-Distribution/STS-Volume-Distribution
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XZDZ-STS-Volume-Distribution/STS-Volume-Distribution
 
-SZRL-jiva-snapshot:
+SZRL-create-jiva-snapshot:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-create-jiva-snapshot/create-jiva-snapshot
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-create-jiva-snapshot/create-jiva-snapshot
 
 CYLK-Jiva-Data-Integrity:
   extends: .func_test_template
