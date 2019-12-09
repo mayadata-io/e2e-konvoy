@@ -20,8 +20,9 @@ helm_repo=$(echo $9)
 helm_branch=$(echo ${10})
 upgrade_to_ci=$(echo ${11})
 
-
 source ~/.profile
+
+kubectl get pods -n openebs -o yaml | grep image | grep -v imageID | grep quay
 
 present_dir=$(pwd)
 echo $present_dir
