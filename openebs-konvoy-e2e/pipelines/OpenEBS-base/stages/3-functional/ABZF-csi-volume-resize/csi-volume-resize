@@ -57,7 +57,7 @@ exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ABZF 4-chaos "Check if the volume size is changed" Pass $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ABZF 4-chaos "check if the volume size is changed" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$return_count" != "0" ]; then
 exit 1;

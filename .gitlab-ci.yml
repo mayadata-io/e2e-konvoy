@@ -134,6 +134,18 @@ VQDN-deploy-busybox-csi:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
 
+HZWT-cvr-scaledown:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/HZWT-cvr-scaledown/cvr-scaledown
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/HZWT-cvr-scaledown/cvr-scaledown
+
+RUTT-cvr-scaleup:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/RUTT-cvr-scaleup/cvr-scaleup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/RUTT-cvr-scaleup/cvr-scaleup
+    
 AVNT-jiva-replica-scaleup:
   extends: .func_test_template
   script: 
@@ -266,6 +278,12 @@ ZYKP-cstor-Data-Integrity:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
 
+THOJ-CVR-migration:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
+
 ABZF-cStor-volume-resize:
   extends: .func_test_template
   script: 
@@ -277,6 +295,36 @@ THOJ-CVR-migration:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
+
+LCDG-backup-and-restore:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore
+
+MSIT-CSI-cstor-snapshot:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MSIT-csi-cstor-snapshot/csi-cstor-snapshot
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MSIT-csi-cstor-snapshot/csi-cstor-snapshot
+
+MQVF-CSI-cstor-clone:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MQVF-csi-cstor-clone/csi-cstor-clone
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MQVF-csi-cstor-clone/csi-cstor-clone
+
+NLEQ-Local-PV-hostpath:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
+
+ZDKG-Local-PV-device:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
 
 # app-replica-scale-{cassandra-jiva}:                  
 #   extends: .func_test_template #dependencies: cassandra-jiva
@@ -334,7 +382,7 @@ DBVQ-cStor-Pool-Delete:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DBVQ-cstor-pool-delete/cstor-pool-delete
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DBVQ-cstor-pool-delete/cstor-pool-delete
 
-ACME-cStor-target-failure:
+ACME-cStor-target-kill:
   extends: .chaos_test_template
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
@@ -394,17 +442,17 @@ SHOZ-target-network-delay:
 #     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QKFK-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
 #     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QKFK-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
 
-      #WQFI-Clone-Rebuild-before-snapshot-rebuild:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/WQFI-clone-pre-snap-rebuild/clone-pre-rebuild
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/WQFI-clone-pre-snap-rebuild/clone-pre-rebuild
+#WQFI-Clone-Rebuild-before-snapshot-rebuild:
+#  extends: .chaos_test_template
+#  script: 
+#    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/WQFI-clone-pre-snap-rebuild/clone-pre-rebuild
+#    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/WQFI-clone-pre-snap-rebuild/clone-pre-rebuild
 
-      #VGEA-Clone-Rebuild-during-snapshot-rebuild:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/VGEA-clone-during-snap-rebuild/clone-during-rebuild
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/VGEA-clone-during-snap-rebuild/clone-during-rebuild
+#VGEA-Clone-Rebuild-during-snapshot-rebuild:
+#  extends: .chaos_test_template
+#  script: 
+#    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/VGEA-clone-during-snap-rebuild/clone-during-rebuild
+#    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/VGEA-clone-during-snap-rebuild/clone-during-rebuild
 
 # QURH-Clone-Rebuild-post-snapshot-rebuild:
 #   extends: .chaos_test_template
@@ -412,17 +460,17 @@ SHOZ-target-network-delay:
 #     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QURH-clone-post-snap-rebuild/clone-post-rebuild
 #     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QURH-clone-post-snap-rebuild/clone-post-rebuild
 
-      #I9VM-Pool-n/w-Loss:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/I9VM-pool-network-loss/pool-network-loss
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/I9VM-pool-network-loss/pool-network-loss
+#I9VM-Pool-n/w-Loss:
+#  extends: .chaos_test_template
+#  script: 
+#    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/I9VM-pool-network-loss/pool-network-loss
+#    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/I9VM-pool-network-loss/pool-network-loss
 
-      #8PI6-Pool-n/w-Delay:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/8PI6-pool-network-delay/pool-network-delay
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/8PI6-pool-network-delay/pool-network-delay
+#8PI6-Pool-n/w-Delay:
+#  extends: .chaos_test_template
+#  script: 
+#    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/8PI6-pool-network-delay/pool-network-delay
+#    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/8PI6-pool-network-delay/pool-network-delay
 
 # 2HXA-volume-mgmt-kill:
 #   extends: .chaos_test_template
@@ -449,11 +497,12 @@ FQFO-Jiva-controller-failure:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-failure/controller-failure
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-failure/controller-failure
 
-# XUEK-Jiva-controller-Kill:
+# XUEK-Jiva-controller-kill:
 #   extends: .chaos_test_template
 #   script:
 #     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill
 #     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill
+
 
 # TZZP-Jiva-controller-network-delay:
 #   extends: .chaos_test_template
@@ -466,18 +515,6 @@ REUZ-Jiva-replica-failure:
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/REUZ-Jiva-replica-failure/jiva-replica-failure
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/REUZ-Jiva-replica-failure/jiva-replica-failure
-
-NLEQ-Local-PV-hostpath:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
-
-ZDKG-Local-PV-device:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
 
 ZGNK-Jiva-replica-node-affinity:
   extends: .chaos_test_template

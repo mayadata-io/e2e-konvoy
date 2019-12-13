@@ -128,8 +128,7 @@ fi
 # test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-snap-clone metadata="")
 # echo $test_name
 
-# cd litmuscurrent_time=$(eval $time)
-
+# cd litmus
 # cp apps/busybox/deployers/run_litmus_test.yml deprovision_clone.yml
 
 # sed -i -e 's/generateName: litmus-busybox-deploy/generateName: busybox-deprovision-clone/g' \

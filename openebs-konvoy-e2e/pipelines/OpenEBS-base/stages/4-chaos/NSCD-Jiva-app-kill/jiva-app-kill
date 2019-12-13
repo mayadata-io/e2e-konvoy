@@ -141,9 +141,9 @@ EOF
 
 sed -i -e 's/value: '\''app=jenkins-app'\''/value: '\''app=bb-app-kill-jiva'\''/g' \
 -e 's/generateName: application-pod-failure/generateName: application-pod-failure-jiva/g' \
+-e 's/name: application-pod-failure/name: application-pod-failure-jiva/g' \
 -e 's/value: docker/value: containerd/g' \
 -e 's/name: app-failure/name: jiva-app-failure/g' \
--e 's/name: application-pod-failure/name: application-pod-failure-jiva/g' \
 -e 's/value: app-jenkins-ns/value: app-kill-jiva/g' app_kill_jiva.yml
 
 sed -i '/command:/i \
@@ -268,7 +268,6 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-app-kill $test_name job
 
 rc_val=$(echo $?)
 current_time=$(eval $time)
-
 # testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then

@@ -108,6 +108,7 @@ sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-jiva-ctrlkill/g' \
 -e 's/name: target-failure/name: jiva-ctrl-kill/g' \
 -e 's/target-zrepl-kill/jiva-ctrl-kill/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=jiva-ctrl-kill'\''/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/value: app-percona-ns/value: jiva-ctrl-kill/g' run_jiva_ctrl_kill.yml
 
 sed -i '/command:/i \

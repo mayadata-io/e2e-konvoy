@@ -65,6 +65,7 @@ exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-parent-volume-delete jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
+
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XXXC 3-functional "Check if the clone can be created using volume snapshot" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then

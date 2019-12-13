@@ -268,7 +268,6 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:target-mgmt-kill $test_name 
 
 rc_val=$(echo $?)
 current_time=$(eval $time)
-
 # testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 # Update result of the test case in github mayadata-io/e2e-openshift repository
 
