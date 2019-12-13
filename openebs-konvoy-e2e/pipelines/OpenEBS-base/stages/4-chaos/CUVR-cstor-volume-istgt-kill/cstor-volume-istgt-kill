@@ -115,8 +115,8 @@ cd litmus
 cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_target_istgt_kill_test.yml
 
 sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-istgt-targetkill/g' \
--e 's/name: openebs-target-failure/name: openebs-target-istgt-failure/g' \
 -e 's/name: target-failure/name: target-istgt-kill/g' \
+-e 's/name: openebs-target-failure/name: openebs-target-istgt-failure/g' \
 -e 's/target-zrepl-kill/target-kill/g' \
 -e 's/cstor-volume-mgmt/cstor-istgt/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
@@ -233,7 +233,6 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:target-istgt-kill $test_name
 
 rc_val=$(echo $?)
 current_time=$(eval $time)
-
 # testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then

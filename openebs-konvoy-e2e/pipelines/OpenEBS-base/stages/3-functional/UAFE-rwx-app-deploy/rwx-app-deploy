@@ -60,6 +60,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:app-deploy-rwx jobphase:Completed e
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id UAFE 3-functional "Deploy the application using nfs-provisioner accessmode as a readwritemany" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
+
 ## Check the test status & result from the litmus result custom resource
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:app-deploy-rwx jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 

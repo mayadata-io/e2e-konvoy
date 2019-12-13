@@ -131,13 +131,13 @@ rc_val=$(echo $?)
 current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-post-snap-rebuild jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-post-snap-rebuild jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:$testResult
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 4-chaos "Check if the clone can be created after snapshot rebuilt successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 # Update the e2e cr once the job is completed
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-post-snap-rebuild jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-post-snap-rebuild jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:$testResult
 
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 4-chaos "Check if the clone can be created after snapshot rebuilt successfully" Pass $pipeline_id "$current_time" $commit_id $gittoken
 

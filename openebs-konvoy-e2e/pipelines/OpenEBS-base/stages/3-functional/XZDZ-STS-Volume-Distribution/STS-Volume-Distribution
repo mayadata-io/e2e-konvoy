@@ -68,13 +68,11 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:volume-replica-distribution jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $test_case_id XZDZ 3-functional "Check if the storage volume replicas are distributed across the storage pools in case of statefulset deployment" $testResult $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XZDZ 3-functional "Check if the storage volume replicas are distributed across the storage pools in case of statefulset deployment" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
-
 ## Check the test status & result from the litmus result custom resource
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:volume-replica-distribution jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id XZDZ 3-functional "Check if the storage volume replicas are distributed across the storage pools in case of statefulset deployment" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
