@@ -5,6 +5,7 @@ stages:
   - PROVIDER-INFRA-SETUP
   - APP-FUNC-TEST
   - APP-CHAOS-TEST
+  - INFRA-CHAOS
   # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
@@ -515,6 +516,24 @@ ZGNK-Jiva-replica-node-affinity:
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ZGNK-jiva-replica-node-affinity/replica-node-affinity
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ZGNK-jiva-replica-node-affinity/replica-node-affinity
+
+######################################
+##########infra-chaos#################
+######################################
+.infra_chaos_test_template:
+  image: openebs/openshift-ci:latest
+  stage: INFRA-CHAOS
+  tags: 
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - SUTP-konvoy-cluster 
+
+RACV-cstor-node-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/RACV-node-failure-cstor/node-failure-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/RACV-node-failure-cstor/node-failure-cstor
 
 ISTV-konvoy-cleanup:
   image: openebs/openshift-ci:latest
