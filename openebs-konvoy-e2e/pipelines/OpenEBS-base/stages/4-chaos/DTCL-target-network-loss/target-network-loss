@@ -41,8 +41,10 @@ cp apps/percona/deployers/run_litmus_test.yml percona_target_network_loss.yml
 sed -i -e 's/app: percona-deployment/app: deploy-percona-target-nw-loss/g' \
 -e 's/generateName: litmus-percona-/generateName: litmus-percona-nw-loss-/g' \
 -e 's/value: openebs-standard/value: openebs-cstor-csi/g' \
--e 's/value: enable/value: /g' \
 -e 's/value: app-percona-ns/value: percona-target-nw-loss/g' percona_target_network_loss.yml
+
+sed -i '/name: TARGET_AFFINITY_CHECK/{n;s/.*/            value: /g}' percona_target_network_loss.yml
+
 cat percona_target_network_loss.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-percona-target-nw-loss' job=percona_target_network_loss.yml
@@ -185,9 +187,10 @@ cp apps/percona/deployers/run_litmus_test.yml percona_deprovision_target_network
 sed -i -e 's/app: percona-deployment/app: deprovision-percona-target-nw-loss/g' \
 -e 's/generateName: litmus-percona-/generateName: litmus-percona-deprovision-nw-loss/g' \
 -e 's/value: openebs-standard/value: openebs-cstor-csi/g' \
--e 's/value: enable/value: /g' \
 -e 's/value: provision/value: deprovision/g' \
 -e 's/value: app-percona-ns/value: percona-target-nw-loss/g' percona_deprovision_target_network_loss.yml
+
+sed -i '/name: TARGET_AFFINITY_CHECK/{n;s/.*/            value: /g}' percona_deprovision_target_network_loss.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
