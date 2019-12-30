@@ -105,7 +105,7 @@ cd ..
 # Get the cluster state Once the litmus jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
-bash openebs-konvoy-e2e/utils/event_updater jobname:kubelet-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:kubelet-failure-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ECBZ 5-infra-chaos "stop the kubelet service on the node where application is running and check the behaviour" Fail $pipeline_id "$current_time" $commit_id $gittoken
