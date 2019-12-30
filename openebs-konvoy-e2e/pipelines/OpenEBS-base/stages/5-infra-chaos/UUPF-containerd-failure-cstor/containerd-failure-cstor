@@ -130,7 +130,7 @@ sed -i '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: cri-failure-cstor/g}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
 -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
--e '/name: SVC_NAME/{n;s/.*/            value: containerd/g}' \
+-e '/name: SVC_TYPE/{n;s/.*/            value: containerd/g}' \
 -e 's/password:/password: VGVzdEAxMjM=/g' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_cri_failure_test_cstor.yml
 
