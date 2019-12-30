@@ -33,7 +33,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:containerd-failure-cstor jobphase:R
 
 echo "*******Deploying Busybox-Deployment*******"
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-cri-failure metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-cri-failure-cstor metadata="")
 echo $test_name
 
 cd litmus
