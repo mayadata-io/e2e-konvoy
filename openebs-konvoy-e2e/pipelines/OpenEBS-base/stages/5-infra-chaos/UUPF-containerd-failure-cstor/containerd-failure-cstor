@@ -121,7 +121,7 @@ run_id="cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name test
 echo $test_name
 
 cd litmus
-cp experiments/chaos/kubernetes/service_failure/run_litmus_test run_cri_failure_test_cstor.yml
+cp experiments/chaos/kubernetes/service_failure/run_litmus_test.yml run_cri_failure_test_cstor.yml
 
 # Update the environmental variables in litmus job spec.
 
