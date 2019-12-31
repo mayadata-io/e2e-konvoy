@@ -124,7 +124,7 @@ cp experiments/chaos/kubernetes/service_failure/run_litmus_test.yml run_kubelet_
 
 # Update the environmental variables in litmus job spec.
 
-sed -i '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
+sed -i -e '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
 -e 's/name: svc-failure-chaos/name: kubelet-failure-chaos-cstor/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: kubelet-failure-cstor/g}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
