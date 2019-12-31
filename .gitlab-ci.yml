@@ -541,6 +541,18 @@ RACV-cstor-node-failure:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/RACV-node-failure-cstor/node-failure-cstor
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/RACV-node-failure-cstor/node-failure-cstor
 
+UUPF-cstor-containerd-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/UUPF-containerd-failure-cstor/containerd-failure-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/UUPF-containerd-failure-cstor/containerd-failure-cstor
+    
+ECBZ-cstor-kubelet-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/ECBZ-kubelet-failure-cstor/kubelet-failure-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/ECBZ-kubelet-failure-cstor/kubelet-failure-cstor
+    
 ISTV-konvoy-cleanup:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP
