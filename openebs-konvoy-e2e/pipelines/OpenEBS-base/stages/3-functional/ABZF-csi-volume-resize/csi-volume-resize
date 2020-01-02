@@ -22,8 +22,8 @@ present_dir=$(pwd)
 echo $present_dir
 
 bash openebs-konvoy-e2e/utils/pooling jobname:deploy-busybox-csi
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Waiting init_time:"$current_time"
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Waiting init_time:"$current_time"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 run_id="csi";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-volume-resize metadata=${run_id})
 echo $test_name
@@ -36,6 +36,9 @@ sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
 -e 's/app: litmus-cstor-vol-resize/app: litmus-cstor-vol-resize-csi/g' \
 -e 's/value: app-percona-ns/value: busybox-csi/g' run_cstor_volume_resize_test.yml
 
+## Insert the value of STORAGE_CLASS in litmus experiment.
+sed -i '/name: STORAGE_CLASS/{n;s/.*/            value: openebs-cstor-csi/}' run_cstor_volume_resize_test.yml
+
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
@@ -46,17 +49,17 @@ cat run_cstor_volume_resize_test.yml
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:litmus-cstor-vol-resize-csi' job=run_cstor_volume_resize_test.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
-bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-ext4 $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 return_count=$?
 current_time=$(eval $time)
 
 if [ "$return_count" != "0" ]; then
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ABZF 4-chaos "Check if the volume size is changed" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ABZF 4-chaos "check if the volume size is changed" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$return_count" != "0" ]; then

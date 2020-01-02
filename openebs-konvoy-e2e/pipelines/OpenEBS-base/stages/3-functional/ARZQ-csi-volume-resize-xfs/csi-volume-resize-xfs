@@ -1,0 +1,220 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+}
+
+node() {
+source ~/.profile
+gittoken=$(echo "$github_token")
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+commit_id=$(echo $3)
+releaseTag=$(echo $4)
+case_id=ARZQ
+
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-xfs jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-xfs jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
+
+################
+# LitmusBook 1 #
+################
+
+echo "****Deploying busybox Application using CSI****"
+
+run_id="csi-xfs";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-busybox-csi-xfs metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for busybox Deployment.."
+cp apps/busybox/deployers/run_litmus_test.yml deploy_csi_xfs_busybox.yml
+
+sed -i -e 's/value: app-busybox-ns/value: busybox-csi-xfs/g' \
+-e 's/app: busybox-litmus/app: busybox-litmus-csi-xfs/g' \
+-e 's/generateName: litmus-busybox-deploy-/generateName: litmus-busybox-csi-xfs-/g' \
+-e 's/value: statefulset/value: deployment/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-cstor-csi-xfs/g' deploy_csi_xfs_busybox.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' deploy_csi_xfs_busybox.yml
+
+cat deploy_csi_xfs_busybox.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-csi-xfs' job=deploy_csi_xfs_busybox.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ARZQ 3-functional "Provision application using CSI with fsType xfs and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 2 #
+################
+
+echo "****Busybox liveness****"
+
+run_id="csi-xfs";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for busybox liveness..."
+cp apps/busybox/liveness/run_litmus_test.yml liveness_csi_xfs_busybox.yml
+
+sed -i -e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-csi-xfs-liveness/g' \
+-e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-csi-xfs-liveness-/g' \
+-e 's/value: app-busybox-ns/value: busybox-csi-xfs/g' liveness_csi_xfs_busybox.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' liveness_csi_xfs_busybox.yml
+
+cat liveness_csi_xfs_busybox.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-csi-xfs-liveness' job=liveness_csi_xfs_busybox.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ARZQ 3-functional "Liveness on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 3 #
+################
+
+run_id="csi-xfs";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-volume-resize metadata=${run_id})
+echo $test_name
+
+cd litmus
+cp experiments/functional/cstor-volume-resize/run_litmus_test.yml run_cstor_volume_resize_xfs_test.yml
+
+sed -i -e 's/value: percona-mysql-claim/value: openebs-busybox/g' \
+-e 's/value: '\''name=percona'\''/value: '\''app=busybox-sts'\''/g' \
+-e 's/app: litmus-cstor-vol-resize/app: litmus-cstor-vol-resize-csi-xfs/g' \
+-e 's/value: app-percona-ns/value: busybox-csi-xfs/g' run_cstor_volume_resize_xfs_test.yml
+
+## Insert the value of STORAGE_CLASS in litmus experiment. 
+sed -i '/name: STORAGE_CLASS/{n;s/.*/            value: openebs-cstor-csi-xfs/}' run_cstor_volume_resize_xfs_test.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_cstor_volume_resize_xfs_test.yml
+
+cat run_cstor_volume_resize_xfs_test.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:litmus-cstor-vol-resize-csi-xfs' job=run_cstor_volume_resize_xfs_test.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ARZQ 3-functional "Check if the volume size is changed" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 4 #
+################
+
+echo "****Busybox liveness deprovision****"
+
+run_id="dep-csi-xfs";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for deprovisioning busybox liveness..."
+cp apps/busybox/liveness/run_litmus_test.yml dep_liveness_csi_xfs_busybox.yml
+
+sed -i -e 's/liveness: litmus-busybox-liveness/liveness: litmus-busybox-csi-xfs-liveness-dep/g' \
+-e 's/generateName: litmus-busybox-liveness-/generateName: litmus-busybox-csi-xfs-liveness-dep-/g' \
+-e 's/value: provision/value: deprovision/g' \
+-e 's/value: app-busybox-ns/value: busybox-csi-xfs/g' dep_liveness_csi_xfs_busybox.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' dep_liveness_csi_xfs_busybox.yml
+
+cat dep_liveness_csi_xfs_busybox.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:litmus-busybox-csi-xfs-liveness-dep' job=dep_liveness_csi_xfs_busybox.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ARZQ 3-functional "Liveness on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 5 #
+################
+
+echo "****Deprovisioning busybox Application****"
+
+run_id="dep-csi-xfs";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-busybox-csi-xfs metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for busybox Deployment Deprovision.."
+cp apps/busybox/deployers/run_litmus_test.yml dep_csi_xfs_busybox.yml
+
+sed -i -e 's/value: app-busybox-ns/value: busybox-csi-xfs/g' \
+-e 's/app: busybox-litmus/app: busybox-litmus-csi-xfs-dep/g' \
+-e 's/generateName: litmus-busybox-deploy-/generateName: litmus-busybox-csi-xfs-dep-/g' \
+-e 's/value: statefulset/value: deployment/g' \
+-e 's/value: provision/value: deprovision/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-cstor-csi-xfs/g' dep_csi_xfs_busybox.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' dep_csi_xfs_busybox.yml
+
+cat dep_csi_xfs_busybox.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-csi-xfs-dep' job=dep_csi_xfs_busybox.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+return_count=$?
+current_time=$(eval $time)
+
+if [ "$return_count" != "0" ]; then
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-xfs jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ARZQ 3-functional "Deprovision the busybox application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-xfs jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ARZQ 3-functional "Deprovision the busybox application and verify the status" Pass $pipeline_id "$current_time" $commit_id $gittoken
+
+if [ "$return_count" != "0" ]; then
+exit 1;
+fi
+
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4 $5
+else
+  pod
+fi

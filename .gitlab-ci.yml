@@ -5,6 +5,7 @@ stages:
   - PROVIDER-INFRA-SETUP
   - APP-FUNC-TEST
   - APP-CHAOS-TEST
+  - INFRA-CHAOS
   # - APP-DEPROVISION    
   - CLUSTER-CLEANUP
 
@@ -290,11 +291,11 @@ ABZF-cStor-volume-resize:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ABZF-csi-volume-resize/csi-volume-resize
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ABZF-csi-volume-resize/csi-volume-resize
 
-THOJ-CVR-migration:
+ARZQ-cStor-volume-resize-xfs:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs
 
 LCDG-backup-and-restore:
   extends: .func_test_template
@@ -521,6 +522,36 @@ ZGNK-Jiva-replica-node-affinity:
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ZGNK-jiva-replica-node-affinity/replica-node-affinity
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ZGNK-jiva-replica-node-affinity/replica-node-affinity
+
+######################################
+##########infra-chaos#################
+######################################
+.infra_chaos_test_template:
+  image: openebs/openshift-ci:latest
+  stage: INFRA-CHAOS
+  tags: 
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - SUTP-konvoy-cluster 
+
+RACV-cstor-node-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/RACV-node-failure-cstor/node-failure-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/RACV-node-failure-cstor/node-failure-cstor
+
+UUPF-cstor-containerd-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/UUPF-containerd-failure-cstor/containerd-failure-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/UUPF-containerd-failure-cstor/containerd-failure-cstor
+    
+ECBZ-cstor-kubelet-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/ECBZ-kubelet-failure-cstor/kubelet-failure-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/ECBZ-kubelet-failure-cstor/kubelet-failure-cstor
 
 ISTV-konvoy-cleanup:
   image: openebs/openshift-ci:latest
