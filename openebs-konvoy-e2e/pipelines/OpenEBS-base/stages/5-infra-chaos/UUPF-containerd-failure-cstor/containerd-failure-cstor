@@ -142,6 +142,11 @@ sed -i '/parameters.yml: |/a \
     testfile: crifailuretest
 ' run_cri_failure_test_cstor.yml
 
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_cri_failure_test_cstor.yml
+
 cat run_cri_failure_test_cstor.yml
 
 # Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.

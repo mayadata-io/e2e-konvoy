@@ -116,7 +116,7 @@ fi
 # LitmusBook 3 #
 ################
 
-run_id="cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=svc-failure-chaos metadata=${run_id})
+run_id="kubelet";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=svc-failure-chaos metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -134,12 +134,19 @@ sed -i -e '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_kubelet_failure_test_cstor.yml
 
 sed -i -e "s|#nodeSelector|nodeSelector|g" \
+-e "s|name: svc-failure|name: kubelet-svc-failure|g" \
+-e "s|name: node-password|name: kubelet-node-password|g" \
 -e "s|#  kubernetes.io/hostname:|  kubernetes.io/hostname: ${observer_node}|g" run_kubelet_failure_test_cstor.yml
 
 sed -i '/parameters.yml: |/a \
     blocksize: 4k\
     blockcount: 1024\
     testfile: kubeletfailuretest
+' run_kubelet_failure_test_cstor.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
 ' run_kubelet_failure_test_cstor.yml
 
 cat run_kubelet_failure_test_cstor.yml
