@@ -85,39 +85,6 @@ RAIDZ2-POOL:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-raidz2-pool/create-raidz2-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-raidz2-pool/create-raidz2-pool
 
-# NFSv4-PROVISION:
-#   image: openebs/openshift-ci:latest
-#   stage: PROVIDER-INFRA-SETUP
-#   tags: 
-#     - k8s-konvoy
-#   dependencies:
-#     - konvoy-cluster
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-nfs-provisioner/nfsv4-provision
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-nfs-provisioner/nfsv4-provision
-
-# CSPC-STRIPE-POOL:
-#   image: openebs/openshift-ci:latest
-#   stage: PROVIDER-INFRA-SETUP
-#   tags: 
-#     - k8s-konvoy
-#   dependencies:
-#     - konvoy-cluster
-#   script:
-#     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-cspc-stripe-pool/create-cspc-stripe-pool
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/create-cspc-stripe-pool/create-cspc-stripe-pool
- 
-# CSI-PROVISIONER:
-#   image: openebs/openshift-ci:latest
-#   stage: PROVIDER-INFRA-SETUP
-#   tags: 
-#     - k8s-konvoy
-#   dependencies:
-#     - konvoy-cluster
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/deploy-csi-provisioner/deploy-csi-provisioner
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/deploy-csi-provisioner/deploy-csi-provisioner
-
 # ## Define job template for func jobs    
 .func_test_template:
   image: openebs/openshift-ci:latest
@@ -146,23 +113,23 @@ percona-deployment-cstor:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-deployment-cstor/percona-deployment-cstor
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-deployment-cstor/percona-deployment-cstor
 
+percona-deployment-localpv-device:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-localpv-device/percona-localpv-device
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-localpv-device/percona-localpv-device
+
+percona-deployment-localpv-hostpath:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-localpv-hostpath/percona-localpv-hostpath
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-localpv-hostpath/percona-localpv-hostpath
+     
 percona-deployment-jiva:
   extends: .func_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-deployment-jiva/percona-deployment-jiva
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-deployment-jiva/percona-deployment-jiva
-
-# busybox-statefulset-cstor:
-#   extends: .func_test_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-cstor/busybox-statefulset-cstor
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-cstor/busybox-statefulset-cstor
-
-# busybox-statefulset-jiva:
-#   extends: .func_test_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-jiva/busybox-statefulset-jiva
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/busybox-statefulset-jiva/busybox-statefulset-jiva
 
 busybox-cstor-clone:
   extends: .func_test_template
@@ -242,18 +209,6 @@ busybox-cstor-pool-delete:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-delete
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-pool-delete
 
-# busybox-cstor-sts-verify-data-persistence:
-#   extends: .chaos_test_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-verify-data-persistence
-
-# busybox-jiva-sts-verify-data-persistence:
-#   extends: .chaos_test_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-jiva-verify-data-persistence
-
 busybox-deployment-target-network-delay:
   extends: .chaos_test_template
   script:
@@ -295,7 +250,31 @@ clone-busybox-cstor:
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-clone
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/bb-cstor-clone
-      
+
+percona-verify-data-persistence-device:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-verify-data-persistence-device
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-verify-data-persistence-device
+
+percona-verify-data-persistence-hostpath:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-verify-data-persistence-hostpath
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-verify-data-persistence-hostpath
+
+percona-deployment-localpv-device:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-device
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-device
+
+percona-deployment-localpv-hostpath:
+  extends: .chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-hostpath
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-hostpath
+
 konvoy-cleanup:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP

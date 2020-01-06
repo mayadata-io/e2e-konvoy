@@ -1,0 +1,78 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-verify-data-persistence-hostpath node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"'
+}
+
+node(){
+source ~/.profile
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+releaseTag=$(echo $3)
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-verify-data-persistence-hostpath jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-verify-data-persistence-hostpath jobphase:Running init_time:"$current_time" job_id:"$job_id" pipeline_id:"$pipeline_id" openebs_version:"$releaseTag"
+
+##############################
+# Verifying Data-persistence #
+##############################
+
+run_id="percona-hostpath-verify";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running Litmus Book for verifying data-persistence against percona application."
+cp experiments/functional/data-persistence/run_litmus_test.yml percona_hostpath_verify_data_persistence.yml
+
+sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-hostpath-/g' \
+-e 's/name: data-persistence/name: percona-verify-hostpath/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-percona-hostpath-verify/g' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-localpv-hostpath/}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
+-e '/name: STATUS/{n;s/.*/            value: VERIFY/}' \
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' percona_hostpath_verify_data_persistence.yml
+
+## Insert the set of variables for percona data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    dbuser: root \
+    dbpassword: k8sDem0 \
+    dbname: percona_deployment_hostpath
+' percona_hostpath_verify_data_persistence.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' percona_hostpath_verify_data_persistence.yml
+
+cat percona_hostpath_verify_data_persistence.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-hostpath-verify' job=percona_hostpath_verify_data_persistence.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:percona-verify-data-persistence-hostpath $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-verify-data-persistence-hostpath jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-verify-data-persistence-hostpath jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4
+else
+  pod
+fi
+
