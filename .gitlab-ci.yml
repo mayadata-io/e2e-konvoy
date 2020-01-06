@@ -263,13 +263,13 @@ percona-verify-data-persistence-hostpath:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-verify-data-persistence-hostpath
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-verify-data-persistence-hostpath
 
-percona-deployment-localpv-device:
+percona-deploy-localpv-device:
   extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-device
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-device
 
-percona-deployment-localpv-hostpath:
+percona-deploy-localpv-hostpath:
   extends: .chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-chaos/percona-deployment-hostpath
