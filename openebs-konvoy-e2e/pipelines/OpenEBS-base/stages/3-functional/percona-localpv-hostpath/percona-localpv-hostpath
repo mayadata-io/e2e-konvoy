@@ -1,0 +1,137 @@
+#!/bin/bash
+set -x
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/percona-localpv-hostpath/percona-localpv-hostpath node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$RELEASE_TAG'"'
+}
+
+node(){
+source ~/.profile
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+releaseTag=$(echo $3)
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-localpv-hostpath jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-localpv-hostpath jobphase:Running init_time:"$current_time" job_id:"$job_id" pipeline_id:"$pipeline_id" openebs_version:"$releaseTag"
+
+##Deploying percona Application
+
+run_id="localpv-hostpath";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for percona Deployment..."
+cp apps/percona/deployers/run_litmus_test.yml deploy_percona_hostpath.yml
+
+sed -i -e 's/value: openebs-standard/value: openebs-hostpath/g' \
+-e 's/value: app-percona-ns/value: percona-localpv-hostpath/g' \
+-e 's/value: enable/value: disable/g' \
+-e 's/generateName: litmus-percona-/generateName: litmus-percona-localpv-hostpath-/g' \
+-e 's/app: percona-deployment/app: percona-localpv-hostpath/g' deploy_percona_hostpath.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' deploy_percona_hostpath.yml
+
+cat deploy_percona_hostpath.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:percona-localpv-hostpath' job=deploy_percona_hostpath.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:percona-localpv-hostpath $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
+##Loadgen on percona Application
+
+run_id="localpv-hostpath";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-loadgen metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for Loadgen for percona Application..."
+cp apps/percona/workload/run_litmus_test.yml loadgen_percona_hostpath.yml
+
+sed -i -e 's/generateName: percona-loadgen-/generateName: percona-cstor-loadgen-/g' \
+-e 's/value: app-percona-ns/value: percona-localpv-hostpath/g' \
+-e 's/loadgen: percona-loadjob/loadgen: percona-hostpath-loadjob/g' loadgen_percona_hostpath.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' loadgen_percona_hostpath.yml
+
+cat loadgen_percona_hostpath.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='loadgen:percona-hostpath-loadjob' job=loadgen_percona_hostpath.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:percona-localpv-hostpath $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
+##DATA-PERSISTENCE
+
+run_id="percona-hostpath";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=data-persistence-check metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test to check data-persistence for percona Application..."
+cp experiments/functional/data-persistence/run_litmus_test.yml run_percona_hostpath_data_persistence.yml
+
+sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persistence-percona-hostpath/g' \
+-e 's/name: data-persistence/name: percona-hostpath-configmap/g' \
+-e 's/name: litmus-data-persistence/name: data-persistence-percona-hostpath/g' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-localpv-hostpath/}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
+-e '/name: STATUS/{n;s/.*/            value: LOAD/}' \
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_percona_hostpath_data_persistence.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_percona_hostpath_data_persistence.yml
+
+## Insert the set of variables for percona data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    dbuser: root \
+    dbpassword: k8sDem0 \
+    dbname: percona_deploy_hostpath
+' run_percona_hostpath_data_persistence.yml
+
+cat run_percona_hostpath_data_persistence.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:data-persistence-percona-hostpath' job=run_percona_hostpath_data_persistence.yml
+cd ..
+
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:percona-localpv-hostpath $test_name jobid:"$job_id" pipeline_id:"$pipeline_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-localpv-hostpath jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+exit 1;
+fi
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:percona-localpv-hostpath jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Pass
+
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4
+else
+  pod
+fi
