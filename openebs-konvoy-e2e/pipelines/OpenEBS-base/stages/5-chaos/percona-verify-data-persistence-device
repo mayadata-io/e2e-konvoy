@@ -42,7 +42,7 @@ sed -i -e 's/generateName: data-persistence-litmus-/generateName: data-persisten
 sed -i '/parameters.yml: |/a \
     dbuser: root \
     dbpassword: k8sDem0 \
-    dbname: percona_deployment_device
+    dbname: percona_deploy_device
 ' percona_device_verify_data_persistence.yml
 
 sed -i '/command:/i \
