@@ -135,6 +135,12 @@ VQDN-deploy-busybox-csi:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
 
+ZDKG-Backup-Restore-CSI:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-Backup-Restore-CSI/backup-restore-csi
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-Backup-Restore-CSI/backup-restore-csi
+
 HZWT-cvr-scaledown:
   extends: .func_test_template
   script: 
