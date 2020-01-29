@@ -119,6 +119,17 @@ HODS-CSI-PROVISIONER:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
 
+CRLS-JIVA-CSI-PROVISIONER:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - SUTP-konvoy-cluster
+  script:
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/CRLS-deploy-jiva-csi-provisioner/deploy-jiva-csi-provisioner
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/CRLS-deploy-jiva-csi-provisioner/deploy-jiva-csi-provisioner
+
 # ## Define job template for func jobs    
 .func_test_template:
   image: openebs/openshift-ci:latest
@@ -134,6 +145,12 @@ VQDN-deploy-busybox-csi:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
+
+SBXW-jiva-csi-deploy-busybox:
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SBXW-jiva-csi-deploy-busybox/jiva-csi-deploy-busybox
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SBXW-jiva-csi-deploy-busybox/jiva-csi-deploy-busybox
 
 HZWT-cvr-scaledown:
   extends: .func_test_template
