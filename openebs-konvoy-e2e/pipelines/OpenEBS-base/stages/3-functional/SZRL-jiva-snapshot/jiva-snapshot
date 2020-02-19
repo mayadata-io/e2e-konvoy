@@ -1,5 +1,5 @@
 #!/bin/bash
-set -x
+
 
 pod() {
 # sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b konvoy-onprem https://github.com/mayadata-io/e2e-konvoy.git'
