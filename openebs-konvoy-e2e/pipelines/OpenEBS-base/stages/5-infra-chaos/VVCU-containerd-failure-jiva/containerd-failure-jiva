@@ -1,0 +1,250 @@
+#!/bin/bash
+
+pod(){
+node_name=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port kubectl get nodes --no-headers | grep -v master | awk 'FNR==1 {print $1}')
+echo $node_name
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/VVCU-containerd-failure-jiva/containerd-failure-jiva node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$node_name'"' '"'$RELEASE_TAG'"'
+}
+
+node() {
+
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+commit_id=$(echo $3)
+source ~/.profile
+gittoken=$(echo "$github_token")
+case_id=VVCU
+observer_node=$4
+
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+bash openebs-konvoy-e2e/utils/pooling jobname:node-failure-jiva
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:containerd-failure-jiva jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
+
+################
+# LitmusBook 1 #
+################
+
+echo "*******Deploying Busybox-Deployment*******"
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-cri-failure-jiva metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for Busybox Deployment.."
+cp apps/busybox/deployers/run_litmus_test.yml busybox_deploy_cri_failure_jiva.yml
+
+: << EOF
+  -------------------------------------------------------------------------------------------------------------------
+ | specAttribute     | kind   |         default value               | test specifc value                             |
+  -------------------------------------------------------------------------------------------------------------------|
+ | appNamespace      | env    | app-busybox-ns                      | cri-failure-jiva                               |
+ | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-deploy-cri-failure-jiva           | 
+ | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-default                           |
+ | deploy type       | env    | statefulset                         | deployment                                     |
+  --------------------------------------------------------------------------------------------------------------------
+EOF
+
+sed -i -e 's/value: app-busybox-ns/value: cri-failure-jiva/g' \
+-e 's/app: busybox-litmus/app: busybox-deploy-cri-failure-jiva/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
+-e 's/statefulset/deployment/g' busybox_deploy_cri_failure_jiva.yml
+
+cat busybox_deploy_cri_failure_jiva.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deploy-cri-failure-jiva' busybox_deploy_cri_failure_jiva.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VVCU 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 2 #
+################
+
+run_id="cri-failure-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+echo $test_name
+
+cd litmus
+cp apps/busybox/liveness/run_litmus_test.yml busybox_liveness_cri_failure_jiva.yml
+
+# Update the environmental variables in litmus job spec.
+
+: << EOF
+  ----------------------------------------------------------------------------------------------------------------------
+ | specAttribute     | kind   |         default value               | test specifc value                               |
+  ---------------------------------------------------------------------------------------------------------------------|
+ | appNamespace      | env    | app-busybox-ns                      | cri-failure-jiva                                      | 
+ | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-cri-failure-jiva          |
+  ----------------------------------------------------------------------------------------------------------------------
+EOF
+
+sed -i -e 's/value: app-busybox-ns/value: cri-failure-jiva/g' \
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-cri-failure-jiva/g' busybox_liveness_cri_failure_jiva.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' busybox_liveness_cri_failure_jiva.yml
+
+cat busybox_liveness_cri_failure_jiva.yml
+
+# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-cri-failure-jiva' job=busybox_liveness_cri_failure_jiva.yml
+cd ..
+# Get the cluster state Once the litmus jobs completed.
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+# Update the e2e event for the job.
+bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VVCU 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 3 #
+################
+
+run_id="containerd-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=svc-failure-chaos metadata=${run_id})
+echo $test_name
+
+cd litmus
+cp experiments/chaos/kubernetes/service_failure/run_litmus_test.yml run_cri_failure_test_jiva.yml
+
+# Update the environmental variables in litmus job spec.
+
+sed -i -e '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
+-e 's/name: svc-failure-chaos/name: containerd-failure-chaos-jiva/g' \
+-e '/name: APP_NAMESPACE/{n;s/.*/            value: cri-failure-jiva/g}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
+-e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
+-e '/name: SVC_TYPE/{n;s/.*/            value: containerd/g}' \
+-e 's/password:/password: VGVzdEAxMjM=/g' \
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_cri_failure_test_jiva.yml
+
+sed -i -e "s|#nodeSelector|nodeSelector|g" \
+-e "s|name: svc-failure|name: cri-svc-failure-jiva|g" \
+-e "s|name: node-password|name: cri-node-password-jiva|g" \
+-e "s|#  kubernetes.io/hostname:|  kubernetes.io/hostname: ${observer_node}|g" run_cri_failure_test_jiva.yml
+
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k\
+    blockcount: 1024\
+    testfile: crifailuretestjiva
+' run_cri_failure_test_jiva.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_cri_failure_test_jiva.yml
+
+cat run_cri_failure_test_jiva.yml
+
+# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:containerd-failure-chaos-jiva' job=run_cri_failure_test_jiva.yml
+cd ..
+# Get the cluster state Once the litmus jobs completed.
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+# Update the e2e event for the job.
+bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VVCU 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 4 #
+################
+
+run_id="deprovision-cri-failure-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
+echo $test_name
+
+cd litmus
+cp apps/busybox/liveness/run_litmus_test.yml busybox_liveness_deprovision_cri_failure_jiva.yml
+
+# Update the environmental variables in litmus job spec.
+
+sed -i -e 's/value: app-busybox-ns/value: cri-failure-jiva/g' \
+-e 's/value: provision/value: deprovision/g' \
+-e 's/generateName: litmus-busybox-liveness/generateName: busybox-liveness-dep-cri-failure-jiva/g' \
+-e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-dep-cri-failure-jiva/g' busybox_liveness_deprovision_cri_failure_jiva.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' busybox_liveness_deprovision_cri_failure_jiva.yml
+
+cat busybox_liveness_deprovision_cri_failure_jiva.yml
+
+# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-dep-cri-failure-jiva' job=busybox_liveness_deprovision_cri_failure_jiva.yml
+cd ..
+# Get the cluster state Once the litmus jobs completed.
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+# Update the e2e event for the job.
+bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VVCU 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 5 #
+################
+
+echo "*******Deprovision Busybox-Deployment*******"
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-cri-failure-jiva metadata="")
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for Busybox Application Deprovision.."
+cp apps/busybox/deployers/run_litmus_test.yml busybox_deprovision_cri_failure_jiva.yml
+
+sed -i -e 's/value: app-busybox-ns/value: cri-failure-jiva/g' \
+-e 's/app: busybox-litmus/app: busybox-dep-cri-failure-jiva/g' \
+-e 's/value: provision/value: deprovision/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
+-e 's/statefulset/deployment/g' busybox_deprovision_cri_failure_jiva.yml
+
+cat busybox_deprovision_cri_failure_jiva.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-dep-cri-failure-jiva' busybox_deprovision_cri_failure_jiva.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+# testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+
+if [ "$rc_val" != "0" ]; then
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:containerd-failure-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VVCU 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:containerd-failure-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id VVCU 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Pass $pipeline_id "$current_time" $commit_id $gittoken
+
+if [ "$rc_val" != "0" ]; then
+exit 1;
+fi
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4 $5 $6
+else
+  pod
+fi

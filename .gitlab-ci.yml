@@ -560,6 +560,24 @@ ECBZ-cstor-kubelet-failure:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/ECBZ-kubelet-failure-cstor/kubelet-failure-cstor
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/ECBZ-kubelet-failure-cstor/kubelet-failure-cstor
     
+SXRU-jiva-node-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/SXRU-node-failure-jiva/node-failure-jiva
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/SXRU-node-failure-jiva/node-failure-jiva
+
+VVCU-jiva-containerd-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/VVCU-containerd-failure-jiva/containerd-failure-jiva
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/VVCU-containerd-failure-jiva/containerd-failure-jiva
+    
+LUUY-jiva-kubelet-failure:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/LUUY-kubelet-failure-jiva/kubelet-failure-jiva
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/LUUY-kubelet-failure-jiva/kubelet-failure-jiva
+
 ISTV-konvoy-cleanup:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP
