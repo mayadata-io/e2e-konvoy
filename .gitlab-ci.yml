@@ -75,16 +75,16 @@ AMHE-RAIDZ1-POOL:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
 
-KSDJ-RAIDZ2-POOL:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
+     #KSDJ-RAIDZ2-POOL:
+     #  image: openebs/openshift-ci:latest
+     #  stage: PROVIDER-INFRA-SETUP
+     #  tags: 
+     #    - k8s-konvoy
+     #  dependencies:
+     #    - SUTP-konvoy-cluster
+     #  script:
+     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
+     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
 
 OQEW-NFSv4-PROVISION:
   image: openebs/openshift-ci:latest
@@ -107,7 +107,18 @@ BRUC-CSPC-STRIPE-POOL:
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/BRUC-create-cspc-stripe-pool/create-cspc-stripe-pool
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/BRUC-create-cspc-stripe-pool/create-cspc-stripe-pool
- 
+
+XMOM-CSPC-MIRROR-POOL:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags:
+    - k8s-konvoy
+  dependencies:
+    - SUTP-konvoy-cluster
+  script:
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XMOM-create-cspc-mirror-pool/create-cspc-mirror-pool
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XMOM-create-cspc-mirror-pool/create-cspc-mirror-pool
+
 HODS-CSI-PROVISIONER:
   image: openebs/openshift-ci:latest
   stage: PROVIDER-INFRA-SETUP
@@ -321,7 +332,6 @@ CFKB-cStor-thick-provisioning:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CFKB-cstor-thick-provisioning/cstor-thick-provisioning
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CFKB-cstor-thick-provisioning/cstor-thick-provisioning
     
-
 NLEQ-Local-PV-hostpath:
   extends: .func_test_template
   script: 
@@ -334,32 +344,23 @@ ZDKG-Local-PV-device:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
 
-# app-replica-scale-{cassandra-jiva}:                  
-#   extends: .func_test_template #dependencies: cassandra-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/jiva/app-sts-replica-scale
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/cassandra/functional/jiva/app-sts-replica-scale
+JIGL-cStor-CSPC-pool-scaleup:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/JIGL-cstor-cspc-pool-scaleup/cstor-cspc-pool-scaleup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/JIGL-cstor-cspc-pool-scaleup/cstor-cspc-pool-scaleup
 
-# app-upgrade-deployment-{jenkins-jiva}:
-#   extends: .func_test_template #dependencies: jenkins-jiva
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/jiva/app-upgrade-deployment
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/jenkins/functional/jiva/app-upgrade-deployment
+ESML-cStor-CSPC-pool-expansion:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
 
-# volume-data-integrity-{fio-jiva}:
-#   extends: .func_test_template 
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/jiva/fio-volume-data-integrity-check
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/jiva/fio-volume-data-integrity-check
-
-# volume-data-integrity-{fio-cstor}:
-#   extends: .func_test_template
-#   script:
-#    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/cstor/fio-volume-data-integrity-check
-#    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/apps/fio/tests/cstor/fio-volume-data-integrity-check
-
-# volume-memory-consumption-{memcheck-jiva}:  
-#   extends: .func_test_template 
+JULL-cStor-CSPC-pool-replace-blockdevice:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
 
 # ## Define job template for chaos jobs 
 
