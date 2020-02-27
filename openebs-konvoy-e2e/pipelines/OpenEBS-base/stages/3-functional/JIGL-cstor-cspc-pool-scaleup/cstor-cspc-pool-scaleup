@@ -20,10 +20,10 @@ current_time=$(eval $time)
 present_dir=$(pwd)
 echo $present_dir
 
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-pool-sclaeup jobphase:Waiting
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-pool-scaleup jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-pool-expansion jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-pool-replace-blockdevice jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-pool-sclaeup jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-pool-scaleup jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
 # LitmusBook 1 #
