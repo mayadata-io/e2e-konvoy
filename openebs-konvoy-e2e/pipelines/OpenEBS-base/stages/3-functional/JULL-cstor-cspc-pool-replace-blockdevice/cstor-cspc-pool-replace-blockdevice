@@ -28,7 +28,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-pool-replace-blockdevice
 
 echo "****Deploying busybox Application using CSI****"
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-repalce-blockdevice metadata='')
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-replace-blockdevice metadata='')
 echo $test_name
 
 cd litmus
