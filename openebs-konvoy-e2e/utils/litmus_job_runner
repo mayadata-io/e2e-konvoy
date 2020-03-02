@@ -48,7 +48,7 @@ while true; do
     if [[ "$container_retry_count" -eq "10" ]]; then
       echo "unable to get CONTAINER-STATUS"; exit 1;
     fi
-    elif [[ $rc -eq 0 && ! -z $cstate ]]; then
+    else if [[ $rc -eq 0 && ! -z $cstate ]]; then
       if [[ ! $cstate =~ 'terminated' ]]; then
         sleep 10
       else break;
