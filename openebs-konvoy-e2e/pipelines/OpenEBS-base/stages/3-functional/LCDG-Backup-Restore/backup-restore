@@ -43,7 +43,7 @@ echo "Running the litmus test for Percona Deployment.."
 echo "$sdk_token" > key.json
 
 echo "Creating configmap in litmus namespace for GCP token"
-kubectl create cm gcp-key -n litmus --from-file ./key.json
+kubectl create cm gcp-key -n litmus --from-file /var/sdk/key.json
 
 cp apps/percona/deployers/run_litmus_test.yml percona_backup_restore.yml
 
