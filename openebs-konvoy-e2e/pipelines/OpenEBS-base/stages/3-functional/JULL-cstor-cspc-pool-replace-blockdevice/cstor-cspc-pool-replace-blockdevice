@@ -113,7 +113,7 @@ sed -i '/parameters.yml: |/a \
 
 cat pool_blockdevice_replacement.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:disk-replacement' job=pool_blockdevice_replacement.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app=busybox-litmus-replace-blockdevice' job=pool_blockdevice_replacement.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cstor-cspc-pool-replace-blockdevice $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
