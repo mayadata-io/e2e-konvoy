@@ -96,7 +96,7 @@ echo $test_name
 
 cd litmus
 
-cp experiments/disk_replacement/run_litmus_test.yml pool_blockdevice_replacement.yml
+cp experiments/functional/disk_replacement/run_litmus_test.yml pool_blockdevice_replacement.yml
 
 sed -i -e '/name: POOL_NAME/{n;s/.*/            value: cstor-cspc-mirror-pool/}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: replace-blockdevice/}' \
@@ -113,7 +113,7 @@ sed -i '/parameters.yml: |/a \
 
 cat pool_blockdevice_replacement.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app=busybox-litmus-replace-blockdevice' job=pool_blockdevice_replacement.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app=disk-replacement' job=pool_blockdevice_replacement.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cstor-cspc-pool-replace-blockdevice $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
