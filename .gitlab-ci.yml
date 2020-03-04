@@ -543,6 +543,12 @@ ZGNK-Jiva-replica-node-affinity:
   dependencies:
     - SUTP-konvoy-cluster 
 
+C55O-cspc-pdb:
+  extends: .infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/C55O-pdb-cspc/pdb-cspc
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/C55O-pdb-cspc/pdb-cspc
+
 RACV-cstor-node-failure:
   extends: .infra_chaos_test_template
   script:
