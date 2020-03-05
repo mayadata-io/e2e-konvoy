@@ -356,11 +356,11 @@ ESML-cStor-CSPC-pool-expansion:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
 
-JULL-cStor-CSPC-pool-replace-blockdevice:
-  extends: .func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
+# JULL-cStor-CSPC-pool-replace-blockdevice:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
 
 # ## Define job template for chaos jobs 
 
