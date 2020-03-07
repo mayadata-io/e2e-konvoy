@@ -34,7 +34,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:pdb-cspc jobphase:Running init_time
 
 echo "*******Deploying Percona Application****"
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment-pdb metadata="")
+run_id="pdb";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -46,6 +46,12 @@ sed -i -e 's/app: percona-deployment/app: deploy-percona-pdb/g' \
 -e 's/value: openebs-standard/value: openebs-cstor-csi/g' \
 -e '/name: TARGET_AFFINITY_CHECK/{n;s/value: enable/value: disable/g}' \
 -e 's/value: app-percona-ns/value: percona-pdb/g' percona_deploy_pdb.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' percona_deploy_pdb.yml
+
 cat percona_deploy_pdb.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-percona-pdb' job=percona_deploy_pdb.yml
@@ -64,7 +70,7 @@ fi
 
 echo "*******Performing CSPC pool pod disruption budget test**********"
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cspc-pod-disruption metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cspc-pod-disruption-budget metadata="")
 echo $test_name
 
 cd litmus
