@@ -2,7 +2,7 @@
 
 
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$VELERO_VERSION'"' '"'$VELERO_PLUGIN_VERSION'"' '"'$SDK_TOKEN'"'
 }
 
 node() {
@@ -13,6 +13,9 @@ job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
 releaseTag=$(echo $4)
+velero_version=$(echo $5)
+velero_plugin_version=$(echo $6)
+sdk_token=$(echo $7)
 case_id=LCDG
 
 time="date"
@@ -35,6 +38,12 @@ echo $test_name
 
 cd litmus
 echo "Running the litmus test for Percona Deployment.."
+
+# Storeing GCP service account key in file"
+echo "$sdk_token" > key.json
+
+echo "Creating configmap in litmus namespace for GCP token"
+kubectl create cm gcp-key -n litmus --from-file /var/sdk/key.json
 
 cp apps/percona/deployers/run_litmus_test.yml percona_backup_restore.yml
 
@@ -65,7 +74,11 @@ echo $test_name
 cd litmus
 cp experiments/functional/backup_and_restore/run_litmus_test.yml run_backuprestore_test.yml
 
-sed -i 's/value: app-percona-ns/value: percona-backup/g' run_backuprestore_test.yml
+sed -i -e 's/value: app-percona-ns/value: percona-backup/g' \
+-e 's/value: "minio"/value: "GCP"/g' run_backuprestore_test.yml
+
+sed -i "s/v1.1.0/$velero_version/g" run_backuprestore_test.yml
+sed -i "s/plugin:ci/plugin:$velero_plugin_version/g" run_backuprestore_test.yml
 
 echo "Running the litmus test for Percona Backup Restore.."
 cat run_backuprestore_test.yml
@@ -94,7 +107,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4 $5
+  node $2 $3 $4 $5 $6 $7 $8
 else
   pod
 fi

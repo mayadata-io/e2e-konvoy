@@ -6,7 +6,7 @@ echo $current_time
 
 echo "***Checking the cluster is Engaged or not*"
 
-state="sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 'ls | grep e2e-konvoy'"
+state="sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'ls | grep e2e-konvoy'"
 cluster_state=$(eval $state)
 
 while [ "${cluster_state}" == "e2e-konvoy" ]; do
@@ -23,19 +23,19 @@ fi
 echo "*************************Checking the Cluster's Health********************"
 
 echo "Checking for the number of nodes in ready state*******************************"
-ready_nodes=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 kubectl get nodes | grep Ready | wc -l)
+ready_nodes=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port kubectl get nodes --no-headers | grep -v NotReady | wc -l)
 
-git_token=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 'cat ~/.profile | grep github_token | cut -d= -f2')
+git_token=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cat ~/.profile | grep github_token | cut -d= -f2')
 gittoken=$(echo $git_token | tr -d '"')
 
 
-if [ "$ready_nodes" -eq 8 ]; then
+if [ "$ready_nodes" -eq 6 ]; then
 echo "Number of nodes in ready state is $ready_nodes"
 echo "******Cluster is in Healthy state****"
 
 echo "*************Dumping cluster state********"
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 kubectl get nodes
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p 1658 kubectl get pod --all-namespaces
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port kubectl get nodes
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port kubectl get pod --all-namespaces
 
 echo "cloning e2e-konvoy repo*************"
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b release-branch https://github.com/mayadata-io/e2e-konvoy.git'
