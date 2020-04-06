@@ -356,6 +356,12 @@ ESML-cStor-CSPC-pool-expansion:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
 
+LTWY-Jiva-Volume-Resize:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LTWY-jiva-volume-resize/jiva-volume-resize
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LTWY-jiva-volume-resize/jiva-volume-resize
+
 # JULL-cStor-CSPC-pool-replace-blockdevice:
 #   extends: .func_test_template
 #   script:
