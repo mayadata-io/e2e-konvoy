@@ -182,11 +182,11 @@ KUSP-CAS-parameters:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUSP-CAS-parameters/CAS-parameters
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUSP-CAS-parameters/CAS-parameters
 
-LLJA-Jiva-internal-snapshot-deletion:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
+# LLJA-Jiva-internal-snapshot-deletion:
+#   extends: .func_test_template
+#   script: 
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
 
 MBKO-clone-different-capacity:
   extends: .func_test_template
