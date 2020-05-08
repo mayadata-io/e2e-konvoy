@@ -31,7 +31,7 @@ cd litmus
 echo "Running the litmus test.."
 sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
 -e 's/value: openebs-csi-cstor-sparse/value: openebs-cstor-csi/g' \
--e 's/value: "1.9.0"/value: "$releaseBranch"/g' \
+-e 's/value: "1.9.0"/value: "'$releaseTag'"/g' \
 -e 's/cstor-sparse-pool/cstor-cspc-disk-pool/g' providers/csi-provisioner/run_litmus_test.yml
 run_test=providers/csi-provisioner/run_litmus_test.yml
 
