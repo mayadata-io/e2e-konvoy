@@ -4,8 +4,11 @@
 pod() {	
 node_name=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port kubectl get nodes --no-headers | grep -v master | awk 'FNR==1 {print $1}')
 
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "kubectl taint nodes $node_name infra-aid=observer:NoSchedule"
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "mkdir infra && echo $node_name >> infra/node_name"
+
 echo $node_name
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/C55O-pdb-cspc/pdb-cspc node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$node_name'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/C55O-pdb-cspc/pdb-cspc node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$node_name'"'
 }
 
 node() {
@@ -25,7 +28,7 @@ current_time=$(eval $time)
 present_dir=$(pwd)
 echo $present_dir
 
-bash openebs-konvoy-e2e/utils/pooling jobname:kubelet-failure-cstor
+bash openebs-konvoy-e2e/utils/pooling jobname:pdb-cspc
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:pdb-cspc jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
@@ -60,7 +63,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:pdb-cspc $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id C55O 3-functional "Ensure that CSPC pool pod not getting evicted violating pod disruption budget" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id C55O 9-csi-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -90,12 +93,12 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:pdb-cspc jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id C55O 3-functional "Ensure that CSPC pool pod not getting evicted violating pod disruption budget." Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id C55O 9-csi-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget." Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:pdb-cspc jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id C55O 3-functional "Ensure that CSPC pool pod not getting evicted violating pod disruption budget." Pass $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id C55O 9-csi-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget." Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

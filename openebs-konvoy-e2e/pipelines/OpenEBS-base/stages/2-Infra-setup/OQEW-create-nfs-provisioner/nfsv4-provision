@@ -21,7 +21,7 @@ current_time=$(eval $time)
 
 #pooling over previous job to complete
 echo "*******Creating cstor-pool**************"
-bash openebs-konvoy-e2e/utils/pooling jobname:s2-j8-csi-provisioner
+bash openebs-konvoy-e2e/utils/pooling jobname:s2-j7-policies
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv4-provision jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=nfs-provision metadata="")
