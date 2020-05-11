@@ -327,12 +327,6 @@ ACME-cStor-target-kill:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
 
-DTCL-Target-Network-Loss:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DTCL-target-network-loss/target-network-loss
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DTCL-target-network-loss/target-network-loss
-
 HVFC-Snap-Rebuild-single-replica:
   extends: .chaos_test_template
   script: 
@@ -465,47 +459,36 @@ LUUY-jiva-kubelet-failure:
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/LUUY-kubelet-failure-jiva/kubelet-failure-jiva
 
 ###############################################################################
-
-AWES-CSTOR-OPERATOR:
+#
+.csi_infra_test_template:
   image: openebs/openshift-ci:latest
   stage: CSTOR-CSI-INFRA-SETUP
   tags: 
     - k8s-konvoy
+  when: always
   dependencies:
     - SUTP-konvoy-cluster
+
+AWES-CSTOR-OPERATOR:
+  extends: .csi_infra_test_template        
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/AWES-cstor-operator/cstor-operator
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/AWES-cstor-operator/cstor-operator
 
 BRUC-CSPC-STRIPE-POOL:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
+  extends: .csi_infra_test_template
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/BRUC-create-cspc-stripe-pool/create-cspc-stripe-pool
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/BRUC-create-cspc-stripe-pool/create-cspc-stripe-pool
 
 XMOM-CSPC-MIRROR-POOL:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-INFRA-SETUP
-  tags:
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
+  extends: .csi_infra_test_template
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/XMOM-create-cspc-mirror-pool/create-cspc-mirror-pool
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/XMOM-create-cspc-mirror-pool/create-cspc-mirror-pool
 
 HODS-CSI-PROVISIONER:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
+  extends: .csi_infra_test_template
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
@@ -572,34 +555,39 @@ JULL-cStor-CSPC-pool-replace-blockdevice:
 
 ###############################################################################
 
-AYQM-CSTOR-APP-KILL:
+.csi_chaos_test_template:
   image: openebs/openshift-ci:latest
   stage: CSTOR-CSI-CHAOS
-  tags: 
+  tags:
     - k8s-konvoy
+  when: always
   dependencies:
     - SUTP-konvoy-cluster
+
+AYQM-CSTOR-APP-KILL:
+  extends: .csi_chaos_test_template        
   script:
    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-app-kill/app-kill
    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-app-kill/app-kill
 
 NTAV-CSTOR-TARGET-KILL:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-CHAOS
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
+  extends: .csi_chaos_test_template        
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
-  
-###############################################################################
+
+DTCL-Target-Network-Loss:
+  extends: .csi_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss
+      
 C55O-cspc-pdb:
   image: openebs/openshift-ci:latest
   stage: CSTOR-CSI-INFRA-CHAOS
   tags: 
     - k8s-konvoy
+  when: always
   dependencies:
     - SUTP-konvoy-cluster
   script:

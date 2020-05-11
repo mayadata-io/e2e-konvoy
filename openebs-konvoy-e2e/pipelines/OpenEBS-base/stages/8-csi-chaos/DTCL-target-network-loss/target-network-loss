@@ -2,7 +2,7 @@
 
 
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DTCL-target-network-loss/target-network-loss node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -53,7 +53,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:target-loss $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 4-chaos "Induce cstor target network loss and check if it gets recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 8-csi-chaos "Induce cstor target network loss and check if it gets recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -89,7 +89,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:target-loss $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 4-chaos "Induce cstor target network loss and check if it gets recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 8-csi-chaos "Induce cstor target network loss and check if it gets recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -128,7 +128,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:target-loss $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 4-chaos "Induce cstor target network loss and check if it gets recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 8-csi-chaos "Induce cstor target network loss and check if it gets recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -174,12 +174,12 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:target-loss jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 4-chaos "Induce cstor target network loss and check if it gets recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 8-csi-chaos "Induce cstor target network loss and check if it gets recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:target-loss jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 4-chaos "Induce cstor target network loss and check if it gets recovered successfully" Pass $pipeline_id "$current_time" $commit_id $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id DTCL 8-csi-chaos "Induce cstor target network loss and check if it gets recovered successfully" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;
