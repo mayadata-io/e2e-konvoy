@@ -37,7 +37,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-cs
 echo $test_name
 cd litmus
 
-cp providers/cstor-operator/run_litmus_test.yml cstor_operator.yml
+cp providers/cstor-operator/run_litmus_test.yaml cstor_operator.yml
 
 sed -i -e "/name: CSPC_OPERATOR_IMAGE/{n;s/.*/            value: ${cspc_operator_image}/g}" cstor_operator.yml
 
