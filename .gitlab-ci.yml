@@ -462,8 +462,8 @@ LUUY-jiva-kubelet-failure:
 #
 .csi_infra_test_template:
   image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-FUNCTIONAL
-  tags:
+  stage: CSTOR-CSI-INFRA-SETUP
+  tags: 
     - k8s-konvoy
   when: always
   dependencies:
@@ -582,7 +582,6 @@ DTCL-Target-Network-Loss:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss
       
-###############################################################################
 C55O-cspc-pdb:
   image: openebs/openshift-ci:latest
   stage: CSTOR-CSI-INFRA-CHAOS
