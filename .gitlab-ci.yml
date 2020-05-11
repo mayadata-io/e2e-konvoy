@@ -6,10 +6,10 @@ stages:
   - APP-FUNC-TEST
   - APP-CHAOS-TEST
   - INFRA-CHAOS
-  - CSI-INFRA-SETUP
-  - CSI-FUNCTIONAL
-  - CSI-CHAOS
-  - CSI-INFRA-CHAOS
+  - CSTOR-CSI-INFRA-SETUP
+  - CSTOR-CSI-FUNCTIONAL
+  - CSTOR-CSI-CHAOS
+  - CSTOR-CSI-INFRA-CHAOS
   - CLUSTER-CLEANUP
 
 ###############################################################################
@@ -151,12 +151,6 @@ KUSP-CAS-parameters:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUSP-CAS-parameters/CAS-parameters
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUSP-CAS-parameters/CAS-parameters
-
-# LLJA-Jiva-internal-snapshot-deletion:
-#   extends: .func_test_template
-#   script: 
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
 
 MBKO-clone-different-capacity:
   extends: .func_test_template
@@ -381,49 +375,6 @@ SHOZ-target-network-delay:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/SHOZ-target-network-delay/target-network-delay
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/SHOZ-target-network-delay/target-network-delay
 
-# QKFK-Snap-Rebuild-multiple-replica:
-#   extends: .chaos_test_template
-#   script: 
-#     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QKFK-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
-#     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QKFK-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
-
-      #WQFI-Clone-Rebuild-before-snapshot-rebuild:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/WQFI-clone-pre-snap-rebuild/clone-pre-rebuild
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/WQFI-clone-pre-snap-rebuild/clone-pre-rebuild
-
-      #VGEA-Clone-Rebuild-during-snapshot-rebuild:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/VGEA-clone-during-snap-rebuild/clone-during-rebuild
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/VGEA-clone-during-snap-rebuild/clone-during-rebuild
-
-# QURH-Clone-Rebuild-post-snapshot-rebuild:
-#   extends: .chaos_test_template
-#   script: 
-#     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QURH-clone-post-snap-rebuild/clone-post-rebuild
-#     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/QURH-clone-post-snap-rebuild/clone-post-rebuild
-
-      #I9VM-Pool-n/w-Loss:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/I9VM-pool-network-loss/pool-network-loss
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/I9VM-pool-network-loss/pool-network-loss
-
-      #8PI6-Pool-n/w-Delay:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/8PI6-pool-network-delay/pool-network-delay
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/8PI6-pool-network-delay/pool-network-delay
-
-# 2HXA-volume-mgmt-kill:
-#   extends: .chaos_test_template
-#   script: 
-#     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/2HXA-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill
-#     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-chaos/2HXA-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill
-
-
 NSCD-Jiva-App-Kill:
   extends: .chaos_test_template
   script:
@@ -447,7 +398,6 @@ FQFO-Jiva-controller-failure:
 #   script:
 #     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill
 #     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill
-
 
 # TZZP-Jiva-controller-network-delay:
 #   extends: .chaos_test_template
@@ -518,7 +468,7 @@ LUUY-jiva-kubelet-failure:
 
 AWES-CSTOR-OPERATOR:
   image: openebs/openshift-ci:latest
-  stage: CSI-INFRA-SETUP
+  stage: CSTOR-CSI-INFRA-SETUP
   tags: 
     - k8s-konvoy
   dependencies:
@@ -529,7 +479,7 @@ AWES-CSTOR-OPERATOR:
 
 BRUC-CSPC-STRIPE-POOL:
   image: openebs/openshift-ci:latest
-  stage: CSI-INFRA-SETUP
+  stage: CSTOR-CSI-INFRA-SETUP
   tags: 
     - k8s-konvoy
   dependencies:
@@ -540,7 +490,7 @@ BRUC-CSPC-STRIPE-POOL:
 
 XMOM-CSPC-MIRROR-POOL:
   image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
+  stage: CSTOR-CSI-INFRA-SETUP
   tags:
     - k8s-konvoy
   dependencies:
@@ -551,7 +501,7 @@ XMOM-CSPC-MIRROR-POOL:
 
 HODS-CSI-PROVISIONER:
   image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
+  stage: CSTOR-CSI-INFRA-SETUP
   tags: 
     - k8s-konvoy
   dependencies:
@@ -565,7 +515,7 @@ HODS-CSI-PROVISIONER:
 # ## Define job template for csi-functional jobs    
 .csi_func_test_template:
   image: openebs/openshift-ci:latest
-  stage: CSI-FUNCTIONAL
+  stage: CSTOR-CSI-FUNCTIONAL
   tags: 
     - k8s-konvoy
   when: always
@@ -614,17 +564,17 @@ ARZQ-cStor-volume-resize-xfs:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs
     
-# JULL-cStor-CSPC-pool-replace-blockdevice:
-#   extends: .csi_func_test_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
+JULL-cStor-CSPC-pool-replace-blockdevice:
+  extends: .csi_func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
 
 ###############################################################################
 
 AYQM-CSTOR-APP-KILL:
   image: openebs/openshift-ci:latest
-  stage: CSI-CHAOS
+  stage: CSTOR-CSI-CHAOS
   tags: 
     - k8s-konvoy
   dependencies:
@@ -635,7 +585,7 @@ AYQM-CSTOR-APP-KILL:
 
 NTAV-CSTOR-TARGET-KILL:
   image: openebs/openshift-ci:latest
-  stage: CSI-CHAOS
+  stage: CSTOR-CSI-CHAOS
   tags: 
     - k8s-konvoy
   dependencies:
@@ -645,11 +595,9 @@ NTAV-CSTOR-TARGET-KILL:
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
   
 ###############################################################################
-
-
 C55O-cspc-pdb:
   image: openebs/openshift-ci:latest
-  stage: CSI-INFRA-CHAOS
+  stage: CSTOR-CSI-INFRA-CHAOS
   tags: 
     - k8s-konvoy
   dependencies:
