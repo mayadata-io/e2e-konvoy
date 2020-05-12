@@ -567,8 +567,8 @@ JULL-cStor-CSPC-pool-replace-blockdevice:
 AYQM-CSTOR-APP-KILL:
   extends: .csi_chaos_test_template        
   script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-app-kill/app-kill
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-app-kill/app-kill
+   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill
+   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill
 
 NTAV-CSTOR-TARGET-KILL:
   extends: .csi_chaos_test_template        
