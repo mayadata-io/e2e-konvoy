@@ -140,7 +140,7 @@ sed -i '/parameters.yml: |/a \
 echo "Running the litmus test for Busybox Deployment Scaleup.."
 cat run_csi_target_kill_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-target-failure' job=run_csi_target_kill_test.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:csi-openebs-target-failure' job=run_csi_target_kill_test.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-target-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
