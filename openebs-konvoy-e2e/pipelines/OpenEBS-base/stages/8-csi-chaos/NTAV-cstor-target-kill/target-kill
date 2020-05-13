@@ -118,7 +118,8 @@ cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_csi_target_k
 sed -i -e 's/value: percona-mysql-claim/value: openebs-bb-targetkill/g' \
 -e 's/value: '\''name=percona'\''/value: '\''app=target-kill'\''/g' \
 -e 's/target-zrepl-kill/target-delete/g' \
--e 's/name: openebs-target-failurename: csi-openebs-target-failure/g' \
+-e 's/name: target-failure/name: csi-target-failure/g' \
+-e 's/name: openebs-target-failure/name: csi-openebs-target-failure/g' \
 -e 's/value: app-percona-ns/value: csi-target-kill/g' run_csi_target_kill_test.yml
 
 sed -i '/command:/i \
