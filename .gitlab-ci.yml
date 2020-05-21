@@ -517,11 +517,11 @@ JIGL-cStor-CSPC-pool-scaleup:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JIGL-cstor-cspc-pool-scaleup/cstor-cspc-pool-scaleup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JIGL-cstor-cspc-pool-scaleup/cstor-cspc-pool-scaleup
 
-      #ESML-cStor-CSPC-pool-expansion:
-      #  extends: .csi_func_test_template
-      #  script:
-      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
-      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
+ESML-cStor-CSPC-pool-expansion:
+  extends: .csi_func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
 
 MSIT-CSI-cstor-snapshot:
   extends: .csi_func_test_template
@@ -547,11 +547,11 @@ ARZQ-cStor-volume-resize-xfs:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs
     
-      #JULL-cStor-CSPC-pool-replace-blockdevice:
-      #  extends: .csi_func_test_template
-      #  script:
-      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
-      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
+JULL-cStor-CSPC-pool-replace-blockdevice:
+  extends: .csi_func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
 
 ###############################################################################
 
@@ -567,14 +567,14 @@ ARZQ-cStor-volume-resize-xfs:
 AYQM-CSTOR-APP-KILL:
   extends: .csi_chaos_test_template        
   script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill
 
-     #NTAV-CSTOR-TARGET-KILL:
-     #  extends: .csi_chaos_test_template        
-     #  script:
-     #    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
-     #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
+NTAV-CSTOR-TARGET-KILL:
+  extends: .csi_chaos_test_template        
+  script:
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
 
 DTCL-Target-Network-Loss:
   extends: .csi_chaos_test_template
