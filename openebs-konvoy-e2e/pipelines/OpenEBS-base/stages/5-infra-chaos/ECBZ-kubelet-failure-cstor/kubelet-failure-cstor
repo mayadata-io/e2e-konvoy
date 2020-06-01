@@ -130,6 +130,7 @@ sed -i -e '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
 -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
 -e '/name: SVC_TYPE/{n;s/.*/            value: kubelet/g}' \
+-e '/name: USERNAME/{n;s/.*/            value: root/g}' \
 -e 's/password:/password: VGVzdEAxMjM=/g' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_kubelet_failure_test_cstor.yml
 
