@@ -505,6 +505,24 @@ HODS-CSI-PROVISIONER:
   dependencies:
     - SUTP-konvoy-cluster 
 
+OTQI-Backup-restore-diff-profile:
+  extends: .csi_func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/OTQI-Backup-Restore-Diff-Profile/backup-restore-diff-profile
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/OTQI-Backup-Restore-Diff-Profile/backup-restore-diff-profile
+    
+XYNP-Remote-restore-diff-ns:
+  extends: .csi_func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/XYNP-Remote-Restore-Diff-ns/remote-restore-diff-ns
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/XYNP-Remote-Restore-Diff-ns/remote-restore-diff-ns
+
+HNOV-backup-restore-cstor-csi:
+  extends: .csi_func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/HNOV-Backup-Restore-Cstor/backup-restore-cstor-csi
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/HNOV-Backup-Restore-Cstor/backup-restore-cstor-csi
+
 VQDN-deploy-busybox-csi:
   extends: .csi_func_test_template
   script: 
