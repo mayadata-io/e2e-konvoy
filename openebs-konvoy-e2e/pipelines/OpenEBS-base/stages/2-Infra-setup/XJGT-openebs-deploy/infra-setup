@@ -68,8 +68,6 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:s2-j9-nfsv4-provision jobphase:Wait
 
 source ~/.profile
 
-cd ../..
-
 echo "Generating test name***************************"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-provision metadata="")
 echo $test_name
