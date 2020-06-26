@@ -103,6 +103,13 @@ sed -i -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/g}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: csi-vol-scaleup/g}' run_cstor_csi_vol_scaleup.yml
 
+## Insert the set of variables for busybox data consistency util into configmap spec.
+sed -i '/parameters.yml: |/a \
+    blocksize: 4k\
+    blockcount: 1024\
+    testfile: scaledown
+' run_cstor_csi_vol_scaleup.yml
+
 cat run_cstor_csi_vol_scaleup.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:cstor-csi-replica-scaleup' job=run_cstor_csi_vol_scaleup.yml
