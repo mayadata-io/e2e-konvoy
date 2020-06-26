@@ -553,6 +553,19 @@ JULL-cStor-CSPC-pool-replace-blockdevice:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
 
+STBD-csi-volume-scaleup:
+  extends: .csi_func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/STBD-csi-volume-scaleup/csi-volume-scaleup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/STBD-csi-volume-scaleup/csi-volume-scaleup
+ 
+LCWN-csi-volume-scaledown:
+  extends: .csi_func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/LCWN-csi-volume-scaledown/csi-volume-scaledown
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/LCWN-csi-volume-scaledown/csi-volume-scaledown
+        
+
 ###############################################################################
 
 .csi_chaos_test_template:
