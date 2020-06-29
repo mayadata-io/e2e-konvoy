@@ -179,7 +179,7 @@ sed -i -e 's/value: app-busybox-ns/value: csi-vol-scaleup/g' \
 
 cat busybox_dep_csi_vol_scaleup.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-csi-vol-scaleup' job=busybox_dep_csi_vol_scaleup.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-dep-csi-vol-scaleup' job=busybox_dep_csi_vol_scaleup.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-scaleup $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
