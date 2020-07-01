@@ -5,7 +5,7 @@ node_name=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 
 echo $node_name
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "kubectl taint nodes $node_name infra-aid-"
 
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/AWES-cstor-operator/cstor-operator node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$CSPC_OPERATOR_IMAGE'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/AWES-cstor-operator/cstor-operator node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -15,7 +15,6 @@ pipeline_id=$(echo $2)
 case_id=AWES
 commit_id=$(echo $3)
 releaseTag=$(echo $4)
-cspc_operator_image=$(echo $5)
 source ~/.profile
 gittoken=$(echo "$github_token")
 
@@ -39,7 +38,7 @@ cd litmus
 
 cp providers/cstor-operator/run_litmus_test.yaml cstor_operator.yml
 
-sed -i -e "/name: CSPC_OPERATOR_IMAGE/{n;s/.*/            value: ${cspc_operator_image}/g}" cstor_operator.yml
+sed -i -e "/name: CSPC_OPERATOR_IMAGE/{n;s/.*/            value: ${releaseTag}/g}" cstor_operator.yml
 
 cat cstor_operator.yml
 
@@ -68,7 +67,7 @@ fi
 }
 
 if [ "$1" == "node" ];then
-  node $2 $3 $4 $5 $6
+  node $2 $3 $4 $5
 else
   pod
 fi
