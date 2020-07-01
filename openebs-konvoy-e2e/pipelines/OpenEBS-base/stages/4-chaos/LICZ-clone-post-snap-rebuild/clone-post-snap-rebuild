@@ -22,7 +22,7 @@ present_dir=$(pwd)
 echo $present_dir
 
 #bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-post-snap-rebuild jobphase:Waiting
-bash openebs-konvoy-e2e/utils/pooling jobname:snap-rebuild-single-rep
+bash openebs-konvoy-e2e/utils/pooling jobname:snap-rebuild-multiple-rep
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-post-snap-rebuild jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 #bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-during-snap-rebuild jobphase:Waiting
 #bash openebs-konvoy-e2e/utils/e2e-cr jobname:clone-pre-snap-rebuild jobphase:Waiting
