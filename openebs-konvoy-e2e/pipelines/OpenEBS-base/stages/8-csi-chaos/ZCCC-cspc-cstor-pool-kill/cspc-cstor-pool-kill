@@ -99,7 +99,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cspc-pool-
 echo $test_name
 
 cd litmus
-cp experiments/chaos/cspc_pool_failure/container_failure cspc-poolkill.yml
+cp experiments/chaos/cspc_pool_failure/container_failure/run_litmus_test.yml cspc-poolkill.yml
 
 sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: cstor-pool-kill/g}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: app=cstor-pool-kill/g}' \
