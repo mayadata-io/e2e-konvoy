@@ -612,6 +612,18 @@ DTCL-Target-Network-Loss:
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss
+
+VBCV-Target-Network-Delay:
+  extends: .csi_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/VBCV-cstor-target-network-delay/target-network-delay
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/VBCV-cstor-target-network-delay/target-network-delay
+
+ZCCC-CSPC-cStor-pool-kill:
+  extends: .csi_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/ZCCC-cspc-cstor-pool-kill/cspc-cstor-pool-kill
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/ZCCC-cspc-cstor-pool-kill/cspc-cstor-pool-kill        
       
       #C55O-cspc-pdb:
       #  image: openebs/openshift-ci:latest
