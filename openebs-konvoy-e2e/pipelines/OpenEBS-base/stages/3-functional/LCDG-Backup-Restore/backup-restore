@@ -75,6 +75,7 @@ cd litmus
 cp experiments/functional/backup_and_restore/run_litmus_test.yml run_backuprestore_test.yml
 
 sed -i -e 's/value: app-percona-ns/value: percona-backup/g' \
+-e '/name: DEPROVISION_VELERO/{n;s/.*/            value: "true"/}' \
 -e 's/value: "minio"/value: "GCP"/g' run_backuprestore_test.yml
 
 sed -i "s/v1.1.0/$velero_version/g" run_backuprestore_test.yml
