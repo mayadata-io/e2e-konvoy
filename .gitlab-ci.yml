@@ -225,10 +225,10 @@ SZRL-jiva-snapshot:
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
 
 LLJA-jiva-autogen-snapshot-delete:
-extends: .func_test_template
-script: 
-  - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
-  - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
+  extends: .func_test_template
+  script: 
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
 
 CYLK-Jiva-Data-Integrity:
   extends: .func_test_template
