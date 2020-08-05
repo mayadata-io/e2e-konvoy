@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 pod() {	
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ABZF-csi-volume-resize/csi-volume-resize node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
@@ -21,11 +20,50 @@ current_time=$(eval $time)
 present_dir=$(pwd)
 echo $present_dir
 
-bash openebs-konvoy-e2e/utils/pooling jobname:deploy-busybox-csi
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Waiting init_time:"$current_time"
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
-run_id="csi";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=csi-volume-resize metadata=${run_id})
+################
+# LitmusBook 1 #
+################
+
+echo "****Deploying busybox Application using CSI****"
+
+run_id="ext";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-busybox-csi metadata=${run_id})
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for busybox Deployment.."
+cp apps/busybox/deployers/run_litmus_test.yml deploy_csi_busybox.yml
+
+sed -i -e 's/value: app-busybox-ns/value: busybox-csi/g' \
+-e 's/app: busybox-litmus/app: busybox-litmus-csi/g' \
+-e 's/generateName: litmus-busybox-deploy-/generateName: litmus-busybox-csi-/g' \
+-e 's/value: statefulset/value: deployment/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-cstor-csi/g' deploy_csi_busybox.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' deploy_csi_busybox.yml
+
+cat deploy_csi_busybox.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-csi' job=deploy_csi_busybox.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:deploy-busybox-csi $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id ABZF 7-csi-functional "Check if the volume size is changed" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 2 #
+################
+
+run_id="ext";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=csi-volume-resize metadata=${run_id})
 echo $test_name
 
 cd litmus
@@ -38,7 +76,6 @@ sed -i -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
 -e '/name: PV_CAPACITY/{n;s/.*/            value: 5Gi/g}' \
 -e '/name: NEW_CAPACITY/{n;s/.*/            value: 10Gi/g}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: busybox-csi/g}' run_cstor_volume_resize_test.yml
-
 
 sed -i '/command:/i \
           - name: RUN_ID\

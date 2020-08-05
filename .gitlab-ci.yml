@@ -528,12 +528,6 @@ HNOV-backup-restore-cstor-csi:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/HNOV-Backup-Restore-Cstor/backup-restore-cstor-csi
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/HNOV-Backup-Restore-Cstor/backup-restore-cstor-csi
-
-VQDN-deploy-busybox-csi:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/VQDN-deploy-busybox-csi/deploy-busybox-csi
     
 JIGL-cStor-CSPC-pool-scaleup:
   extends: .csi_func_test_template
