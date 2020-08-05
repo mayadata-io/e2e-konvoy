@@ -31,10 +31,11 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-internal-snapshot-deletion job
 
 : << EOF
   --------------------------------------------------------------------------------------------------------------------     
- | specAttribute     | kind   |         default value               | test specific value                              |
+ | specAttribute     | kind   |         default value               | test specific value                             |
   ------------------------------------------------------------------------------------------------------------------- |
  | storage class     | env    | openebs-jiva-standard               | openebs-jiva-default                            |
  | appNamespace      | env    | fio                                 | fio-jiva-snapshot-del                           |
+ | REPLICA_RESTART   | env    | LEADER                              | RANDOM                                          |
   ---------------------------------------------------------------------------------------------------------------------
 EOF
 
@@ -47,6 +48,7 @@ echo "Running the litmus test for Jiva internal snapshot deletion."
 cp experiments/functional/snapshot_deletion/jiva/run_litmus_test.yml jiva_snapshot_delete.yml
 
 sed -i -e 's/value: fio/value: fio-jiva-snapshot-del/g' \
+-e 's/value: "LEADER"/value: "RANDOM"/g' \
 -e 's/value: openebs-jiva-standard/value: openebs-jiva-default/g' jiva_snapshot_delete.yml
 
 cat jiva_snapshot_delete.yml

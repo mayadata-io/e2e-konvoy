@@ -140,11 +140,11 @@ CCRT-Jiva-App-replica-Scaleup:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CCRT-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CCRT-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
 
-ISBE-jiva-pods-openebs-namespace:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ISBE-jiva-pods-openebs-namespace/jiva-pods-openebs-namespace
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ISBE-jiva-pods-openebs-namespace/jiva-pods-openebs-namespace
+# ISBE-jiva-pods-openebs-namespace:
+#   extends: .func_test_template
+#   script: 
+#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ISBE-jiva-pods-openebs-namespace/jiva-pods-openebs-namespace
+#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ISBE-jiva-pods-openebs-namespace/jiva-pods-openebs-namespace
 
 KUSP-CAS-parameters:
   extends: .func_test_template
@@ -223,6 +223,12 @@ SZRL-jiva-snapshot:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
+
+LLJA-jiva-autogen-snapshot-delete:
+extends: .func_test_template
+script: 
+  - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
+  - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
 
 CYLK-Jiva-Data-Integrity:
   extends: .func_test_template
