@@ -9,7 +9,7 @@ stages:
   - CSTOR-CSI-INFRA-SETUP
   - CSTOR-CSI-FUNCTIONAL
   - CSTOR-CSI-CHAOS
-    #  - CSTOR-CSI-INFRA-CHAOS
+  - CSTOR-CSI-INFRA-CHAOS
   - CLUSTER-CLEANUP
 
 ###############################################################################
@@ -139,12 +139,6 @@ CCRT-Jiva-App-replica-Scaleup:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CCRT-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CCRT-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
-
-# ISBE-jiva-pods-openebs-namespace:
-#   extends: .func_test_template
-#   script: 
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ISBE-jiva-pods-openebs-namespace/jiva-pods-openebs-namespace
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ISBE-jiva-pods-openebs-namespace/jiva-pods-openebs-namespace
 
 KUSP-CAS-parameters:
   extends: .func_test_template
@@ -498,7 +492,13 @@ HODS-CSI-PROVISIONER:
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
-    
+
+GUGS-CSI-STORAGE-POLICIES:
+  extends: .csi_infra_test_template
+  script:
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/GUGS-csi-storage-policies/openebs-csi-sc
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/GUGS-csi-storage-policies/openebs-csi-sc
+
 ###############################################################################
 
 # ## Define job template for csi-functional jobs    
@@ -588,7 +588,24 @@ LCWN-csi-volume-scaledown:
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/LCWN-csi-volume-scaledown/csi-volume-scaledown
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/LCWN-csi-volume-scaledown/csi-volume-scaledown
-        
+
+BNEX-blockdevice-reusability:
+  extends: .csi_func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/BNEX-blockdevice-reusability/blockdevice-reusability
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/BNEX-blockdevice-reusability/blockdevice-reusability
+
+NVOZ-pool-creation-with-claimed-bd:
+  extends: .csi_func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/NVOZ-block-pool-creation-with-claimed-bd/block-pool-creation-with-claimed-bd
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/NVOZ-block-pool-creation-with-claimed-bd/block-pool-creation-with-claimed-bd
+
+TUTQ-pool-deletion-with-volume:
+  extends: .csi_func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/TUTQ-block-pool-deletion-with-volume/block-pool-deletion-with-volume
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/TUTQ-block-pool-deletion-with-volume/block-pool-deletion-with-volume
 
 ###############################################################################
 
@@ -642,6 +659,18 @@ ZCCC-CSPC-cStor-pool-kill:
       #  script:
       #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/C55O-pdb-cspc/pdb-cspc
       #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/C55O-pdb-cspc/pdb-cspc
+
+KAPB-node-failure-csi-cstor:
+  image: openebs/openshift-ci:latest
+  stage: CSTOR-CSI-INFRA-CHAOS
+  tags: 
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - SUTP-konvoy-cluster
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor
 
 ###############################################################################
 
