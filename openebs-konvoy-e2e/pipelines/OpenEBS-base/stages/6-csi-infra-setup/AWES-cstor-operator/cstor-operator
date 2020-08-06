@@ -41,7 +41,7 @@ cd litmus
 
 cp providers/cstor-operator/run_litmus_test.yml cstor_operator.yml
 
-sed -i -e "/name: CSTOR_OPERATOR_IMAGE/{n;s/.*/            value: ${releaseTag}/g}"
+sed -i -e "/name: CSTOR_OPERATOR_IMAGE/{n;s/.*/            value: ${releaseTag}/g}" \
 -e "/name: RELEASE_BRANCH/{n;s/.*/            value: ${release_branch}/g}" \
 -e "/name: RELEASE_VERSION/{n;s/.*/            value: ${release_version}/g}" cstor_operator.yml
 

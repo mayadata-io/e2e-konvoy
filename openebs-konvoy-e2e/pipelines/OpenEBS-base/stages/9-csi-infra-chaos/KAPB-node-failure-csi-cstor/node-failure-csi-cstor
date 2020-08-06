@@ -8,7 +8,7 @@ sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "kubectl tai
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "mkdir infra && echo $node_name >> infra/node_name"
 
 echo $node_name
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-cstor/node-failure-cstor node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$node_name'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$node_name'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
