@@ -31,7 +31,7 @@ echo $test_name
 
 cd litmus
 
-cp experiments/functional/cspc-pool/blockdevice-reusability/test.yml blockdevice-reusability.yml
+cp experiments/functional/cspc-pool/blockdevice-reusability/run_litmus_test.yml blockdevice-reusability.yml
 
 sed -i -e "/name: SPC_POOL_NAME/{n;s/.*/            value: cstor-block-disk-pool-mirror/g}" \
 -e "/name: NEW_CSPC_POOL_NAME/{n;s/.*/            value: cspc-blockdevice-reusability-pool/g}" \
