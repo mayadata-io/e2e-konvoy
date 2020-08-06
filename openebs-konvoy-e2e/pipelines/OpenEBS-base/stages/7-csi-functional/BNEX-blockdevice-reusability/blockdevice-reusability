@@ -1,0 +1,96 @@
+#!/bin/bash
+
+pod(){
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/BNEX-blockdevice-reusability/blockdevice-reusability node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+}
+
+node() {
+source ~/.profile
+gittoken=$(echo "$github_token")
+job_id=$(echo $1)
+pipeline_id=$(echo $2)
+commit_id=$(echo $3)
+releaseTag=$(echo $4)
+case_id=BNEX
+
+time="date"
+current_time=$(eval $time)
+
+present_dir=$(pwd)
+echo $present_dir
+
+bash openebs-konvoy-e2e/utils/pooling jobname:cstor-cspc-pool-replace-blockdevice
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:blockdevice-reusability jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
+
+################
+# LitmusBook 1 #
+################
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=verify-blockdevice-reusability metadata='')
+echo $test_name
+
+cd litmus
+
+cp experiments/functional/cspc-pool/blockdevice-reusability/test.yml blockdevice-reusability.yml
+
+sed -i -e "/name: SPC_POOL_NAME/{n;s/.*/            value: cstor-block-disk-pool-mirror/g}" \
+-e "/name: NEW_CSPC_POOL_NAME/{n;s/.*/            value: cspc-blockdevice-reusability-pool/g}" \
+-e "/name: POOL_TYPE/{n;s/.*/            value: mirror/g}" blockdevice-reusability.yml
+
+cat blockdevice-reusability.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:verify-blockdevice-reusability' job=blockdevice-reusability.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:blockdevice-reusability $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id BNEX 7-csi-functional "Verify the reusability of blockdevice" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+################
+# LitmusBook 2 #
+################
+
+echo "****Deploying busybox Application using CSI****"
+
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-bd-reusability metadata='')
+echo $test_name
+
+cd litmus
+echo "Running the litmus test for busybox Deployment.."
+cp apps/busybox/deployers/run_litmus_test.yml deploy_blockdevice-reusability.yml
+
+sed -i -e 's/value: app-busybox-ns/value: bd-reusability/g' \
+-e 's/app: busybox-litmus/app: busybox-litmus-csi-bd-reusability/g' \
+-e 's/generateName: litmus-busybox-deploy-/generateName: litmus-busybox-csi-bd-reusability-/g' \
+-e 's/value: statefulset/value: deployment/g' \
+-e 's/value: openebs-cstor-sparse/value: openebs-bd-reusability-sc/g' deploy_blockdevice-reusability.yml
+
+cat deploy_blockdevice-reusability.yml
+
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-csi-bd-reusability' job=deploy_blockdevice-reusability.yml
+cd ..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:blockdevice-reusability $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+rc_val=$(echo $?)
+current_time=$(eval $time)
+
+if [ "$rc_val" != "0" ]; then
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:blockdevice-reusability jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id BNEX 7-csi-functional "Verify the reusability of blockdevice" Fail $pipeline_id "$current_time" $commit_id $gittoken
+exit 1;
+fi
+
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:blockdevice-reusability jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id BNEX 7-csi-functional "Verify the reusability of blockdevice" Fail $pipeline_id "$current_time" $commit_id $gittoken
+
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4 $5
+else
+  pod
+fi
