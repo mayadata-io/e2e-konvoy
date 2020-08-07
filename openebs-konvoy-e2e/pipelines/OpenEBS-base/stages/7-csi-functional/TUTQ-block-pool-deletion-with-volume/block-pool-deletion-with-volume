@@ -67,7 +67,7 @@ sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: busybox-csi-volume/g}
 
 cat block-pool-deletion-with-volume.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:cstor-pool-creation-with-claimed-bd' job=block-pool-deletion-with-volume.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:pool-deletion-with-volume' job=block-pool-deletion-with-volume.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:block-pool-deletion-with-volume $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

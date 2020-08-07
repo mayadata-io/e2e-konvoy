@@ -60,7 +60,7 @@ sed -i '/command:/i \
 
 cat percona_backup_restore_csi_diff_profile.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-percona-backup-restore-csi-diff-profile' job=percona_backup_restore_csi_diff_ns.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-percona-backup-restore-csi-diff-profile' job=percona_backup_restore_csi_diff_profile.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:backup-restore-cstor-csi-diff-profile $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
