@@ -105,7 +105,7 @@ sed -i -e 's/value: app-busybox-ns/value: bd-reusability/g' \
 
 cat deprovision-blockdevice-reusability.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-csi-bd-reusability-deprovision' job=derovision-blockdevice-reusability.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-csi-bd-reusability-deprovision' job=deprovision-blockdevice-reusability.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:blockdevice-reusability $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -130,11 +130,16 @@ cd litmus
 cp experiments/functional/cspc-pool/blockdevice-reusability/run_litmus_test.yml deprovision-blockdevice-reusability.yml
 
 sed -i -e "/name: SPC_POOL_NAME/{n;s/.*/            value: cstor-block-disk-pool-mirror/g}" \
--e 's/value: provision/value: deprovision/g' \
--e 's/generateName: verify-blockdevice-reusability-/generateName: verify-blockdevice-reusability-deprovision-/g' \
--e 's/app: verify-blockdevice-reusability/app: verify-blockdevice-reusability-deprovision/g' \
+-e "s/value: provision/value: deprovision/g" \
+-e "s/generateName: verify-blockdevice-reusability-/generateName: verify-blockdevice-reusability-deprovision-/g" \
+-e "s/app: verify-blockdevice-reusability/app: verify-blockdevice-reusability-deprovision/g" \
 -e "/name: NEW_CSPC_POOL_NAME/{n;s/.*/            value: cspc-blockdevice-reusability-pool/g}" \
 -e "/name: POOL_TYPE/{n;s/.*/            value: mirror/g}" deprovision-blockdevice-reusability.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' deprovision-blockdevice-reusability.yml
 
 cat deprovision-blockdevice-reusability.yml
 
