@@ -108,6 +108,7 @@ cp experiments/chaos/node_failure/run_litmus_test.yml run_node_failure_csi.yml
 
 sed -i -e 's/value: app-percona-ns/value: node-failure-csi-cstor/g' \
 -e 's/password:/password: cGFzc3dvcmQ=/g' \
+-e 's/passwordNode:/passwordNode: UmFuZG9t/g' \
 -e 's/name: node-failure/name: node-failure-csi-cstor/g' \
 -e 's/name=percona/app=node-failure-csi-cstor/g' run_node_failure_csi.yml
 
