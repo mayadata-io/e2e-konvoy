@@ -641,30 +641,35 @@ ZCCC-CSPC-cStor-pool-kill:
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/ZCCC-cspc-cstor-pool-kill/cspc-cstor-pool-kill
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/ZCCC-cspc-cstor-pool-kill/cspc-cstor-pool-kill        
-      
+
+###############################################################################
+
+.csi_infra_chaos_test_template:
+  image: openebs/openshift-ci:latest
+  stage: CSTOR-CSI-INFRA-CHAOS
+  tags:
+    - k8s-konvoy
+  when: always
+  dependencies:
+    - SUTP-konvoy-cluster
+
       #C55O-cspc-pdb:
-      #  image: openebs/openshift-ci:latest
-      #  stage: CSTOR-CSI-INFRA-CHAOS
-      #  tags: 
-      #    - k8s-konvoy
-      #  when: always
-      #  dependencies:
-      #    - SUTP-konvoy-cluster
+      #  extends: .csi_infra_chaos_test_template
       #  script:
       #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/C55O-pdb-cspc/pdb-cspc
       #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/C55O-pdb-cspc/pdb-cspc
 
 KAPB-node-failure-csi-cstor:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-INFRA-CHAOS
-  tags: 
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - SUTP-konvoy-cluster
+  extends: .csi_infra_chaos_test_template        
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor
+
+KAPB-node-failure-csi-cstor:
+  extends: .csi_infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/WXVN-containerd-failure-csi-cstor/containerd-failure-csi-cstor
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/WXVN-containerd-failure-csi-cstor/containerd-failure-csi-cstor      
 
 ###############################################################################
 
