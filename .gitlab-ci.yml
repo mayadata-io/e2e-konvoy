@@ -665,7 +665,7 @@ KAPB-node-failure-csi-cstor:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor
 
-KAPB-node-failure-csi-cstor:
+WXVN-containerd-failure-csi-cstor:
   extends: .csi_infra_chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/WXVN-containerd-failure-csi-cstor/containerd-failure-csi-cstor
