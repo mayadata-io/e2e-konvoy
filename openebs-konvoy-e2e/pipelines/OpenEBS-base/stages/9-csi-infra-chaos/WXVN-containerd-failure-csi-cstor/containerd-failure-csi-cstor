@@ -105,7 +105,7 @@ cp experiments/chaos/kubernetes/service_failure/run_litmus_test.yml run_cri_fail
 # Update the environmental variables in litmus job spec.
 
 sed -i -e '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
--e 's/name: svc-failure-chaos/name: containerd-failure-chaos-cstor/g' \
+-e 's/name: svc-failure-chaos/name: containerd-failure-chaos-csi-cstor/g' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: cri-failure-csi-cstor/g}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
 -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
@@ -115,12 +115,14 @@ sed -i -e '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_cri_failure_test_csi_cstor.yml
 
 sed -i -e "s|#nodeSelector|nodeSelector|g" \
+-e "s|name: svc-failure|name: csi-svc-failure|g" \
+-e "s|name: node-password|name: cri-node-password|g" \
 -e "s|#  kubernetes.io/hostname:|  kubernetes.io/hostname: ${observer_node}|g" run_cri_failure_test_csi_cstor.yml
 
 sed -i '/parameters.yml: |/a \
     blocksize: 4k\
     blockcount: 1024\
-    testfile: crifailuretest
+    testfile: csicrifailure
 ' run_cri_failure_test_csi_cstor.yml
 
 sed -i '/command:/i \
