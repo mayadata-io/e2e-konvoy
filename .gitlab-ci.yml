@@ -242,11 +242,11 @@ VSVT-cstor-memory-consumption:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-cstor-memory-consumption/memory-consumption
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-cstor-memory-consumption/memory-consumption
 
-ZBNN-App-Target-affinity:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
+      #ZBNN-App-Target-affinity:
+      #  extends: .func_test_template
+      #  script: 
+      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
+      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
 
 ZYKP-cstor-Data-Integrity:
   extends: .func_test_template
@@ -303,11 +303,11 @@ LTWY-Jiva-Volume-Resize:
   dependencies:
     - SUTP-konvoy-cluster 
   
-MCDE-App-Kill:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MCDE-app-kill/app-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MCDE-app-kill/app-kill
+      #MCDE-App-Kill:
+      #  extends: .chaos_test_template
+      #  script: 
+      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MCDE-app-kill/app-kill
+      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MCDE-app-kill/app-kill
 
 UJOI-cStor-Pool-Kill:
   extends: .chaos_test_template
@@ -369,11 +369,11 @@ SHOZ-target-network-delay:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/SHOZ-target-network-delay/target-network-delay
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/SHOZ-target-network-delay/target-network-delay
 
-NSCD-Jiva-App-Kill:
-  extends: .chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/NSCD-Jiva-app-kill/jiva-app-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/NSCD-Jiva-app-kill/jiva-app-kill
+      #NSCD-Jiva-App-Kill:
+      #  extends: .chaos_test_template
+      #  script:
+      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/NSCD-Jiva-app-kill/jiva-app-kill
+      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/NSCD-Jiva-app-kill/jiva-app-kill
 
 MVET-Jiva-single-replica-failure:
   extends: .chaos_test_template
@@ -486,12 +486,6 @@ XMOM-CSPC-MIRROR-POOL:
   script:
     - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/XMOM-create-cspc-mirror-pool/create-cspc-mirror-pool
     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/XMOM-create-cspc-mirror-pool/create-cspc-mirror-pool
-
-HODS-CSI-PROVISIONER:
-  extends: .csi_infra_test_template
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/HODS-deploy-csi-provisioner/deploy-csi-provisioner
 
 GUGS-CSI-STORAGE-POLICIES:
   extends: .csi_infra_test_template
