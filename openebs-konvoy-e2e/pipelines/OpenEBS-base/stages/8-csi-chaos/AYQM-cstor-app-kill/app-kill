@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 pod() {
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
@@ -128,7 +127,7 @@ fi
 
 # Performing Application Pod Chaos
 
-run_id="csi-app-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=application-pod-failure metadata="")
+run_id="csi-app-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=application-pod-failure metadata=${run_id})
 echo $test_name
 
 cd litmus
