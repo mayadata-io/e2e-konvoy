@@ -49,7 +49,9 @@ cp apps/percona/deployers/run_litmus_test.yml percona_backup_restore.yml
 
 sed -i -e 's/app: percona-deployment/app: deploy-percona-backup-restore/g' \
 -e 's/value: openebs-standard/value: openebs-cstor-disk/g' \
+-e '/name: TARGET_AFFINITY_CHECK/{n;s/value: enable/value: disable/g}' \
 -e 's/value: app-percona-ns/value: percona-backup/g' percona_backup_restore.yml
+
 cat percona_backup_restore.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-percona-backup-restore' job=percona_backup_restore.yml
