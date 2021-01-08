@@ -74,7 +74,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=velero-bac
 echo $test_name
 
 cd litmus
-cp experiments/functional/backup_and_restore/run_litmus_test.yml run_backuprestore_test.yml
+cp experiments/functional/backup_and_restore/cstor/run_litmus_test.yml run_backuprestore_test.yml
 
 sed -i -e 's/value: app-percona-ns/value: percona-backup/g' \
 -e '/name: DEPROVISION_VELERO/{n;s/.*/            value: "true"/}' \
