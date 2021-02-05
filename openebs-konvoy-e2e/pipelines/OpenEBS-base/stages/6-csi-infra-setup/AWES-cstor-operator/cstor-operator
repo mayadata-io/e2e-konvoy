@@ -66,8 +66,8 @@ export RC_TAG=$rc_tag
 wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/env-update/env.py
 python3 env.py -f cstor_operator.yml
 
-sed -i -e "/name: OPENEBS_VERSION/{n;s/.*/            value: ${releaseTag}/g}" \
--e "/name: RELEASE_BRANCH/{n;s/.*/            value: ${release_branch}/g}" cstor_operator.yml
+sed -i -e "/name: OPENEBS_VERSION/{n;s/.*/          value: ${releaseTag}/g}" \
+-e "/name: RELEASE_BRANCH/{n;s/.*/          value: ${release_branch}/g}" cstor_operator.yml
 
 cat cstor_operator.yml
 
