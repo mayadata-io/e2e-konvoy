@@ -18,26 +18,13 @@ stage = sys.argv[3]
 test_desc = sys.argv[4]
 # github job result: PASS or FAIL
 test_result = sys.argv[5]
-# pipeline id to create kibana url efk_url
-pipeline_id = "\'"+str(sys.argv[6])+"\'"
 # time of gitlab job run
-time_stamp = sys.argv[7]
-# commit_sha to create kibana url efk_url
-commit_sha = "\'"+str(sys.argv[8])+"\'"
+time_stamp = sys.argv[6]
 # github authentication token
-token = sys.argv[9]
+token = sys.argv[7]
 
 # Number of retries 
 file_update_retries = 5
-
-# github job log url using job_id
-job_url = "<a href=\"https://gitlab.openebs.ci/openebs/e2e-konvoy/-/jobs/{0}\">{0}</a>".format(job_id)
-
-# kibana url for the respective job using commit_sha and pipeline_id
-efk_url = "\"https://e2e-logs.openebs100.io/app/kibana#/discover?_g=(refreshInterval:(pause:!t,value:0),time:(from:now-7d,mode:quick,to:now))&_a=(columns:!(_source),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:cluster-logs,key:commit_id,negate:!f,params:(query:{0},type:phrase),type:phrase,value:{0}),query:(match:(commit_id:(query:{0},type:phrase)))),('$state':(store:appState),meta:(alias:!n,disabled:!f,index:cluster-logs,key:pipeline_id,negate:!f,params:(query:{1},type:phrase),type:phrase,value:{1}),query:(match:(pipeline_id:(query:{1},type:phrase))))),index:cluster-logs,interval:auto,query:(language:lucene,query:''),sort:!('@timestamp',desc))\"".format(commit_sha,pipeline_id)
-
-# creating html link from kibana job url: efk_url
-efk_link = "<a href={0}>{1}</a>".format(efk_url, test_result)
 
 # github repo owner name 
 username = "mayadata-io"
@@ -49,7 +36,7 @@ git_auth = github.Github(token)
 repo = git_auth.get_repo("{owner}/{repo_name}".format(owner=username, repo_name=repos))
 
 # default github path appending stage name : 1-cluster-setup/2-setup/3-functional/4-chaos/5-cleanup
-default_path = 'openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/{}'.format(stage)
+default_path = 'openebs-konvoy-e2e/pipelines/cstor-csi/stages/{}'.format(stage)
 job_dir = ""
 # list of job folders in default_path
 dir_contents = repo.get_dir_contents(default_path)
@@ -69,7 +56,7 @@ if  flag == 0:
  exit()
 
 # creating respective gitlab job directory's github repo path       
-job_dir_path = "openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/{}/{}".format(stage,job_dir)
+job_dir_path = "openebs-konvoy-e2e/pipelines/cstor-csi/stages/{}/{}".format(stage, job_dir)
 
 # Check if the readme.md file present in job_dir_path
 dir_contents = repo.get_dir_contents(job_dir_path)
@@ -84,7 +71,7 @@ if  flag == 0:
  exit()
 
 # readme.md file path
-file_path = "openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/{}/{}/README.md".format(stage, job_dir)
+file_path = "openebs-konvoy-e2e/pipelines/cstor-csi/stages/{}/{}/README.md".format(stage, job_dir)
 print(file_path)
 # print github url for respective job's readme.md
 print("https://github.com/"+username+'/'+repos+'/'+"tree/master/"+file_path)
@@ -104,14 +91,14 @@ def fetch_file_content():
     if 'test result' in last_line:
         updated_file_content =  '| Job ID |   Test Description         | Execution Time |Test Result   |\n'
         updated_file_content = updated_file_content + (' |---------|---------------------------| --------------|--------|\n')
-        updated_file_content = updated_file_content + (' |    {}   |  {}           |  {}     |{}  |\n'.format(job_url, test_desc, time_stamp, efk_link))
+        updated_file_content = updated_file_content + (' |    {}   |  {}           |  {}     |{}  |\n'.format(job_url, test_desc, time_stamp))
         index = len(content_list)
         content_list.insert(index, updated_file_content)
         updated_file_content = ('\n').join(content_list)
 
      # updating result's table if the table is already there
     else:
-        new_job = '|     {}           |  {}           | {}  | {} |'.format(job_url,test_desc,time_stamp ,efk_link)
+        new_job = '|     {}           |  {}           | {}  | {} |'.format(job_url,test_desc,time_stamp)
         index = content_list.index('| Job ID |   Test Description         | Execution Time |Test Result   |')
         content_list.insert(index+2,new_job)
         updated_file_content = ('\n').join(content_list)
