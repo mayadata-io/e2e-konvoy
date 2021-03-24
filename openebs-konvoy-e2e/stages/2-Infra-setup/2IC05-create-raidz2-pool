@@ -25,7 +25,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-raidz2-pool jobphase:Running 
 
 run_id="raidz2";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-block-device-pool-provision metadata=${run_id})
 echo $test_name
-cd litmus
+cd e2e-tests
 
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp providers/cstor/cstor-block-device-pool/run_litmus_test.yml create_raidz2_pool.yml

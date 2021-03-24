@@ -295,6 +295,6 @@ stages:
   tags: 
     - k8s-konvoy 
   script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/10-cleanup/6CC01-cluster-cleanup
-    - ./openebs-konvoy-e2e/stages/10-cleanup/6CC01-cluster-cleanup
+    - chmod 755 ./openebs-konvoy-e2e/stages/6-cleanup/6CC01-cluster-cleanup
+    - ./openebs-konvoy-e2e/stages/6-cleanup/6CC01-cluster-cleanup
 
