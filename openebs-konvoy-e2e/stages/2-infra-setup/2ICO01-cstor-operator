@@ -47,6 +47,9 @@ echo $test_name
 git clone https://github.com/openebs/e2e-tests
 cd e2e-tests
 
+kubectl apply -f hack/rbac.yaml
+kubectl apply -f hack/crd.yaml
+
 cp providers/cstor-operator/run_litmus_test.yml cstor_operator.yml
 
 export CSPC_OPERATOR_IMAGE=$cspc_operator_image
