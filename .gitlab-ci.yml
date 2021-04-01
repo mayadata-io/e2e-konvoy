@@ -39,8 +39,19 @@ stages:
   dependencies:
     - 1JS01-KONVOY-CLUSTER
   script: 
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/2JP01-openebs-deploy/infra-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/2JP01-openebs-deploy/infra-setup
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/2JP01-openebs-deploy/openebs-deploy
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/2JP01-openebs-deploy/openebs-deploy
+
+2JP02-OPENEBS-STORAGE-CLASSES:
+  image: openebs/openshift-ci:latest
+  stage: PROVIDER-INFRA-SETUP
+  tags: 
+    - k8s-konvoy
+  dependencies:
+    - 1JS01-KONVOY-CLUSTER
+  script: 
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/2JP02-storage-classes/storage-classes
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/2JP02-storage-classes/storage-classes
 
 ###############################################################################
 
@@ -54,59 +65,59 @@ stages:
   dependencies:
     - 1JS01-KONVOY-CLUSTER  
 
-2JF01-JIVA-APP-TARGET-AFFINITY:
+3JF01-JIVA-APP-TARGET-AFFINITY:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF01-Jiva-App-Target-Affinity/Jiva-App-Target-Affinity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF01-Jiva-App-Target-Affinity/Jiva-App-Target-Affinity
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF01-Jiva-App-Target-Affinity/Jiva-App-Target-Affinity
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF01-Jiva-App-Target-Affinity/Jiva-App-Target-Affinity
 
-2JF02-JIVA-REPLICA-SCALEUP:
+3JF02-JIVA-REPLICA-SCALEUP:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF02-jiva-replica-scaleup/jiva-replica-scaleup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF02-jiva-replica-scaleup/jiva-replica-scaleup
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF02-jiva-replica-scaleup/jiva-replica-scaleup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF02-jiva-replica-scaleup/jiva-replica-scaleup
 
-2JF03-JIVA-APP-REPLICA-SCALEUP:
+3JF03-JIVA-APP-REPLICA-SCALEUP:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF03-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF03-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF03-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF03-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
 
-2JF04-JIVA-DATA-INTEGRITY:
+3JF04-JIVA-DATA-INTEGRITY:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF04-Jiva-Data-Integrity/data-integrity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF04-Jiva-Data-Integrity/data-integrity
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF04-Jiva-Data-Integrity/data-integrity
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF04-Jiva-Data-Integrity/data-integrity
 
-2JF05-JIVA-AUTOGEN-SNAPSHOT-DELETE:
+3JF05-JIVA-AUTOGEN-SNAPSHOT-DELETE:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF05-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF05-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF05-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF05-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
 
-2JF06-JIVA-VOLUME-RESIZE:
+3JF06-JIVA-VOLUME-RESIZE:
   extends: .func_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF06-jiva-volume-resize/jiva-volume-resize
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF06-jiva-volume-resize/jiva-volume-resize
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF06-jiva-volume-resize/jiva-volume-resize
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF06-jiva-volume-resize/jiva-volume-resize
 
-2JF07-JIVA-MEMORY-CONSUMPTION:
+3JF07-JIVA-MEMORY-CONSUMPTION:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF07-Jiva-Memory-Consumption/memory-consumption
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF07-Jiva-Memory-Consumption/memory-consumption
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF07-Jiva-Memory-Consumption/memory-consumption
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF07-Jiva-Memory-Consumption/memory-consumption
 
-2JF08-JIVA-SNAPSHOT:
+3JF08-JIVA-SNAPSHOT:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF08-jiva-snapshot/jiva-snapshot
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF08-jiva-snapshot/jiva-snapshot
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF08-jiva-snapshot/jiva-snapshot
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF08-jiva-snapshot/jiva-snapshot
 
-2JF09-JIVA-CLONE:
+3JF09-JIVA-CLONE:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF09-jiva-clone/jiva-clone
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/2JF09-jiva-clone/jiva-clone
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF09-jiva-clone/jiva-clone
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF09-jiva-clone/jiva-clone
 
 ###############################################################################
 
@@ -130,8 +141,8 @@ stages:
 4JC02-JIVA-SINGLE-REPLICA-FAILURE:
   extends: .chaos_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/4JC01-jiva-single-replica-failure/jiva-single-replica-failure
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/4JC01-jiva-single-replica-failure/single-replica-failure
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/4JC02-jiva-single-replica-failure/jiva-single-replica-failure
+    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/4JC02-jiva-single-replica-failure/single-replica-failure
 
 4JC03-JIVA-REPLICA-FAILURE:
   extends: .chaos_test_template
@@ -176,7 +187,7 @@ stages:
 
 ###############################################################################
 
-6JD01-konvoy-cleanup:
+6JD01-KONVOY-CLEANUP:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP
   when: always  
