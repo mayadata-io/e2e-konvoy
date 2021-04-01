@@ -181,7 +181,7 @@ stages:
   stage: CLUSTER-CLEANUP
   when: always  
   dependencies: 
-    - 1JS01-konvoy-cluster
+    - 1JS01-KONVOY-CLUSTER
   tags: 
     - k8s-konvoy 
   script:
