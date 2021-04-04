@@ -30,6 +30,8 @@ gittoken=$(echo "$github_token")
 time="date"
 current_time=$(eval $time)
 
+kubectl apply -f openebs-konvoy-e2e/utils/e2e-crd.yml
+
 #pooling over previous job to complete
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-operator jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-striped-pool jobphase:Waiting
