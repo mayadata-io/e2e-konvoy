@@ -39,10 +39,10 @@ cd e2e-tests
 echo "Running the litmus test for Percona Deployment.."
 
 # Storeing GCP service account key in file"
-#echo "$sdk_token" > key.json
+echo "$sdk_token" > key.json
 
-#echo "Creating configmap in litmus namespace for GCP token"
-#kubectl create cm gcp-key -n litmus --from-file /var/sdk/key.json
+echo "Creating configmap in litmus namespace for GCP token"
+kubectl create cm gcp-key -n litmus --from-file /var/sdk/key.json
 
 cp apps/percona/deployers/run_litmus_test.yml percona_backup_restore_csi.yml
 

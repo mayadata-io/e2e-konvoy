@@ -38,7 +38,7 @@ echo "*******Deploying Busybox-Deployment****"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-node-failure-csi-cstor metadata="")
 echo $test_name
 
-cd litmus
+cd e2e-tests
 echo "Running the litmus test for Busybox Deployment.."
 cp apps/busybox/deployers/run_litmus_test.yml app_deploy_csi_node_failure.yml
 
@@ -67,7 +67,7 @@ fi
 run_id="node-failure-csi-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
-cd litmus
+cd e2e-tests
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_node_failure_csi_cstor.yml
 
@@ -104,7 +104,7 @@ fi
 run_id="csi-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=node-failure metadata=${run_id})
 echo $test_name
 
-cd litmus
+cd e2e-tests
 cp experiments/chaos/node_failure/run_litmus_test.yml run_node_failure_csi.yml
 
 sed -i -e 's/value: app-percona-ns/value: node-failure-csi-cstor/g' \
@@ -153,7 +153,7 @@ fi
 run_id="deprovision-node-failure-csi-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
-cd litmus
+cd e2e-tests
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_node_failure_csi.yml
 
@@ -195,7 +195,7 @@ echo "********Deprovisioning Busybox Application*******"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-node-failure-csi-cstor metadata="")
 echo $test_name
 
-cd litmus
+cd e2e-tests
 cp apps/busybox/deployers/run_litmus_test.yml deprovision_node_failure_csi.yml
 
 sed -i -e 's/generateName: litmus-busybox-deploy/generateName: litmus-busybox-deprovision-csi/g' \

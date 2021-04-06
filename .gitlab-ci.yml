@@ -120,11 +120,11 @@ stages:
     - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO09-backup-restore-diff-profile
     - ./openebs-konvoy-e2e/stages/3-functional/3FCO09-backup-restore-diff-profile
     
-3FCO6-cStor-CSPC-pool-scaleup:
+3FCO10-cStor-CSPC-pool-scaleup:
   extends: .csi_func_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO6-cstor-cspc-pool-scaleup
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO6-cstor-cspc-pool-scaleup
+    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO10-cstor-cspc-pool-scaleup
+    - ./openebs-konvoy-e2e/stages/3-functional/3FCO10-cstor-cspc-pool-scaleup
 
 3FCO11-cStor-CSPC-pool-expansion:
   extends: .csi_func_test_template

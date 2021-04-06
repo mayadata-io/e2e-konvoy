@@ -1,7 +1,7 @@
 #!/bin/bash
 
 pod(){
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/3-functional/3FCO16-block-pool-creation-with-claimed-bd node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/3-functional/3FCO15-block-pool-creation-with-claimed-bd node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -11,7 +11,7 @@ job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
 releaseTag=$(echo $4)
-case_id=3FCO16
+case_id=3FCO15
 
 time="date"
 current_time=$(eval $time)
@@ -47,12 +47,12 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:block-pool-creation-with-claimed-bd jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO16 3-functional "Verify if the pool creation is failed when the blockdevice is already claimed" Fail "$current_time" $gittoken
+python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO15 3-functional "Verify if the pool creation is failed when the blockdevice is already claimed" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:block-pool-creation-with-claimed-bd jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO16 3-functional "Verify if the pool creation is failed when the blockdevice is already claimed" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO15 3-functional "Verify if the pool creation is failed when the blockdevice is already claimed" Fail "$current_time" $gittoken
 }
 
 if [ "$1" == "node" ];then
