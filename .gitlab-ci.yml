@@ -38,6 +38,48 @@ stages:
     - chmod 755 ./openebs-konvoy-e2e/stages/2-Infra-setup/2IC01-openebs-deploy
     - ./openebs-konvoy-e2e/stages/2-Infra-setup/2IC01-openebs-deploy
 
+BDD-STRIPED-SPARSE-SPC:
+  extends: .infra_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor-integration-test
+    - ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor-integration-test
+
+BDD-INVALID-STORAGE-POOL-CLAIM:
+  extends: .infra_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/negative/invalid-storage-pool-claim
+    - ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/negative/invalid-storage-pool-claim
+
+BDD-CSTOR-VOLUME-CLONE-PROVISIONING:
+  extends: .infra_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/clone/volume-clone-provisioning
+    - ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/clone/volume-clone-provisioning
+
+BDD-CSTOR-SNAPSHOT-PROVISIONING:
+  extends: .infra_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/snapshot/cstor-snapshot-provisioning
+    - ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/snapshot/cstor-snapshot-provisioning
+
+BDD-CSTOR-VOLUME-PROVISIONING:
+  extends: .infra_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/volume/cstor-volume-provisioning
+    - ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/volume/cstor-volume-provisioning
+
+BDD-CSTOR-VOLUME-PROVISION-WAITFORFIRSTCONSUMER:
+  extends: .infra_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/volume/cstor-volume-provision-waitforfirstconsumer
+    - ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/volume/cstor-volume-provision-waitforfirstconsumer
+
+BDD-CSTOR-SCALEUP-REPLICA:
+  extends: .infra_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/scaleup_replica/scaleup_replica_test
+    - ./openebs-konvoy-e2e/stages/2-Infra-setup/BDD/cstor/scaleup_replica/scaleup_replica_test
+
 2IC02-STRIPED-POOL:
   extends: .infra_test_template
   script:
