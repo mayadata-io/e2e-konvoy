@@ -1,0 +1,5 @@
+#!/bin/bash
+
+
+files=(grep -rw "Openshift-EE" | awk '{print $1}' | cut -d ":" -f 1)
+echo $files
