@@ -16,6 +16,8 @@ stages:
 PCZD-Konvoy:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-SETUP
+  tags:
+    - k8s-konvoy  
   script:     
     - chmod 755 ./Openshift-EE/pipelines/OpenEBS-base/stages/1-cluster-setup/PCZD-cluster-setup/cluster-state
     - ./Openshift-EE/pipelines/OpenEBS-base/stages/1-cluster-setup/PCZD-cluster-setup/cluster-state
@@ -25,6 +27,8 @@ PCZD-Konvoy:
 K9YC-OpenEBS:
   image: openebs/openshift-ci:latest
   stage: OPENEBS-SETUP
+  tags:
+    - k8s-konvoy  
   script:
     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
     - ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
@@ -56,10 +60,11 @@ PBCY-NFSv4-JIVA-PROVISION:
 .jiva_csi_func_test_template:
   image: openebs/openshift-ci:latest
   stage: JIVA-CSI-FUNCTIONAL
+  tags:
+    - k8s-konvoy  
   when: always
   dependencies:
     - K9YC-OpenEBS
-
 
 JCSI11-JIVA-CSI-VOLUME-RESIZE-XFS:
   extends: .jiva_csi_func_test_template
@@ -78,6 +83,8 @@ JCSI12-JIVA-CSI-VOLUME-RESIZE:
 .func_test_template:
   image: openebs/openshift-ci:latest
   stage: JIVA-FUNCTIONAL
+  tags:
+    - k8s-konvoy  
   when: always
   dependencies:
     - K9YC-OpenEBS
@@ -128,6 +135,8 @@ NWQB-Backup-Restore-Jiva:
 .chaos_test_template:
   image: openebs/openshift-ci:latest
   stage: CHAOS
+  tags:
+    - k8s-konvoy  
   when: always
   dependencies:
     - K9YC-OpenEBS
@@ -192,6 +201,8 @@ NEPS-nfs-Ctrl-Container-Kill-Jiva:
 .jiva_csi_infra_cleanup_template:
   image: openebs/openshift-ci:latest
   stage: JIVA-CSI-INFRA-CLEANUP
+  tags:
+    - k8s-konvoy  
   when: always
   dependencies:
     - JCSI01-JIVA-OPERATOR
@@ -214,6 +225,8 @@ J9PT-nfsv4-jiva-provision-cleanup:
 .cleanup_test_template:
   image: openebs/openshift-ci:latest
   stage: OPENEBS-CLEANUP
+  tags:
+    - k8s-konvoy  
   when: always
   dependencies:
     - K9YC-OpenEBS
@@ -229,6 +242,8 @@ GP95-openebs-Uninstall:
 4SMQ-cluster-Delete:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP
+  tags:
+    - k8s-konvoy  
   when: always
   dependencies:
     - PCZD-Konvoy
