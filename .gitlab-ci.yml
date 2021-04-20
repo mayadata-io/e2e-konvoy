@@ -19,8 +19,8 @@ PCZD-Konvoy:
   tags:
     - k8s-konvoy  
   script:     
-    - chmod 755 ./Openshift-EE/pipelines/OpenEBS-base/stages/1-cluster-setup/PCZD-cluster-setup/cluster-state
-    - ./Openshift-EE/pipelines/OpenEBS-base/stages/1-cluster-setup/PCZD-cluster-setup/cluster-state
+    - chmod 755 ./Openshift-EE/pipelines/OpenEBS-base/stages/1-cluster-setup/PCZD-cluster-setup/cluster-setup
+    - ./Openshift-EE/pipelines/OpenEBS-base/stages/1-cluster-setup/PCZD-cluster-setup/cluster-setup
 
 ##########################################################################################
 
