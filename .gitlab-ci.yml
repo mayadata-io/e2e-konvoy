@@ -138,11 +138,11 @@ stages:
     - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO12-cstor-cspc-pool-replace-blockdevice
     - ./openebs-konvoy-e2e/stages/3-functional/3FCO12-cstor-cspc-pool-replace-blockdevice
 
-3FCO13-blockdevice-reusability:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO13-blockdevice-reusability
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO13-blockdevice-reusability
+      #3FCO13-blockdevice-reusability:
+      #  extends: .csi_func_test_template
+      #  script:
+      #    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO13-blockdevice-reusability
+      #    - ./openebs-konvoy-e2e/stages/3-functional/3FCO13-blockdevice-reusability
 
 3FCO14-pool-deletion-with-volume:
   extends: .csi_func_test_template
