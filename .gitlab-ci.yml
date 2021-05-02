@@ -38,6 +38,8 @@ K9YC-OpenEBS:
 .jiva_csi_infra_setup_template:
   image: openebs/openshift-ci:latest
   stage: JIVA-CSI-INFRA-SETUP
+  tags:
+    - k8s-konvoy  
   when: always
   dependencies:
     - K9YC-OpenEBS
