@@ -2,679 +2,101 @@
 
 stages:
   - CLUSTER-SETUP
-  - PROVIDER-INFRA-SETUP
-  - APP-FUNC-TEST
-  - APP-CHAOS-TEST
-  - INFRA-CHAOS
-  - CSTOR-CSI-INFRA-SETUP
-  - CSTOR-CSI-FUNCTIONAL
-  - CSTOR-CSI-CHAOS
-  - CSTOR-CSI-INFRA-CHAOS
+  - OPENEBS-SETUP
+  - FUNCTIONAL
+  - CHAOS
+  - OPENEBS-CLEANUP
   - CLUSTER-CLEANUP
+  
+##########################################################################################
 
-###############################################################################
-
-SUTP-konvoy-cluster:
+1LS01-CLUSTER-SETUP:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-SETUP
-  tags: 
-    - k8s-konvoy 
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/SUTP-cluster-setup/cluster-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/1-cluster-setup/SUTP-cluster-setup/cluster-setup
+  script:     
+    - chmod 755 ./openebs-konvoy-e2e/pipelines/stages/1-cluster-setup/1LS01-cluster-setup/cluster-state
+    - ./openebs-konvoy-e2e/pipelines/stages/1-cluster-setup/1LS01-cluster-setup/cluster-state
 
-###############################################################################
+##########################################################################################
 
-## Setup OpenEBS control plane
-
-XJGT-OPENEBS-KONVOY-DEPLOY:
+2LP01-OPENEBS-DEPLOY:
   image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
-  script: 
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/XJGT-openebs-deploy/infra-setup
-
-PIGE-OPENEBS-SC-DEPLOY:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
+  stage: OPENEBS-SETUP
   script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/PIGE-storage-policies/openebs-sc
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/PIGE-storage-policies/openebs-sc
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/2-setup/2LP01-openebs-deploy/openebs-deploy
+    - ./openebs-konvoy-e2e/pipelines/stages/2-setup/2LP01-openebs-deploy/openebs-deploy
 
-GZTK-STRIPED-POOL:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GZTK-create-striped-pool/create-striped-pool
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GZTK-create-striped-pool/create-striped-pool
+##########################################################################################
 
-GCLC-MIRRORED-POOL:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GCLC-create-mirrored-pool/create-mirrored-pool
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/GCLC-create-mirrored-pool/create-mirrored-pool
-
-AMHE-RAIDZ1-POOL:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/AMHE-create-raidz1-pool/create-raidz1-pool
-
-     #KSDJ-RAIDZ2-POOL:
-     #  image: openebs/openshift-ci:latest
-     #  stage: PROVIDER-INFRA-SETUP
-     #  tags: 
-     #    - k8s-konvoy
-     #  dependencies:
-     #    - SUTP-konvoy-cluster
-     #  script:
-     #   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
-     #   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/KSDJ-create-raidz2-pool/create-raidz2-pool
-
-OQEW-NFSv4-PROVISION:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  dependencies:
-    - SUTP-konvoy-cluster
-  script:
-   - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
-   - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/2-Infra-setup/OQEW-create-nfs-provisioner/nfsv4-provision
-
-###############################################################################
-
-# ## Define job template for func jobs    
 .func_test_template:
   image: openebs/openshift-ci:latest
-  stage: APP-FUNC-TEST
-  tags: 
-    - k8s-konvoy
+  stage: FUNCTIONAL
   when: always
   dependencies:
-    - SUTP-konvoy-cluster  
-
-HZWT-cvr-scaledown:
+    - 2LP01-OPENEBS-DEPLOY
+     
+3LF01-LOCALPV-DEVICE:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/HZWT-cvr-scaledown/cvr-scaledown
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/HZWT-cvr-scaledown/cvr-scaledown
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF01-openebs-localpv-device/openebs-localpv-device
+    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF01-openebs-localpv-device/openebs-localpv-device
 
-RUTT-cvr-scaleup:
+3LF02-LOCALPV-HOSTPATH:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/RUTT-cvr-scaleup/cvr-scaleup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/RUTT-cvr-scaleup/cvr-scaleup
-    
-AVNT-jiva-replica-scaleup:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/AVNT-jiva-replica-scaleup/jiva-replica-scaleup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/AVNT-jiva-replica-scaleup/jiva-replica-scaleup
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF02-openebs-localpv-hostpath/openebs-localpv-hostpath
+    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF02-openebs-localpv-hostpath/openebs-localpv-hostpath
 
-CCRT-Jiva-App-replica-Scaleup:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CCRT-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CCRT-Jiva-App-replica-Scaleup/Jiva-App-replica-Scaleup
-
-KUSP-CAS-parameters:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUSP-CAS-parameters/CAS-parameters
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUSP-CAS-parameters/CAS-parameters
-
-MBKO-clone-different-capacity:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MBKO-clone-different-capacity/clone-different-capacity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/MBKO-clone-different-capacity/clone-different-capacity
-
-PLIR-create-cstor-clone:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/PLIR-create-cstor-clone/create-cstor-clone
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/PLIR-create-cstor-clone/create-cstor-clone
-
-POXG-STS-App-Target-Affinity:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/POXG-STS-App-Target-Affinity/STS-App-Target-Affinity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/POXG-STS-App-Target-Affinity/STS-App-Target-Affinity
-
-QUSX-create-cstor-snapshot:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/QUSX-create-cstor-snapshot/create-cstor-snapshot
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/QUSX-create-cstor-snapshot/create-cstor-snapshot
-
-# TIXL-fill-volume:
-#   extends: .func_test_template
-#   script: 
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/TIXL-fill-volume/fill-volume
-
-UAFE-rwx-app-deploy:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/UAFE-rwx-app-deploy/rwx-app-deploy
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/UAFE-rwx-app-deploy/rwx-app-deploy
-
-USGA-Create-jiva-snapshot:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/USGA-Create-jiva-snapshot/Create-jiva-snapshot
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/USGA-Create-jiva-snapshot/Create-jiva-snapshot
-
-WVFD-scale-sts-replicas:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/WVFD-scale-sts-replicas/scale-sts-replicas
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/WVFD-scale-sts-replicas/scale-sts-replicas
-
-XBRF-Jiva-App-Target-Affinity:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XBRF-Jiva-App-Target-Affinity/Jiva-App-Target-Affinity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XBRF-Jiva-App-Target-Affinity/Jiva-App-Target-Affinity
-
-XXXC-Clone-parent-vol-delete:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XXXC-Clone-parent-vol-delete/Clone-parent-vol-delete
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XXXC-Clone-parent-vol-delete/Clone-parent-vol-delete
-
-XZDZ-STS-Volume-Distribution:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XZDZ-STS-Volume-Distribution/STS-Volume-Distribution
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/XZDZ-STS-Volume-Distribution/STS-Volume-Distribution
-
-SZRL-jiva-snapshot:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/SZRL-jiva-snapshot/jiva-snapshot
-
-LLJA-jiva-autogen-snapshot-delete:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LLJA-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion
-
-CYLK-Jiva-Data-Integrity:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CYLK-Jiva-Data-Integrity/data-integrity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CYLK-Jiva-Data-Integrity/data-integrity
-  
-KUPE-Jiva-Memory-Consumption:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUPE-Jiva-Memory-Consumption/memory-consumption
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/KUPE-Jiva-Memory-Consumption/memory-consumption
-
-VSVT-cstor-memory-consumption:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-cstor-memory-consumption/memory-consumption
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/VSVT-cstor-memory-consumption/memory-consumption
-
-      #ZBNN-App-Target-affinity:
-      #  extends: .func_test_template
-      #  script: 
-      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
-      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZBNN-App-Target-affinity/app-target-affinity
-
-ZYKP-cstor-Data-Integrity:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZYKP-cstor-Data-Integrity/Data-Integrity
-
-THOJ-CVR-migration:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/THOJ-CVR-migration/cvr-migration
-
-LCDG-backup-and-restore:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LCDG-Backup-Restore/backup-restore
-
-CFKB-cStor-thick-provisioning:
+3LF03-BACKUP-RESTORE-LOCALPV:
   extends: .func_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CFKB-cstor-thick-provisioning/cstor-thick-provisioning
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/CFKB-cstor-thick-provisioning/cstor-thick-provisioning
-    
-NLEQ-Local-PV-hostpath:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/NLEQ-local-pv-hostpath/local-pv-hostpath
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF03-Backup-Restore-LocalPV/backup-restore-localpv
+    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF03-Backup-Restore-LocalPV/backup-restore-localpv
 
-ZDKG-Local-PV-device:
-  extends: .func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/ZDKG-local-pv-device/local-pv-device
-
-LTWY-Jiva-Volume-Resize:
-  extends: .func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LTWY-jiva-volume-resize/jiva-volume-resize
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/LTWY-jiva-volume-resize/jiva-volume-resize
-
-###############################################################################
-
-# ## Define job template for chaos jobs 
+##########################################################################################
 
 .chaos_test_template:
   image: openebs/openshift-ci:latest
-  stage: APP-CHAOS-TEST
-  tags: 
-    - k8s-konvoy
+  stage: CHAOS
   when: always
   dependencies:
-    - SUTP-konvoy-cluster 
-  
-      #MCDE-App-Kill:
-      #  extends: .chaos_test_template
-      #  script: 
-      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MCDE-app-kill/app-kill
-      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MCDE-app-kill/app-kill
+    - 2LP01-OPENEBS-DEPLOY
 
-UJOI-cStor-Pool-Kill:
+4LC01-APP-KILL-LOCALPV-DEVICE:
   extends: .chaos_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/UJOI-cstor-pool-kill/cstor-pool-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/UJOI-cstor-pool-kill/cstor-pool-kill
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/4-chaos/4LC01-localpv-device-app-kill/app-kill
+    - ./openebs-konvoy-e2e/pipelines/stages/4-chaos/4LC01-localpv-device-app-kill/app-kill
 
-DBVQ-cStor-Pool-Delete:
-  extends: .chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DBVQ-cstor-pool-delete/cstor-pool-delete
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DBVQ-cstor-pool-delete/cstor-pool-delete
-
-ACME-cStor-target-kill:
+4LC01-APP-KILL-LOCALPV-HOSTPATH:
   extends: .chaos_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ACME-cstor-target-kill/target-kill
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/4-chaos/4LC01-localpv-hostpath-app-kill/app-kill
+    - ./openebs-konvoy-e2e/pipelines/stages/4-chaos/4LC01-localpv-hostpath-app-kill/app-kill
 
-HVFC-Snap-Rebuild-single-replica:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/HVFC-snap-rebuild-single-rep/snap-rebuild-single-rep
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/HVFC-snap-rebuild-single-rep/snap-rebuild-single-rep
+##########################################################################################
 
-LICZ-clone-post-snap-rebuild:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/LICZ-clone-post-snap-rebuild/clone-post-snap-rebuild
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/LICZ-clone-post-snap-rebuild/clone-post-snap-rebuild
-
-CUVR-cstor-volume-istgt-kill:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/CUVR-cstor-volume-istgt-kill/cstor-volume-istgt-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/CUVR-cstor-volume-istgt-kill/cstor-volume-istgt-kill
-
-DENK-nfs-app-kill:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DENK-nfs-app-kill/nfs-app-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/DENK-nfs-app-kill/nfs-app-kill
-
-ENEY-cstor-volume-mgmt-kill:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ENEY-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ENEY-cstor-volume-mgmt-kill/cstor-volume-mgmt-kill
-
-OBDR-snap-rebuild-multiple-rep:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/OBDR-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/OBDR-snap-rebuild-multiple-rep/snap-rebuild-multiple-rep
-
-SHOZ-target-network-delay:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/SHOZ-target-network-delay/target-network-delay
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/SHOZ-target-network-delay/target-network-delay
-
-      #NSCD-Jiva-App-Kill:
-      #  extends: .chaos_test_template
-      #  script:
-      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/NSCD-Jiva-app-kill/jiva-app-kill
-      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/NSCD-Jiva-app-kill/jiva-app-kill
-
-MVET-Jiva-single-replica-failure:
-  extends: .chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MVET-jiva-single-replica-failure/single-replica-failure
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/MVET-jiva-single-replica-failure/single-replica-failure
-
-FQFO-Jiva-controller-failure:
-  extends: .chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-failure/controller-failure
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/FQFO-jiva-controller-failure/controller-failure
-
-# XUEK-Jiva-controller-kill:
-#   extends: .chaos_test_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/XUEK-jiva-controller-kill/jiva-controller-kill
-
-# TZZP-Jiva-controller-network-delay:
-#   extends: .chaos_test_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/TZZP-Jiva-controller-network-delay/controller-network-delay
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/TZZP-Jiva-controller-network-delay/controller-network-delay
-
-REUZ-Jiva-replica-failure:
-  extends: .chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/REUZ-Jiva-replica-failure/jiva-replica-failure
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/REUZ-Jiva-replica-failure/jiva-replica-failure
-
-ZGNK-Jiva-replica-node-affinity:
-  extends: .chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ZGNK-jiva-replica-node-affinity/replica-node-affinity
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/4-chaos/ZGNK-jiva-replica-node-affinity/replica-node-affinity
-
-###############################################################################
-
-.infra_chaos_test_template:
+.cleanup_test_template:
   image: openebs/openshift-ci:latest
-  stage: INFRA-CHAOS
-  tags: 
-    - k8s-konvoy
+  stage: OPENEBS-CLEANUP
   when: always
   dependencies:
-    - SUTP-konvoy-cluster 
-
-RACV-cstor-node-failure:
-  extends: .infra_chaos_test_template
+    - 2LP01-OPENEBS-DEPLOY
+                
+5LD01-OPENEBS-UNINSTALL:
+  extends: .cleanup_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/RACV-node-failure-cstor/node-failure-cstor
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/RACV-node-failure-cstor/node-failure-cstor
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/5-cleanup/5LD01-openebs-cleanup/openebs-cleanup
+    - ./openebs-konvoy-e2e/pipelines/stages/5-cleanup/5LD01-openebs-cleanup/openebs-cleanup
 
-UUPF-cstor-containerd-failure:
-  extends: .infra_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/UUPF-containerd-failure-cstor/containerd-failure-cstor
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/UUPF-containerd-failure-cstor/containerd-failure-cstor
-    
-ECBZ-cstor-kubelet-failure:
-  extends: .infra_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/ECBZ-kubelet-failure-cstor/kubelet-failure-cstor
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/ECBZ-kubelet-failure-cstor/kubelet-failure-cstor
-    
-# SXRU-jiva-node-failure:
-#   extends: .infra_chaos_test_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/SXRU-node-failure-jiva/node-failure-jiva
-#     - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/SXRU-node-failure-jiva/node-failure-jiva
+##########################################################################################
 
-VVCU-jiva-containerd-failure:
-  extends: .infra_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/VVCU-containerd-failure-jiva/containerd-failure-jiva
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/VVCU-containerd-failure-jiva/containerd-failure-jiva
-    
-LUUY-jiva-kubelet-failure:
-  extends: .infra_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/LUUY-kubelet-failure-jiva/kubelet-failure-jiva
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/LUUY-kubelet-failure-jiva/kubelet-failure-jiva
-
-###############################################################################
-#
-.csi_infra_test_template:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-INFRA-SETUP
-  tags: 
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - SUTP-konvoy-cluster
-
-AWES-CSTOR-OPERATOR:
-  extends: .csi_infra_test_template        
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/AWES-cstor-operator/cstor-operator
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/AWES-cstor-operator/cstor-operator
-
-BRUC-CSPC-STRIPE-POOL:
-  extends: .csi_infra_test_template
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/BRUC-create-cspc-stripe-pool/create-cspc-stripe-pool
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/BRUC-create-cspc-stripe-pool/create-cspc-stripe-pool
-
-XMOM-CSPC-MIRROR-POOL:
-  extends: .csi_infra_test_template
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/XMOM-create-cspc-mirror-pool/create-cspc-mirror-pool
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/XMOM-create-cspc-mirror-pool/create-cspc-mirror-pool
-
-GUGS-CSI-STORAGE-POLICIES:
-  extends: .csi_infra_test_template
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/GUGS-csi-storage-policies/openebs-csi-sc
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/6-csi-infra-setup/GUGS-csi-storage-policies/openebs-csi-sc
-
-###############################################################################
-
-# ## Define job template for csi-functional jobs    
-.csi_func_test_template:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-FUNCTIONAL
-  tags: 
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - SUTP-konvoy-cluster 
-
-OTQI-Backup-restore-diff-profile:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/OTQI-Backup-Restore-Diff-Profile/backup-restore-diff-profile
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/OTQI-Backup-Restore-Diff-Profile/backup-restore-diff-profile
-    
-XYNP-Remote-restore-diff-ns:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/XYNP-Remote-Restore-Diff-ns/remote-restore-diff-ns
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/XYNP-Remote-Restore-Diff-ns/remote-restore-diff-ns
-
-HNOV-backup-restore-cstor-csi:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/HNOV-Backup-Restore-Cstor/backup-restore-cstor-csi
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/HNOV-Backup-Restore-Cstor/backup-restore-cstor-csi
-    
-JIGL-cStor-CSPC-pool-scaleup:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JIGL-cstor-cspc-pool-scaleup/cstor-cspc-pool-scaleup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JIGL-cstor-cspc-pool-scaleup/cstor-cspc-pool-scaleup
-
-ESML-cStor-CSPC-pool-expansion:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ESML-cstor-cspc-pool-expansion/cstor-cspc-pool-expansion
-
-MSIT-CSI-cstor-snapshot:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/MSIT-csi-cstor-snapshot/csi-cstor-snapshot
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/MSIT-csi-cstor-snapshot/csi-cstor-snapshot
-
-MQVF-CSI-cstor-clone:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/MQVF-csi-cstor-clone/csi-cstor-clone
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/MQVF-csi-cstor-clone/csi-cstor-clone
-
-ABZF-cStor-volume-resize-ext4:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ABZF-csi-volume-resize/csi-volume-resize
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ABZF-csi-volume-resize/csi-volume-resize
-
-ARZQ-cStor-volume-resize-xfs:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/ARZQ-csi-volume-resize-xfs/csi-volume-resize-xfs
-    
-JULL-cStor-CSPC-pool-replace-blockdevice:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/JULL-cstor-cspc-pool-replace-blockdevice/cstor-cspc-pool-replace-blockdevice
-
-STBD-csi-volume-scaleup:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/STBD-csi-volume-scaleup/csi-volume-scaleup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/STBD-csi-volume-scaleup/csi-volume-scaleup
- 
-LCWN-csi-volume-scaledown:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/LCWN-csi-volume-scaledown/csi-volume-scaledown
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/LCWN-csi-volume-scaledown/csi-volume-scaledown
-
-BNEX-blockdevice-reusability:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/BNEX-blockdevice-reusability/blockdevice-reusability
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/BNEX-blockdevice-reusability/blockdevice-reusability
-
-NVOZ-pool-creation-with-claimed-bd:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/NVOZ-block-pool-creation-with-claimed-bd/block-pool-creation-with-claimed-bd
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/NVOZ-block-pool-creation-with-claimed-bd/block-pool-creation-with-claimed-bd
-
-TUTQ-pool-deletion-with-volume:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/TUTQ-block-pool-deletion-with-volume/block-pool-deletion-with-volume
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/7-csi-functional/TUTQ-block-pool-deletion-with-volume/block-pool-deletion-with-volume
-
-###############################################################################
-
-.csi_chaos_test_template:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-CHAOS
-  tags:
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - SUTP-konvoy-cluster
-
-AYQM-CSTOR-APP-KILL:
-  extends: .csi_chaos_test_template        
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/AYQM-cstor-app-kill/app-kill
-
-NTAV-CSTOR-TARGET-KILL:
-  extends: .csi_chaos_test_template        
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/NTAV-cstor-target-kill/target-kill
-
-DTCL-Target-Network-Loss:
-  extends: .csi_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/DTCL-target-network-loss/target-network-loss
-
-VBCV-Target-Network-Delay:
-  extends: .csi_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/VBCV-cstor-target-network-delay/target-network-delay
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/VBCV-cstor-target-network-delay/target-network-delay
-
-ZCCC-CSPC-cStor-pool-kill:
-  extends: .csi_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/ZCCC-cspc-cstor-pool-kill/cspc-cstor-pool-kill
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/8-csi-chaos/ZCCC-cspc-cstor-pool-kill/cspc-cstor-pool-kill        
-
-###############################################################################
-
-.csi_infra_chaos_test_template:
-  image: openebs/openshift-ci:latest
-  stage: CSTOR-CSI-INFRA-CHAOS
-  tags:
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - SUTP-konvoy-cluster
-
-      #C55O-cspc-pdb:
-      #  extends: .csi_infra_chaos_test_template
-      #  script:
-      #    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/C55O-pdb-cspc/pdb-cspc
-      #    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/C55O-pdb-cspc/pdb-cspc
-
-KAPB-node-failure-csi-cstor:
-  extends: .csi_infra_chaos_test_template        
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/KAPB-node-failure-csi-cstor/node-failure-csi-cstor
-
-WXVN-containerd-failure-csi-cstor:
-  extends: .csi_infra_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/WXVN-containerd-failure-csi-cstor/containerd-failure-csi-cstor
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/9-csi-infra-chaos/WXVN-containerd-failure-csi-cstor/containerd-failure-csi-cstor      
-
-###############################################################################
-
-ISTV-konvoy-cleanup:
+5LD02-CLUSTER-DELETE:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-CLEANUP
-  when: always  
-  dependencies: 
-    - SUTP-konvoy-cluster
-  tags: 
-    - k8s-konvoy 
+  when: always
+  dependencies:
+    - 1LS01-CLUSTER-SETUP
   script:
-    - chmod 755 ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/10-cleanup/ISTV-cluster-cleanup/cluster-cleanup
-    - ./openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/10-cleanup/ISTV-cluster-cleanup/cluster-cleanup
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/5-cleanup/5LD02-cluster-cleanup/cluster-cleanup
+    - ./openebs-konvoy-e2e/pipelines/stages/5-cleanup/5LD02-cluster-cleanup/cluster-cleanup
