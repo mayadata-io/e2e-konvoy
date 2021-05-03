@@ -103,11 +103,11 @@ SN3A-Jiva-Memory-Consumption:
     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/5-jiva-functional/JCSI22-Jiva-Memory-Consumption/memory-consumption
     - ./Openshift-EE/pipelines/OpenEBS-base/stages/5-jiva-functional/JCSI22-Jiva-Memory-Consumption/memory-consumption
 
-8QQP-Jiva-delete-autogen-snapshot:
-  extends: .func_test_template
-  script:
-    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/5-jiva-functional/JCSI23-Jiva-Snapshot-Delete/jiva-snapshot-delete
-    - ./Openshift-EE/pipelines/OpenEBS-base/stages/5-jiva-functional/JCSI23-Jiva-Snapshot-Delete/jiva-snapshot-delete
+      #8QQP-Jiva-delete-autogen-snapshot:
+      #  extends: .func_test_template
+      #  script:
+      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/5-jiva-functional/JCSI23-Jiva-Snapshot-Delete/jiva-snapshot-delete
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/5-jiva-functional/JCSI23-Jiva-Snapshot-Delete/jiva-snapshot-delete
 
 WVTY-App-Deploy-Jiva-RWX:
   extends: .func_test_template

@@ -23,6 +23,7 @@ gittoken=$(echo "$github_token")
 
 time="date"
 current_time=$(eval $time)
+kubectl apply -f Openshift-EE/utils/e2e-crd.yml
 
 #pooling over previous job to complete
 bash Openshift-EE/utils/e2e-cr jobname:jiva-operator jobphase:Waiting
@@ -32,8 +33,11 @@ bash Openshift-EE/utils/e2e-cr jobname:jiva-operator jobphase:Running init_time:
 ## RUNNER MAIN ##
 #################
 
+kubectl create ns openebs
+
 test_name=$(bash Openshift-EE/utils/generate_test_name testcase=openebs-jiva-operator-provision metadata="")
 echo $test_name
+git clone https://github.com/payes/litmus.git
 cd litmus
 
 cp providers/jiva-csi-provisioner/run_litmus_test.yml jiva_operator.yml
