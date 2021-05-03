@@ -42,6 +42,9 @@ cd litmus
 
 cp providers/jiva-csi-provisioner/run_litmus_test.yml jiva_operator.yml
 
+kubectl apply -f ./hack/rbac.yaml
+kubectl apply -f ./hack/crds.yaml
+
 export COMMIT_ID=$release_commit_id
 export RC_TAG=$rc_tag
 export JIVA_OPERATOR_IMAGE=$jiva_operator_image
