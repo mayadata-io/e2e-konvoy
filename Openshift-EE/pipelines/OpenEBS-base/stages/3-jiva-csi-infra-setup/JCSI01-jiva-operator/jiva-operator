@@ -53,7 +53,7 @@ python3 env.py -f jiva_operator.yml
 
 sed -i -e "/name: OPENEBS_VERSION/{n;s/.*/          value: ${releaseTag}/g}" \
 -e "/name: RELEASE_BRANCH/{n;s/.*/          value: ${release_branch}/g}" \
--e "/name: ACTION/{n;s/.*/          value: ${ACTION}/g}" jiva_operator.yml
+-e "/name: ACTION/{n;s/.*/          value: ${action}/g}" jiva_operator.yml
 
 cat jiva_operator.yml
 
