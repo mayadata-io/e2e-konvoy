@@ -16,7 +16,7 @@ gittoken=$(echo "$github_token")
 time="date"
 current_time=$(eval $time)
 
-bash Openshift-EE/utils/pooling jobname:nfsv4-deprovision
+bash Openshift-EE/utils/e2e-cr jobname:nfsv4-jiva-deprovision jobphase:Waiting
 bash Openshift-EE/utils/e2e-cr jobname:nfsv4-jiva-deprovision jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 kubectl delete daemonset --all -n app-nfsv4-jiva

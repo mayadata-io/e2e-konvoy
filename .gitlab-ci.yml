@@ -2,13 +2,13 @@
 
 stages:
   - CLUSTER-SETUP
-  - OPENEBS-SETUP
+    #  - OPENEBS-SETUP
   - JIVA-CSI-INFRA-SETUP
   - JIVA-CSI-FUNCTIONAL
-  - JIVA-FUNCTIONAL
+    #  - JIVA-FUNCTIONAL
   - CHAOS
   - JIVA-CSI-INFRA-CLEANUP
-  - OPENEBS-CLEANUP
+    #  - OPENEBS-CLEANUP
   - CLUSTER-CLEANUP
   
 ##########################################################################################
@@ -24,14 +24,14 @@ PCZD-Konvoy:
 
 ##########################################################################################
 
-K9YC-OpenEBS:
-  image: openebs/openshift-ci:latest
-  stage: OPENEBS-SETUP
-  tags:
-    - k8s-konvoy  
-  script:
-    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
-    - ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
+      #K9YC-OpenEBS:
+      #  image: openebs/openshift-ci:latest
+      #  stage: OPENEBS-SETUP
+      #  tags:
+      #    - k8s-konvoy  
+      #  script:
+      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
 
 ##########################################################################################
 
@@ -42,7 +42,7 @@ K9YC-OpenEBS:
     - k8s-konvoy  
   when: always
   dependencies:
-    - K9YC-OpenEBS
+    - PCZD-Konvoy
 
 JCSI01-JIVA-OPERATOR:
   extends: .jiva_csi_infra_setup_template
@@ -59,37 +59,37 @@ PBCY-NFSv4-JIVA-PROVISION:
   
 ###########################################################################################
 
-.jiva_csi_func_test_template:
+.func_test_template:
   image: openebs/openshift-ci:latest
   stage: JIVA-CSI-FUNCTIONAL
   tags:
     - k8s-konvoy  
   when: always
   dependencies:
-    - K9YC-OpenEBS
+    - PCZD-Konvoy
 
 JCSI11-JIVA-CSI-VOLUME-RESIZE-XFS:
-  extends: .jiva_csi_func_test_template
+  extends: .func_test_template
   script:
     - chmod 755 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-jiva-csi-functional/JCSI11-jiva-csi-volume-resize-xfs/jiva-csi-volume-resize-xfs
     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-jiva-csi-functional/JCSI11-jiva-csi-volume-resize-xfs/jiva-csi-volume-resize-xfs
 
 JCSI12-JIVA-CSI-VOLUME-RESIZE:
-  extends: .jiva_csi_func_test_template
+  extends: .func_test_template
   script:
     - chmod 755 ./Openshift-EE/pipelines/OpenEBS-base/stages/4-jiva-csi-functional/JCSI12-jiva-csi-volume-resize/jiva-csi-volume-resize
     - ./Openshift-EE/pipelines/OpenEBS-base/stages/4-jiva-csi-functional/JCSI12-jiva-csi-volume-resize/jiva-csi-volume-resize
 
 #########################################################################################
 
-.func_test_template:
-  image: openebs/openshift-ci:latest
-  stage: JIVA-FUNCTIONAL
-  tags:
-    - k8s-konvoy  
-  when: always
-  dependencies:
-    - K9YC-OpenEBS
+      #.func_test_template:
+      #  image: openebs/openshift-ci:latest
+      #  stage: JIVA-FUNCTIONAL
+      #  tags:
+      #    - k8s-konvoy  
+      #  when: always
+      #  dependencies:
+      #    - PCZD-Konvoy
      
 UH9A-Jiva-Data-Integrity:
   extends: .func_test_template
@@ -141,7 +141,7 @@ NWQB-Backup-Restore-Jiva:
     - k8s-konvoy  
   when: always
   dependencies:
-    - K9YC-OpenEBS
+    - PCZD-Konvoy
 
 HOSN-Jiva-single-replica-failure:
   extends: .chaos_test_template
@@ -224,20 +224,20 @@ J9PT-nfsv4-jiva-provision-cleanup:
 
 ###########################################################################################
 
-.cleanup_test_template:
-  image: openebs/openshift-ci:latest
-  stage: OPENEBS-CLEANUP
-  tags:
-    - k8s-konvoy  
-  when: always
-  dependencies:
-    - K9YC-OpenEBS
+      #.cleanup_test_template:
+      #  image: openebs/openshift-ci:latest
+      #  stage: OPENEBS-CLEANUP
+      #  tags:
+      #    - k8s-konvoy  
+      #  when: always
+      #  dependencies:
+      #    - K9YC-OpenEBS
 
-GP95-openebs-Uninstall:
-  extends: .cleanup_test_template
-  script:
-    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/8-cleanup/GP95-openebs-cleanup/openebs-cleanup
-    - ./Openshift-EE/pipelines/OpenEBS-base/stages/8-cleanup/GP95-openebs-cleanup/openebs-cleanup
+      #GP95-openebs-Uninstall:
+      #  extends: .cleanup_test_template
+      #  script:
+      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/8-cleanup/GP95-openebs-cleanup/openebs-cleanup
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/8-cleanup/GP95-openebs-cleanup/openebs-cleanup
 
 ##########################################################################################
 
