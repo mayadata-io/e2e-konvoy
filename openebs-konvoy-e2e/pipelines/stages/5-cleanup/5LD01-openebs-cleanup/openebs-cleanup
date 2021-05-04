@@ -61,7 +61,6 @@ fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:openebs-cleanup jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 
-
 if [ "$rc_val" != "0" ]; then
 exit 1;
 fi
