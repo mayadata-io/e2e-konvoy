@@ -110,10 +110,10 @@ cd e2e-tests
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp experiments/chaos/app_pod_failure/run_litmus_test.yml hostpath_app_kill.yml
 
-sed -i -e 's/app=jenkins-app/name=percona/g' \
+sed -i -e 's/app=jenkins-app/app=busybox-sts/g' \
 -e 's/name: app-failure/name: hostpath-app-kill-cm/g' \
 -e 's/name: application-pod-failure/name: localpv-hostpath-app-kill/g' \
--e 's/value: docker/value: cri-o/g' \
+-e 's/value: docker/value: containerd/g' \
 -e 's/value: app-jenkins-ns/value: hostpath-app-kill/g' hostpath_app_kill.yml
 
 ## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
