@@ -13,6 +13,8 @@ stages:
 1LS01-CLUSTER-SETUP:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-SETUP
+  tags: 
+    - k8s-konvoy  
   script:     
     - chmod 755 ./openebs-konvoy-e2e/pipelines/stages/1-cluster-setup/1LS01-cluster-setup/cluster-state
     - ./openebs-konvoy-e2e/pipelines/stages/1-cluster-setup/1LS01-cluster-setup/cluster-state
@@ -22,6 +24,8 @@ stages:
 2LP01-OPENEBS-DEPLOY:
   image: openebs/openshift-ci:latest
   stage: OPENEBS-SETUP
+  tags: 
+    - k8s-konvoy  
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/2-setup/2LP01-openebs-deploy/openebs-deploy
     - ./openebs-konvoy-e2e/pipelines/stages/2-setup/2LP01-openebs-deploy/openebs-deploy
@@ -31,6 +35,8 @@ stages:
 .func_test_template:
   image: openebs/openshift-ci:latest
   stage: FUNCTIONAL
+  tags: 
+    - k8s-konvoy  
   when: always
   dependencies:
     - 2LP01-OPENEBS-DEPLOY
@@ -58,6 +64,8 @@ stages:
 .chaos_test_template:
   image: openebs/openshift-ci:latest
   stage: CHAOS
+  tags: 
+    - k8s-konvoy  
   when: always
   dependencies:
     - 2LP01-OPENEBS-DEPLOY
@@ -79,6 +87,8 @@ stages:
 .cleanup_test_template:
   image: openebs/openshift-ci:latest
   stage: OPENEBS-CLEANUP
+  tags: 
+    - k8s-konvoy  
   when: always
   dependencies:
     - 2LP01-OPENEBS-DEPLOY
