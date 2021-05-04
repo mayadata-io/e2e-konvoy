@@ -29,7 +29,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:localpv-hostpath-app-kill jobphase:
 # LitmusBook 1 #
 ################
 
-run_id="localpv-hostpath";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-app-kill metadata=${run_id})
+run_id="localpv-hostpath";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-hostpath-app-kill metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
@@ -185,7 +185,7 @@ fi
 # LitmusBook 5 #
 ################
 
-run_id="localpv-hostpath";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-app-kill metadata=${run_id})
+run_id="localpv-hostpath";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-hostpath-app-kill metadata=${run_id})
 echo $test_name
 
 cd e2e-tests

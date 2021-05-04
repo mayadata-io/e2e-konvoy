@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 pod() {
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/stages/4-chaos/4LC01-localpv-device-app-kill/app-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
@@ -29,7 +28,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:localpv-device-app-kill jobphase:Ru
 # LitmusBook 1 #
 ################
 
-run_id="localpv-device";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-app-kill metadata=${run_id})
+run_id="localpv-device";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-device-app-kill metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
@@ -185,7 +184,7 @@ fi
 # LitmusBook 5 #
 ################
 
-run_id="localpv-device";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-app-kill metadata=${run_id})
+run_id="localpv-device";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-device-app-kill metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
