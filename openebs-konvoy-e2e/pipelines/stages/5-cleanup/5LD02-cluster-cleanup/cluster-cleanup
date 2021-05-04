@@ -1,0 +1,52 @@
+#!/bin/bash
+
+pod() {
+echo $CI_JOB_ID
+###clone e2e-konvoy-repo
+echo "cloning e2e-konvoy repo*************"
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone https://github.com/openebs/e2e-konvoy.git'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && git checkout openebs-localpv && bash openebs-konvoy-e2e/pipelines/stages/5-cleanup/4LD02-cluster-cleanup/cluster-cleanup node '"'$CI_JOB_ID'"'' '"'$master_ip'"' '"'$worker1_ip'"' '"'$worker2_ip'"' '"'$worker3_ip'"' '"'$worker4_ip'"' '"'$worker5_ip'"' '"'$master_name'"' '"'$worker1_name'"' '"'$worker2_name'"' '"'$worker3_name'"' '"'$worker4_name'"' '"'$worker5_name'"' '"'$master_ip1'"' '"'$master_ip2'"' '"'$master_name1'"' '"'$master_name2'"'
+}
+
+node() {
+job_id=$(echo $1)
+
+git clone https://github.com/openebs/e2e-tests.git
+cd e2e-tests
+
+# Replace the VM IP In csv file
+sed -i -e 's/10.12.22.10/10.34.1.51/g' \
+-e 's/10.12.22.11/10.34.1.52/g' \
+-e 's/10.12.22.12/10.34.1.53/g' \
+-e 's/10.12.22.13/10.34.1.54/g' k8s/on-prem/openshift-installer/ip.csv
+
+sed -i '/10.34.1.54/a \
+10.34.1.55 \
+10.34.1.56' k8s/on-prem/openshift-installer/ip.csv
+
+#Replace the VM names in csv file
+sed -i -e 's/auto1/konvoy-master.mayalabs.io/g' \
+-e 's/auto2/konvoy-node1.mayalabs.io/g' \
+-e 's/auto3/konvoy-node2.mayalabs.io/g' \
+-e 's/auto4/konvoy-node3.mayalabs.io/g' k8s/on-prem/openshift-installer/vm_name.csv
+
+sed -i '/konvoy-node3.mayalabs.io/a \
+konvoy-node4.mayalabs.io \
+konvoy-node5.mayalabs.io' k8s/on-prem/openshift-installer/vm_name.csv
+
+#Replace the snapshot name and exp ip in vars
+sed -i -e 's/snapshot_name: "oc-cluster"/snapshot_name: "konvoy"/g' \
+-e 's/esx_ip: "10.12.1.1"/esx_ip: "10.33.1.1"/g' k8s/on-prem/openshift-installer/vars.yml
+
+ansible-playbook k8s/on-prem/openshift-installer/revert_cluster_state.yml -vv
+
+#Removimg e2e openshift test repo
+cd  && rm -rf e2e-konvoy && rm -rf infra
+cd /home/devuser/go/src/github.com/openebs && rm -rf maya
+}
+
+if [ "$1" == "node" ];then
+  node $2 $3 $4 $5 $6 $7 $8 $9 ${10} ${11} ${12} ${13} ${14} ${15} ${16} ${17} ${18}
+else
+  pod
+fi
