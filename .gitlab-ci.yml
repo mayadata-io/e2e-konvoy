@@ -2,12 +2,12 @@
 
 stages:
   - CLUSTER-SETUP
-    #  - OPENEBS-SETUP
+  - OPENEBS-SETUP
   - JIVA-CSI-INFRA-SETUP
   - JIVA-CSI-FUNCTIONAL
     #  - JIVA-FUNCTIONAL
   - CHAOS
-  - JIVA-CSI-INFRA-CLEANUP
+    #  - JIVA-CSI-INFRA-CLEANUP
     #  - OPENEBS-CLEANUP
   - CLUSTER-CLEANUP
   
@@ -24,14 +24,14 @@ PCZD-Konvoy:
 
 ##########################################################################################
 
-      #K9YC-OpenEBS:
-      #  image: openebs/openshift-ci:latest
-      #  stage: OPENEBS-SETUP
-      #  tags:
-      #    - k8s-konvoy  
-      #  script:
-      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
-      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
+K9YC-OpenEBS:
+  image: openebs/openshift-ci:latest
+  stage: OPENEBS-SETUP
+  tags:
+    - k8s-konvoy  
+  script:
+    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
+    - ./Openshift-EE/pipelines/OpenEBS-base/stages/2-setup/K9YC-openebs-deploy/deploy-openebs
 
 ##########################################################################################
 
@@ -55,7 +55,6 @@ PBCY-NFSv4-JIVA-PROVISION:
   script:
     - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/3-jiva-csi-infra-setup/JCSI02-nfsv4-jiva-provision/nfsv4-jiva-provision
     - ./Openshift-EE/pipelines/OpenEBS-base/stages/3-jiva-csi-infra-setup/JCSI02-nfsv4-jiva-provision/nfsv4-jiva-provision
-
   
 ###########################################################################################
 
@@ -200,26 +199,26 @@ NEPS-nfs-Ctrl-Container-Kill-Jiva:
 
 ####################################################################################################################
 
-.jiva_csi_infra_cleanup_template:
-  image: openebs/openshift-ci:latest
-  stage: JIVA-CSI-INFRA-CLEANUP
-  tags:
-    - k8s-konvoy  
-  when: always
-  dependencies:
-    - JCSI01-JIVA-OPERATOR
+      #.jiva_csi_infra_cleanup_template:
+      #  image: openebs/openshift-ci:latest
+      #  stage: JIVA-CSI-INFRA-CLEANUP
+      #  tags:
+      #    - k8s-konvoy  
+      #  when: always
+      #  dependencies:
+      #    - JCSI01-JIVA-OPERATOR
 
-JCSI91-JIVA-OPERATOR:
-  extends: .jiva_csi_infra_cleanup_template
-  script:
-    - chmod 755 ./Openshift-EE/pipelines/OpenEBS-base/stages/7-jiva-csi-infra-cleanup/JCSI41-jiva-operator-cleanup/jiva-operator-cleanup
-    - ./Openshift-EE/pipelines/OpenEBS-base/stages/7-jiva-csi-infra-cleanup/JCSI41-jiva-operator-cleanup/jiva-operator-cleanup
+      #JCSI91-JIVA-OPERATOR:
+      #  extends: .jiva_csi_infra_cleanup_template
+      #  script:
+      #    - chmod 755 ./Openshift-EE/pipelines/OpenEBS-base/stages/7-jiva-csi-infra-cleanup/JCSI41-jiva-operator-cleanup/jiva-operator-cleanup
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/7-jiva-csi-infra-cleanup/JCSI41-jiva-operator-cleanup/jiva-operator-cleanup
 
-J9PT-nfsv4-jiva-provision-cleanup:
-  extends: .jiva_csi_infra_cleanup_template
-  script:
-    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/7-jiva-csi-infra-cleanup/JCSI42-nfsv4-jiva-provisioner-cleanup/nfsv4-jiva-provisioner-cleanup
-    - ./Openshift-EE/pipelines/OpenEBS-base/stages/7-jiva-csi-infra-cleanup/JCSI42-nfsv4-jiva-provisioner-cleanup/nfsv4-jiva-provisioner-cleanup
+      #J9PT-nfsv4-jiva-provision-cleanup:
+      #  extends: .jiva_csi_infra_cleanup_template
+      #  script:
+      #    - chmod 775 ./Openshift-EE/pipelines/OpenEBS-base/stages/7-jiva-csi-infra-cleanup/JCSI42-nfsv4-jiva-provisioner-cleanup/nfsv4-jiva-provisioner-cleanup
+      #    - ./Openshift-EE/pipelines/OpenEBS-base/stages/7-jiva-csi-infra-cleanup/JCSI42-nfsv4-jiva-provisioner-cleanup/nfsv4-jiva-provisioner-cleanup
 
 
 ###########################################################################################
