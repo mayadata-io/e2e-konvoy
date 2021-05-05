@@ -45,7 +45,7 @@ sed -i -e '/name: NFS_NAMESPACE/{n;s/.*/            value: app-nfsv4-jiva/}' \
 
 sed -i -e 's/name: nfs-openebs-target-failure/name: nfs-openebs-controller-container-kill/g' \
 -e 's/value: "target-zrepl-kill"/value: "jiva-ctrl-kill"/g' \
--e 's/value: docker/value: cri-o/g' nfs_ctrl_container_kill.yml
+-e 's/value: docker/value: containerd/g' nfs_ctrl_container_kill.yml
 
 echo "Running the litmus test for minio Deployment Container Volume mgmt kill.."
 
