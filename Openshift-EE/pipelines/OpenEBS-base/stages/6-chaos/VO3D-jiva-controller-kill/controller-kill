@@ -160,6 +160,7 @@ sed -i -e 's/value: percona-mysql-claim/value: busybox-ctrl-kill/g' \
 -e 's/generateName: openebs-target-failure/generateName: openebs-controller-failure/g' \
 -e 's/openebs-target-failure/openebs-controller-failure/g' \
 -e 's/name: target-failure/name: ctrl-failure/g' \
+-e "/name: TARGET_AFFINITY_CHECK/{n;s/value: 'enable'/value: 'disable'/g}" \
 -e 's/value: '\''name=percona'\''/value: '\''app=ctrl-kill'\''/g' \
 -e 's/value: app-percona-ns/value: ctrl-kill/g' run_ctrl_kill_test.yml
 
