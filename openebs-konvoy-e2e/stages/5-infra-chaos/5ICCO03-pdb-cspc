@@ -31,7 +31,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:pdb-cspc jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:pdb-cspc jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 echo "*******Deploying Percona Application****"
@@ -39,13 +39,13 @@ echo "*******Deploying Percona Application****"
 run_id="pdb";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for Percona Deployment.."
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for Percona Deployment.."
 
-cp apps/percona/deployers/run_litmus_test.yml percona_deploy_pdb.yml
+cp apps/percona/deployers/run_e2e_test.yml percona_deploy_pdb.yml
 
 sed -i -e 's/app: percona-deployment/app: deploy-percona-pdb/g' \
--e 's/value: openebs-standard/value: openebs-cstor-csi/g' \
+-e 's/value: openebs-cstor-csi/value: openebs-cstor-csi/g' \
 -e '/name: TARGET_AFFINITY_CHECK/{n;s/value: enable/value: disable/g}' \
 -e 's/value: app-percona-ns/value: percona-pdb/g' percona_deploy_pdb.yml
 
@@ -56,18 +56,18 @@ sed -i '/command:/i \
 
 cat percona_deploy_pdb.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-percona-pdb' job=percona_deploy_pdb.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deploy-percona-pdb' job=percona_deploy_pdb.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:pdb-cspc $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICC03 5-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICC03 5-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
 echo "*******Performing CSPC pool pod disruption budget test**********"
@@ -75,15 +75,15 @@ echo "*******Performing CSPC pool pod disruption budget test**********"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cspc-pod-disruption-budget metadata="")
 echo $test_name
 
-cd e2e-tests
-cp experiments/chaos/cspc_pod_disruption_budget/run_litmus_test.yml run_cspc_pdb_test.yml
+cd cstor-operators/e2e-tests
+cp experiments/chaos/cspc_pod_disruption_budget/run_e2e_test.yml run_cspc_pdb_test.yml
 
 sed -i '/name: CSPC_NAME/{n;s/.*/            value: cstor-cspc-disk-pool/}' run_cspc_pdb_test.yml
 sed -i -e "s|#nodeSelector|nodeSelector|g" \
 -e "s|#  kubernetes.io/hostname:|  kubernetes.io/hostname: ${observer_node}|g" run_cspc_pdb_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:cspc-pdb' job=run_cspc_pdb_test.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:cspc-pdb' job=run_cspc_pdb_test.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:pdb-cspc $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -92,12 +92,12 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:pdb-cspc jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICC03 5-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget." Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICC03 5-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget." Fail "$current_time" $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:pdb-cspc jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICC03 5-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget." Pass "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICC03 5-infra-chaos "Ensure that CSPC pool pod not getting evicted violating pod disruption budget." Pass "$current_time" $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

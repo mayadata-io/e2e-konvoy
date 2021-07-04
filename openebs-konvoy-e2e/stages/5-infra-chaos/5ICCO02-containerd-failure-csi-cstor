@@ -28,7 +28,7 @@ bash openebs-konvoy-e2e/utils/pooling jobname:node-failure-csi-cstor
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:containerd-failure-csi-cstor jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 echo "*******Deploying Busybox-Deployment*******"
@@ -36,41 +36,41 @@ echo "*******Deploying Busybox-Deployment*******"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-cri-failure-csi-cstor metadata="")
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for Busybox Deployment.."
-cp apps/busybox/deployers/run_litmus_test.yml busybox_deploy_cri_failure_csi_cstor.yml
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for Busybox Deployment.."
+cp apps/busybox/deployers/run_e2e_test.yml busybox_deploy_cri_failure_csi_cstor.yml
 
 sed -i -e 's/value: app-busybox-ns/value: cri-failure-csi-cstor/g' \
--e 's/app: busybox-litmus/app: busybox-deploy-cri-failure-csi-cstor/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-cstor-cspc-disk/g' \
+-e 's/app: busybox-e2e/app: busybox-deploy-cri-failure-csi-cstor/g' \
+-e 's/value: openebs-cstor-csi/value: openebs-cstor-cspc-disk/g' \
 -e 's/statefulset/deployment/g' busybox_deploy_cri_failure_csi_cstor.yml
 
 cat busybox_deploy_cri_failure_csi_cstor.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deploy-cri-failure-csi-cstor' busybox_deploy_cri_failure_csi_cstor.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-deploy-cri-failure-csi-cstor' busybox_deploy_cri_failure_csi_cstor.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
 run_id="cri-failure-csi-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-cp apps/busybox/liveness/run_litmus_test.yml busybox_liveness_cri_failure_csi_cstor.yml
+cd cstor-operators/e2e-tests
+cp apps/busybox/liveness/run_e2e_test.yml busybox_liveness_cri_failure_csi_cstor.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-busybox-ns/value: cri-failure-csi-cstor/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-cri-failure-csi-cstor/g' busybox_liveness_cri_failure_csi_cstor.yml
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-cri-failure-csi-cstor/g' busybox_liveness_cri_failure_csi_cstor.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -79,30 +79,30 @@ sed -i '/command:/i \
 
 cat busybox_liveness_cri_failure_csi_cstor.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-cri-failure-csi-cstor' job=busybox_liveness_cri_failure_csi_cstor.yml
-cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-cri-failure-csi-cstor' job=busybox_liveness_cri_failure_csi_cstor.yml
+cd ../..
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 3 #
+# e2eBook 3 #
 ################
 
 run_id="csi-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=svc-failure-chaos metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-cp experiments/chaos/kubernetes/service_failure/run_litmus_test.yml run_cri_failure_test_csi_cstor.yml
+cd cstor-operators/e2e-tests
+cp experiments/infra-chaos/kubernetes/service_failure/run_e2e_test.yml run_cri_failure_test_csi_cstor.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 sed -i -e '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
 -e 's/name: svc-failure-chaos/name: containerd-failure-chaos-csi-cstor/g' \
@@ -132,35 +132,35 @@ sed -i '/command:/i \
 
 cat run_cri_failure_test_csi_cstor.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:containerd-failure-chaos-csi-cstor' job=run_cri_failure_test_csi_cstor.yml
-cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:containerd-failure-chaos-csi-cstor' job=run_cri_failure_test_csi_cstor.yml
+cd ../..
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 4 #
+# e2eBook 4 #
 ################
 
 run_id="deprovision-cri-failure-csi-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-cp apps/busybox/liveness/run_litmus_test.yml busybox_liveness_deprovision_cri_failure_csi_cstor.yml
+cd cstor-operators/e2e-tests
+cp apps/busybox/liveness/run_e2e_test.yml busybox_liveness_deprovision_cri_failure_csi_cstor.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-busybox-ns/value: cri-failure-csi-cstor/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/generateName: litmus-busybox-liveness/generateName: busybox-liveness-dep-cri-failure/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-dep-cri-failure-csi-cstor/g' busybox_liveness_deprovision_cri_failure_csi_cstor.yml
+-e 's/generateName: e2e-busybox-liveness/generateName: busybox-liveness-dep-cri-failure/g' \
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-dep-cri-failure-csi-cstor/g' busybox_liveness_deprovision_cri_failure_csi_cstor.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -169,21 +169,21 @@ sed -i '/command:/i \
 
 cat busybox_liveness_deprovision_cri_failure_csi_cstor.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-dep-cri-failure-csi-cstor' job=busybox_liveness_deprovision_cri_failure_csi_cstor.yml
-cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-dep-cri-failure-csi-cstor' job=busybox_liveness_deprovision_cri_failure_csi_cstor.yml
+cd ../..
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 5 #
+# e2eBook 5 #
 ################
 
 echo "*******Deprovision Busybox-Deployment*******"
@@ -191,36 +191,36 @@ echo "*******Deprovision Busybox-Deployment*******"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-cri-failure-csi-cstor metadata="")
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for Busybox Application Deprovision.."
-cp apps/busybox/deployers/run_litmus_test.yml busybox_deprovision_cri_failure_csi_cstor.yml
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for Busybox Application Deprovision.."
+cp apps/busybox/deployers/run_e2e_test.yml busybox_deprovision_cri_failure_csi_cstor.yml
 
 sed -i -e 's/value: app-busybox-ns/value: cri-failure-csi-cstor/g' \
--e 's/app: busybox-litmus/app: busybox-dep-cri-failure-csi-cstor/g' \
+-e 's/app: busybox-e2e/app: busybox-dep-cri-failure-csi-cstor/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-cstor-cspc-disk/g' \
+-e 's/value: openebs-cstor-csi/value: openebs-cstor-cspc-disk/g' \
 -e 's/statefulset/deployment/g' busybox_deprovision_cri_failure_csi_cstor.yml
 
 cat busybox_deprovision_cri_failure_csi_cstor.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-dep-cri-failure-csi-cstor' busybox_deprovision_cri_failure_csi_cstor.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-dep-cri-failure-csi-cstor' busybox_deprovision_cri_failure_csi_cstor.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:containerd-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 rc_val=$(echo $?)
 current_time=$(eval $time)
 
-# testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+# testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:containerd-failure-csi-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:containerd-failure-csi-cstor jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Pass "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 5ICCO02 5-infra-chaos "stop the containerd service on the node where application is running and check the behaviour" Pass "$current_time" $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

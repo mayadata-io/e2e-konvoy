@@ -22,7 +22,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:cspc-cstor-pool-kill jobphase:Waiti
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cspc-cstor-pool-kill jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 echo "*******Deploying Busybox Application****"
@@ -30,43 +30,43 @@ echo "*******Deploying Busybox Application****"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-cstor-pool-kill metadata="")
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for Busybox Deployment.."
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for Busybox Deployment.."
 
-cp apps/busybox/deployers/run_litmus_test.yml busybox_cstor_pool_kill.yml
+cp apps/busybox/deployers/run_e2e_test.yml busybox_cstor_pool_kill.yml
 
-sed -i -e 's/app: busybox-litmus/app: deploy-busybox-cstor-pool-kill/g' \
+sed -i -e 's/app: busybox-e2e/app: deploy-busybox-cstor-pool-kill/g' \
 -e 's/app=busybox-sts/app=cstor-pool-kill/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-cstor-csi/g' \
+-e 's/value: openebs-cstor-csi/value: openebs-cstor-csi/g' \
 -e 's/value: openebs-busybox/value: openebs-bb-poolkill/g' \
 -e 's/value: app-busybox-ns/value: cstor-pool-kill/g' busybox_cstor_pool_kill.yml
 cat busybox_cstor_pool_kill.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-cstor-pool-kill' job=busybox_cstor_pool_kill.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deploy-busybox-cstor-pool-kill' job=busybox_cstor_pool_kill.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cspc-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on CSPC cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on CSPC cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
 run_id="cstor-pool-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_cstor_pool_kill.yml
+cd cstor-operators/e2e-tests
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_cstor_pool_kill.yml
 
 sed -i -e 's/value: app-busybox-ns/value: cstor-pool-kill/g' \
 -e 's/app=busybox-sts/app=cstor-pool-kill/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-cstor-pool-kill/g' busybox_loadgen_cstor_pool_kill.yml
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-cstor-pool-kill/g' busybox_loadgen_cstor_pool_kill.yml
 
 cat busybox_loadgen_cstor_pool_kill.yml
 
@@ -75,21 +75,21 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' busybox_loadgen_cstor_pool_kill.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-cstor-pool-kill' job=busybox_loadgen_cstor_pool_kill.yml
-cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-cstor-pool-kill' job=busybox_loadgen_cstor_pool_kill.yml
+cd ../..
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:cspc-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on CSPC cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on CSPC cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 3 #
+# e2eBook 3 #
 ################
 
 echo "*******Performing CSPC cStor Pool kill**********"
@@ -97,8 +97,8 @@ echo "*******Performing CSPC cStor Pool kill**********"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cspc-pool-failure metadata="")
 echo $test_name
 
-cd e2e-tests
-cp experiments/chaos/cspc_pool_failure/container_failure/run_litmus_test.yml cspc-poolkill.yml
+cd cstor-operators/e2e-tests
+cp experiments/chaos/cspc_pool_failure/container_failure/run_e2e_test.yml cspc-poolkill.yml
 
 sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: cstor-pool-kill/g}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: app=cstor-pool-kill/g}' \
@@ -112,36 +112,36 @@ sed -i '/parameters.yml: |/a \
     testfile: cspcpoolkill
 ' cspc-poolkill.yml
 
-echo "Running the litmus test for Busybox Deployment application pod kill.."
+echo "Running the e2e test for Busybox Deployment application pod kill.."
 cat cspc-poolkill.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:cspc-pool-failure' job=cspc-poolkill.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:cspc-pool-failure' job=cspc-poolkill.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cspc-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 4 #
+# e2eBook 4 #
 ################
 
 run_id="deprovision-cstor-pool-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_cstor_pool_kill.yml
+cd cstor-operators/e2e-tests
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_deprovision_cstor_pool_kill.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-busybox-ns/value: cstor-pool-kill/g' \
 -e 's/app=busybox-sts/app=cstor-pool-kill/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-deprovision-cstor-pool-kill/g' busybox_loadgen_deprovision_cstor_pool_kill.yml
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-deprovision-cstor-pool-kill/g' busybox_loadgen_deprovision_cstor_pool_kill.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -149,10 +149,10 @@ sed -i '/command:/i \
 ' busybox_loadgen_deprovision_cstor_pool_kill.yml
 
 cat busybox_loadgen_deprovision_cstor_pool_kill.yml
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-deprovision-cstor-pool-kill' job=busybox_loadgen_deprovision_cstor_pool_kill.yml
-cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-cstor-pool-kill' job=busybox_loadgen_deprovision_cstor_pool_kill.yml
+cd ../..
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cspc-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -160,12 +160,12 @@ rc_val=$(echo $?)
 
 # Update result of the test case in github mayadata-io/e2e-openshift repository.
 if [ "$rc_val" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 5 #
+# e2eBook 5 #
 ################
 
 echo "********Deprovisioning Busybox Application*******"
@@ -173,23 +173,23 @@ echo "********Deprovisioning Busybox Application*******"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-cstor-pool-kill metadata="")
 echo $test_name
 
-cd e2e-tests
-cp apps/busybox/deployers/run_litmus_test.yml deprovision_cstor_pool_kill.yml
+cd cstor-operators/e2e-tests
+cp apps/busybox/deployers/run_e2e_test.yml deprovision_cstor_pool_kill.yml
 
-sed -i -e 's/generateName: litmus-busybox-deploy/generateName: busybox-deprovision-cstor-pool-kill/g' \
--e 's/app: busybox-litmus/app: busybox-deprovision-cstor-pool-kill/g' \
+sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-cstor-pool-kill/g' \
+-e 's/app: busybox-e2e/app: busybox-deprovision-cstor-pool-kill/g' \
 -e 's/app=busybox-sts/app=cstor-pool-kill/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
+-e 's/value: openebs-cstor-csi/value: openebs-cstor-disk/g' \
 -e 's/value: openebs-busybox/value: openebs-bb-poolkill/g' \
 -e 's/value: app-busybox-ns/value: cstor-pool-kill/g' \
 -e 's/value: provision/value: deprovision/g' deprovision_cstor_pool_kill.yml
 
-echo "Running the litmus test for Busybox Deployment.."
+echo "Running the e2e test for Busybox Deployment.."
 cat deprovision_cstor_pool_kill.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deprovision-cstor-pool-kill' job=deprovision_cstor_pool_kill.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-deprovision-cstor-pool-kill' job=deprovision_cstor_pool_kill.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cspc-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -198,12 +198,12 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cspc-cstor-pool-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cspc-cstor-pool-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Pass "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Pass "$current_time" $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;
