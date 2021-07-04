@@ -45,7 +45,7 @@ metadata:
   name: cie2eresults.e2e.io
 spec:
   # group name to use for REST API: /apis/<group>/<version>
-  group: cie2e.io
+  group: e2e.io
   # version name to use for REST API: /apis/<group>/<version>
   version: v1alpha1
   # either Namespaced or Cluster
