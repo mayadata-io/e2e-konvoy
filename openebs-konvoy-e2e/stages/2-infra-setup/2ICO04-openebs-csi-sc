@@ -38,12 +38,12 @@ sed -i '/command:/i \
 
 cat cstor-csi-sc.yaml
 
-bash ../../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:cstor-storage-policy' job=cstor-csi-sc.yaml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:cstor-storage-policy' job=cstor-csi-sc.yaml
 
 echo "Dumping state of cluster post job run"; echo ""
-bash ../../../openebs-konvoy-e2e/utils/dump_cluster_state;
+bash ../../openebs-konvoy-e2e/utils/dump_cluster_state;
 
-cd ../../..
+cd ../..
 bash openebs-konvoy-e2e/utils/event_updater jobname:cstor-csi-storage-policies $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 #################
 ## GET RESULT  ##

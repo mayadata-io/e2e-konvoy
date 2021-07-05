@@ -35,9 +35,9 @@ cp experiments/cstor-operator/cspc-pool-provision/run_e2e_test.yml cspc_create_s
 
 cat cspc_create_striped_pool.yml
 
-bash ../../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:cstor-cspc-pool-provision' job=cspc_create_striped_pool.yml
-bash ../../../openebs-konvoy-e2e/utils/dump_cluster_state;
-cd ../../..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:cstor-cspc-pool-provision' job=cspc_create_striped_pool.yml
+bash ../../openebs-konvoy-e2e/utils/dump_cluster_state;
+cd ../..
 bash openebs-konvoy-e2e/utils/event_updater jobname:cstor-cspc-striped-pool $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 #################
