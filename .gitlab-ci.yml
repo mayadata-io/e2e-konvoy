@@ -179,17 +179,17 @@ stages:
     - chmod 755 ./openebs-konvoy-e2e/stages/4-chaos/4CCO02-target-kill
     - ./openebs-konvoy-e2e/stages/4-chaos/4CCO02-target-kill
 
-4CCO03-Target-Network-Delay:
-  extends: .csi_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO03-target-network-delay
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO03-target-network-delay
+      #4CCO03-Target-Network-Delay:
+      #  extends: .csi_chaos_test_template
+      #  script:
+      #    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO03-target-network-delay
+      #    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO03-target-network-delay
 
-4CCO04-Target-Network-Loss:
+4CCO06-Target-Delete:
   extends: .csi_chaos_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO04-target-network-loss
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO04-target-network-loss
+    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO06-target-delete
+    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO06-target-delete
 
 4CCO05-CSPC-cStor-pool-kill:
   extends: .csi_chaos_test_template

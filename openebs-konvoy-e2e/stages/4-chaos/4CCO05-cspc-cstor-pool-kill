@@ -94,7 +94,7 @@ fi
 
 echo "*******Performing CSPC cStor Pool kill**********"
 
-test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cspc-pool-failure metadata="")
+test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cspc-pool-container-failure metadata="")
 echo $test_name
 
 cd cstor-operators/e2e-tests
@@ -117,7 +117,7 @@ cat cspc-poolkill.yml
 bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:cspc-pool-failure' job=cspc-poolkill.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
-bash openebs-konvoy-e2e/utils/event_updater jobname:cspc-pool-container-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+bash openebs-konvoy-e2e/utils/event_updater jobname:cspc-cstor-pool-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
 #python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO05 4-chaos "Induce failure on cStor pool container(cstor-pool) and check if it is recovered successfully and verify that the application is not impacted" Fail "$current_time" $gittoken

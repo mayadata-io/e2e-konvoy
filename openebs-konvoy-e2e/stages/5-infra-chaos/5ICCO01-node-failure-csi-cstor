@@ -134,7 +134,7 @@ sed -i '/command:/i \
 
 cat run_node_failure_csi.yml
 
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:node-failure-cstor' run_node_failure_csi.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:node-failure' run_node_failure_csi.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:node-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

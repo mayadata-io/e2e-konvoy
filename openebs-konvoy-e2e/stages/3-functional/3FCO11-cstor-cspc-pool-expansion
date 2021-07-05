@@ -19,7 +19,7 @@ current_time=$(eval $time)
 present_dir=$(pwd)
 echo $present_dir
 
-bash openebs-konvoy-e2e/utils/pooling jobname:cstor-cspc-pool-scaleup
+bash openebs-konvoy-e2e/utils/pooling jobname:cstor-cspc-pool-replace-blockdevice
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-cspc-pool-expansion jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
