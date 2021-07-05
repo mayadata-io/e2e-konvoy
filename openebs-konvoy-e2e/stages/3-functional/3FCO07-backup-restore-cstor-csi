@@ -82,7 +82,6 @@ cp experiments/functional/backup_and_restore/run_e2e_test.yml run_backuprestore_
 
 sed -i -e 's/value: app-percona-ns/value: percona-backup-csi/g' \
 -e 's/app: velero-backup-restore/app: velero-backup-restore-cstor-csi/g' \
--e 's/value: "minio"/value: "GCP"/g' \
 -e '/name: DEPROVISION_VELERO/{n;s/.*/            value: "true"/}' run_backuprestore_test_cstor_csi.yml
 
 sed -i "s/v1.1.0/$velero_version/g" run_backuprestore_test_cstor_csi.yml

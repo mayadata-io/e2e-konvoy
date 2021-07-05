@@ -96,7 +96,7 @@ echo $test_name
 
 cd cstor-operators/e2e-tests
 
-cp experiments/functional/disk_replacement/run_e2e_test.yml pool_blockdevice_replacement.yml
+cp experiments/functional/cspc-pool/disk-replacement/run_e2e_test.yml pool_blockdevice_replacement.yml
 
 sed -i -e '/name: POOL_NAME/{n;s/.*/            value: cstor-cspc-mirror-pool/}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: replace-blockdevice/}' \

@@ -42,7 +42,6 @@ cp apps/busybox/deployers/run_e2e_test.yml busybox_deploy_cri_failure_csi_cstor.
 
 sed -i -e 's/value: app-busybox-ns/value: cri-failure-csi-cstor/g' \
 -e 's/app: busybox-e2e/app: busybox-deploy-cri-failure-csi-cstor/g' \
--e 's/value: openebs-cstor-csi/value: openebs-cstor-cspc-disk/g' \
 -e 's/statefulset/deployment/g' busybox_deploy_cri_failure_csi_cstor.yml
 
 cat busybox_deploy_cri_failure_csi_cstor.yml

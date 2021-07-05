@@ -45,7 +45,6 @@ cp apps/busybox/deployers/run_e2e_test.yml app_deploy_csi_node_failure.yml
 sed -i -e 's/app-busybox-ns/node-failure-csi-cstor/g' \
 -e 's/busybox-e2e/node-failure-csi-cstor/g' \
 -e 's/app=busybox/app=node-failure-csi-cstor/g' \
--e 's/openebs-cstor-csi/openebs-cstor-cspc-disk/g' \
 -e 's/statefulset/deployment/g' app_deploy_csi_node_failure.yml
 
 cat app_deploy_csi_node_failure.yml

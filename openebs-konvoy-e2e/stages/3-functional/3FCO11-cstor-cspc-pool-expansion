@@ -141,7 +141,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-cspc
 echo $test_name
 
 cd cstor-operators/e2e-tests
-cp experiments/functional/cspc_pool/pool_expansion/run_e2e_test.yml pool_expansion.yml
+cp experiments/functional/cspc-pool/pool_expansion/run_e2e_test.yml pool_expansion.yml
 
 sed -i -e '/name: POOL_NAME/{n;s/.*/            value: cstor-cspc-mirror-pool/}' \
 -e '/name: POOL_TYPE/{n;s/.*/            value: mirror/}' \
