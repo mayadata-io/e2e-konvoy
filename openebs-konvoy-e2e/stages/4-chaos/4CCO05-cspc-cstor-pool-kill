@@ -36,7 +36,7 @@ echo "Running the e2e test for Busybox Deployment.."
 cp apps/busybox/deployers/run_e2e_test.yml busybox_cstor_pool_kill.yml
 
 sed -i -e 's/app: busybox-e2e/app: deploy-busybox-cstor-pool-kill/g' \
--e 's/app=busybox-sts/app=cstor-pool-kill/g' \
+-e 's/app=busybox/app=cstor-pool-kill/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-cstor-csi/value: openebs-cstor-csi/g' \
 -e 's/value: openebs-busybox/value: openebs-bb-poolkill/g' \
@@ -65,7 +65,7 @@ cd cstor-operators/e2e-tests
 cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_cstor_pool_kill.yml
 
 sed -i -e 's/value: app-busybox-ns/value: cstor-pool-kill/g' \
--e 's/app=busybox-sts/app=cstor-pool-kill/g' \
+-e 's/app=busybox/app=cstor-pool-kill/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-cstor-pool-kill/g' busybox_loadgen_cstor_pool_kill.yml
 
 cat busybox_loadgen_cstor_pool_kill.yml
@@ -139,7 +139,7 @@ cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_deprovision_cstor_pool
 # Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-busybox-ns/value: cstor-pool-kill/g' \
--e 's/app=busybox-sts/app=cstor-pool-kill/g' \
+-e 's/app=busybox/app=cstor-pool-kill/g' \
 -e 's/value: provision/value: deprovision/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-deprovision-cstor-pool-kill/g' busybox_loadgen_deprovision_cstor_pool_kill.yml
 
@@ -178,7 +178,7 @@ cp apps/busybox/deployers/run_e2e_test.yml deprovision_cstor_pool_kill.yml
 
 sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-cstor-pool-kill/g' \
 -e 's/app: busybox-e2e/app: busybox-deprovision-cstor-pool-kill/g' \
--e 's/app=busybox-sts/app=cstor-pool-kill/g' \
+-e 's/app=busybox/app=cstor-pool-kill/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-cstor-csi/value: openebs-cstor-disk/g' \
 -e 's/value: openebs-busybox/value: openebs-bb-poolkill/g' \

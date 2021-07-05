@@ -98,7 +98,7 @@ cd cstor-operators/e2e-tests
 cp experiments/functional/cstor-csi-volume-scaledown/run_e2e_test.yml run_cstor_csi_vol_scaledown.yml
 
 sed -i -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
--e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: app=busybox/g}' \
 -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/g}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: csi-vol-scaledown/g}' run_cstor_csi_vol_scaledown.yml
 

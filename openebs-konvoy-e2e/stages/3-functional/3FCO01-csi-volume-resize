@@ -69,7 +69,7 @@ cd cstor-operators/e2e-tests
 cp experiments/functional/csi-volume-resize/run_e2e_test.yml run_cstor_volume_resize_test.yml
 
 sed -i -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
--e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: app=busybox/g}' \
 -e '/name: STORAGE_CLASS/{n;s/.*/            value: openebs-cstor-csi/g}' \
 -e 's/app: csi-vol-resize/app: csi-vol-resize-ext4/g' \
 -e '/name: PV_CAPACITY/{n;s/.*/            value: 5Gi/g}' \

@@ -44,7 +44,7 @@ cp apps/busybox/deployers/run_e2e_test.yml app_deploy_csi_node_failure.yml
 
 sed -i -e 's/app-busybox-ns/node-failure-csi-cstor/g' \
 -e 's/busybox-e2e/node-failure-csi-cstor/g' \
--e 's/app=busybox-sts/app=node-failure-csi-cstor/g' \
+-e 's/app=busybox/app=node-failure-csi-cstor/g' \
 -e 's/openebs-cstor-csi/openebs-cstor-cspc-disk/g' \
 -e 's/statefulset/deployment/g' app_deploy_csi_node_failure.yml
 
@@ -74,7 +74,7 @@ cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_node_failure_csi_cstor
 # Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-busybox-ns/value: node-failure-csi-cstor/g' \
--e 's/app=busybox-sts/app=node-failure-csi-cstor/g' \
+-e 's/app=busybox/app=node-failure-csi-cstor/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-node-failure-csi-cstor/g' busybox_loadgen_node_failure_csi_cstor.yml
 
 cat busybox_loadgen_node_failure_csi_cstor.yml
@@ -159,7 +159,7 @@ cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_deprovision_node_failu
 # Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-busybox-ns/value: node-failure-csi-cstor/g' \
--e 's/app=busybox-sts/app=node-failure-csi-cstor/g' \
+-e 's/app=busybox/app=node-failure-csi-cstor/g' \
 -e 's/value: provision/value: deprovision/g' \
 -e 's/generateName: e2e-busybox-liveness/generateName: busybox-liveness-dep-node-failure-csi/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-deprovision-node-failure-csi/g' busybox_loadgen_deprovision_node_failure_csi.yml
@@ -199,7 +199,7 @@ cp apps/busybox/deployers/run_e2e_test.yml deprovision_node_failure_csi.yml
 
 sed -i -e 's/generateName: e2e-busybox-deploy/generateName: e2e-busybox-deprovision-csi/g' \
 -e 's/app-busybox-ns/node-failure-csi-cstor/g' \
--e 's/app=busybox-sts/app=node-failure-csi-cstor/g' \
+-e 's/app=busybox/app=node-failure-csi-cstor/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/busybox-e2e/busybox-deprovision-node-failure-csi/g' \
 -e 's/openebs-cstor-csi/openebs-cstor-cspc-disk/g' \
