@@ -50,7 +50,7 @@ wget https://raw.githubusercontent.com/openebs/upgrade/master/e2e-tests/experime
 
 mv run_e2e_test.yml run_operator.yml
 
-export OPENEBS_VERSION=$releaseBranch
+export OPENEBS_VERSION=$release_branch
 export COMMIT_ID=$release_commit_id
 export RC_TAG=$rc_tag
 
