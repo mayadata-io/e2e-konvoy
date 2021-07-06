@@ -25,7 +25,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-cstor-snapshot jobphase:Running
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-cstor-clone jobphase:Waiting
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 echo "*******Deploying Busybox Application****"
@@ -33,41 +33,40 @@ echo "*******Deploying Busybox Application****"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-cstor-snap-clone metadata="")
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for Busybox Deployment.."
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for Busybox Deployment.."
 
-cp apps/busybox/deployers/run_litmus_test.yml busybox_snap_clone.yml
+cp apps/busybox/deployers/run_e2e_test.yml busybox_snap_clone.yml
 
-sed -i -e 's/app: busybox-litmus/app: deploy-busybox-snap-clone/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-cstor-csi/g' \
+sed -i -e 's/app: busybox-e2e/app: deploy-busybox-snap-clone/g' \
 -e 's/value: openebs-busybox/value: csi-vol/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: app-busybox-ns/value: cstor-snap-clone/g' busybox_snap_clone.yml
 cat busybox_snap_clone.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-snap-clone' job=busybox_snap_clone.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deploy-busybox-snap-clone' job=busybox_snap_clone.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-cstor-snapshot $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO03 3-functional "Create snapshot and verify if the snapshot is created successfully" Fail "$current_time" $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO03 3-functional "Create snapshot and verify if the snapshot is created successfully" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
-echo "*******Performing snapshot litmus test**********"
+echo "*******Performing snapshot e2e test**********"
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-csi-snapshot metadata="")
 echo $test_name
 
-cd e2e-tests
-cp experiments/functional/cstor-csi/csi-snapshot/run_litmus_test.yml run_snapshot_test.yml
+cd cstor-operators/e2e-tests
+cp experiments/functional/csi-snapshot/run_e2e_test.yml run_snapshot_test.yml
 
-## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
+## Replace the value of DATA_PERSISTENCE with application name in e2e experiment. 
 sed -i -e '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: cstor-snap-clone/}' \
 -e '/name: APP_PVC/{n;s/.*/            value: csi-vol/}' run_snapshot_test.yml
@@ -79,11 +78,11 @@ sed -i '/parameters.yml: |/a \
     testfile: csisnapclonetest
 ' run_snapshot_test.yml
 
-echo "Running the litmus test for creation of snapshot.."
+echo "Running the e2e test for creation of snapshot.."
 cat run_snapshot_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:cstor-csi-snapshot' job=run_snapshot_test.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:cstor-csi-snapshot' job=run_snapshot_test.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-cstor-snapshot $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -92,12 +91,12 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-cstor-snapshot jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO03 3-functional "Create snapshot and verify if the snapshot is created successfully" Fail "$current_time" $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO03 3-functional "Create snapshot and verify if the snapshot is created successfully" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-cstor-snapshot jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO03 3-functional "Create snapshot and verify if the snapshot is created successfully" Pass "$current_time" $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO03 3-functional "Create snapshot and verify if the snapshot is created successfully" Pass "$current_time" $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

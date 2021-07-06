@@ -23,34 +23,34 @@ bash openebs-konvoy-e2e/utils/pooling jobname:cstor-cspc-pool-replace-blockdevic
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:blockdevice-reusability jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=verify-blockdevice-reusability metadata='')
 echo $test_name
 
-cd e2e-tests
+cd cstor-operators/e2e-tests
 
-cp experiments/functional/cspc-pool/blockdevice-reusability/run_litmus_test.yml blockdevice-reusability.yml
+cp experiments/functional/cspc-pool/blockdevice-reusability/run_e2e_test.yml blockdevice-reusability.yml
 
-sed -i -e "/name: SPC_POOL_NAME/{n;s/.*/            value: cstor-block-disk-pool-mirror/g}" \
+sed -i -e "/name: OLD_CSPC_POOL_NAME/{n;s/.*/            value: cstor-block-disk-pool-mirror/g}" \
 -e "/name: NEW_CSPC_POOL_NAME/{n;s/.*/            value: cspc-blockdevice-reusability-pool/g}" \
 -e "/name: POOL_TYPE/{n;s/.*/            value: mirror/g}" blockdevice-reusability.yml
 
 cat blockdevice-reusability.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:verify-blockdevice-reusability' job=blockdevice-reusability.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:verify-blockdevice-reusability' job=blockdevice-reusability.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:blockdevice-reusability $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO13 3-functional "Verify the reusability of blockdevice" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO13 3-functional "Verify the reusability of blockdevice" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
 echo "****Deploying busybox Application using CSI****"
@@ -58,20 +58,20 @@ echo "****Deploying busybox Application using CSI****"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-bd-reusability metadata='')
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for busybox Deployment.."
-cp apps/busybox/deployers/run_litmus_test.yml deploy_blockdevice-reusability.yml
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for busybox Deployment.."
+cp apps/busybox/deployers/run_e2e_test.yml deploy_blockdevice-reusability.yml
 
 sed -i -e 's/value: app-busybox-ns/value: bd-reusability/g' \
--e 's/app: busybox-litmus/app: busybox-litmus-csi-bd-reusability/g' \
--e 's/generateName: litmus-busybox-deploy-/generateName: litmus-busybox-csi-bd-reusability-/g' \
+-e 's/app: busybox-e2e/app: busybox-e2e-csi-bd-reusability/g' \
+-e 's/generateName: e2e-busybox-deploy-/generateName: e2e-busybox-csi-bd-reusability-/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-bd-reusability-sc/g' deploy_blockdevice-reusability.yml
+-e 's/value: openebs-cstor-csi/value: openebs-bd-reusability-sc/g' deploy_blockdevice-reusability.yml
 
 cat deploy_blockdevice-reusability.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-csi-bd-reusability' job=deploy_blockdevice-reusability.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-e2e-csi-bd-reusability' job=deploy_blockdevice-reusability.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:blockdevice-reusability $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -84,7 +84,7 @@ exit 1;
 fi
 
 ################
-# LitmusBook 3 #
+# e2eBook 3 #
 ################
 
 echo "****Deprovision the busybox Application using CSI****"
@@ -92,21 +92,21 @@ echo "****Deprovision the busybox Application using CSI****"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-bd-reusability metadata='')
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for busybox Deployment.."
-cp apps/busybox/deployers/run_litmus_test.yml deprovision-blockdevice-reusability.yml
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for busybox Deployment.."
+cp apps/busybox/deployers/run_e2e_test.yml deprovision-blockdevice-reusability.yml
 
 sed -i -e 's/value: app-busybox-ns/value: bd-reusability/g' \
--e 's/app: busybox-litmus/app: busybox-csi-bd-reusability-deprovision/g' \
+-e 's/app: busybox-e2e/app: busybox-csi-bd-reusability-deprovision/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/generateName: litmus-busybox-deploy-/generateName: litmus-busybox-csi-bd-reusability-deprovision-/g' \
+-e 's/generateName: e2e-busybox-deploy-/generateName: e2e-busybox-csi-bd-reusability-deprovision-/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-bd-reusability-sc/g' deprovision-blockdevice-reusability.yml
+-e 's/value: openebs-cstor-csi/value: openebs-bd-reusability-sc/g' deprovision-blockdevice-reusability.yml
 
 cat deprovision-blockdevice-reusability.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-csi-bd-reusability-deprovision' job=deprovision-blockdevice-reusability.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-csi-bd-reusability-deprovision' job=deprovision-blockdevice-reusability.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:blockdevice-reusability $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -119,15 +119,15 @@ exit 1;
 fi
 
 ################
-# LitmusBook 4 #
+# e2eBook 4 #
 ################
 
 run_id="deprovision";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=verify-blockdevice-reusability metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
+cd cstor-operators/e2e-tests
 
-cp experiments/functional/cspc-pool/blockdevice-reusability/run_litmus_test.yml deprovision-blockdevice-reusability.yml
+cp experiments/functional/cspc-pool/blockdevice-reusability/run_e2e_test.yml deprovision-blockdevice-reusability.yml
 
 sed -i -e "/name: SPC_POOL_NAME/{n;s/.*/            value: cstor-block-disk-pool-mirror/g}" \
 -e "s/value: provision/value: deprovision/g" \
@@ -143,19 +143,19 @@ sed -i '/command:/i \
 
 cat deprovision-blockdevice-reusability.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:verify-blockdevice-reusability-deprovision' job=deprovision-blockdevice-reusability.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:verify-blockdevice-reusability-deprovision' job=deprovision-blockdevice-reusability.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:blockdevice-reusability $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:blockdevice-reusability jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO13 3-functional "Verify the reusability of blockdevice" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO13 3-functional "Verify the reusability of blockdevice" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:blockdevice-reusability jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO13 3-functional "Verify the reusability of blockdevice" Fail "$current_time" $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO13 3-functional "Verify the reusability of blockdevice" Fail "$current_time" $gittoken
 
 }
 

@@ -138,12 +138,6 @@ stages:
     - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO12-cstor-cspc-pool-replace-blockdevice
     - ./openebs-konvoy-e2e/stages/3-functional/3FCO12-cstor-cspc-pool-replace-blockdevice
 
-      #3FCO13-blockdevice-reusability:
-      #  extends: .csi_func_test_template
-      #  script:
-      #    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO13-blockdevice-reusability
-      #    - ./openebs-konvoy-e2e/stages/3-functional/3FCO13-blockdevice-reusability
-
 3FCO14-pool-deletion-with-volume:
   extends: .csi_func_test_template
   script:
@@ -179,17 +173,11 @@ stages:
     - chmod 755 ./openebs-konvoy-e2e/stages/4-chaos/4CCO02-target-kill
     - ./openebs-konvoy-e2e/stages/4-chaos/4CCO02-target-kill
 
-4CCO03-Target-Network-Delay:
+4CCO04-Target-Delete:
   extends: .csi_chaos_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO03-target-network-delay
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO03-target-network-delay
-
-4CCO04-Target-Network-Loss:
-  extends: .csi_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO04-target-network-loss
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO04-target-network-loss
+    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO06-target-delete
+    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO06-target-delete
 
 4CCO05-CSPC-cStor-pool-kill:
   extends: .csi_chaos_test_template
@@ -219,12 +207,6 @@ stages:
   script:
     - chmod 775 ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO02-containerd-failure-csi-cstor
     - ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO02-containerd-failure-csi-cstor     
-
-      #5ICCO03-cspc-pdb:
-      #  extends: .csi_infra_chaos_test_template
-      #  script:
-      #    - chmod 775 ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO03-pdb-cspc
-      #    - ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO03-pdb-cspc
 
 ###############################################################################
 
