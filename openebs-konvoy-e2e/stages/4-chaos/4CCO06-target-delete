@@ -90,7 +90,7 @@ sed -i '/command:/i \
 ' busybox_loadgen_csi_target_delete.yml
 
 # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-csi-targetdelete' job=busybox_loadgen_csi_target_kill.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-csi-targetdelete' job=busybox_loadgen_csi_target_delete.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -185,7 +185,7 @@ sed -i '/command:/i \
 
 cat busybox_loadgen_deprovision_csi_target_delete.yml
 # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-csi-targetdelete' job=busybox_loadgen_deprovision_csi_target_kill.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-csi-targetdelete' job=busybox_loadgen_deprovision_csi_target_delete.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
