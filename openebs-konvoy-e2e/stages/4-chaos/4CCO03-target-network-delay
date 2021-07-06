@@ -24,7 +24,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-target-network-delay jobphase:W
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-target-network-delay jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 echo "*******Deploying percona Application****"
@@ -32,14 +32,14 @@ echo "*******Deploying percona Application****"
 run_id="network-delay";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for percona Deployment.."
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for percona Deployment.."
 
-cp apps/percona/deployers/run_litmus_test.yml percona_target_network_delay.yml
+cp apps/percona/deployers/run_e2e_test.yml percona_target_network_delay.yml
 
 sed -i -e 's/app: percona-deployment/app: deploy-percona-target-nw-delay/g' \
--e 's/generateName: litmus-percona-/generateName: litmus-percona-nw-delay-/g' \
--e 's/value: openebs-standard/value: openebs-cstor-csi/g' \
+-e 's/generateName: e2e-percona-/generateName: e2e-percona-nw-delay-/g' \
+-e 's/value: openebs-cstor-csi/value: openebs-cstor-csi/g' \
 -e 's/value: app-percona-ns/value: percona-target-nw-delay/g' percona_target_network_delay.yml
 
 sed -i '/name: TARGET_AFFINITY_CHECK/{n;s/.*/            value: /g}' percona_target_network_delay.yml
@@ -51,27 +51,27 @@ sed -i '/command:/i \
 
 cat percona_target_network_delay.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-percona-target-nw-delay' job=percona_target_network_delay.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deploy-percona-target-nw-delay' job=percona_target_network_delay.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-target-network-delay $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
 run_id="target-nw-delay";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-loadgen metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-cp apps/percona/workload/run_litmus_test.yml percona_loadgen_target_nw_delay.yml
+cd cstor-operators/e2e-tests
+cp apps/percona/workload/run_e2e_test.yml percona_loadgen_target_nw_delay.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-percona-ns/value: percona-target-nw-delay/g' \
 -e 's/generateName: percona-loadgen-/generateName: percona-loadgen-nw-delay-/g' \
@@ -84,21 +84,21 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' percona_loadgen_target_nw_delay.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='loadgen:percona-loadjob-nw-delay' job=percona_loadgen_target_nw_delay.yml
-cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='loadgen:percona-loadjob-nw-delay' job=percona_loadgen_target_nw_delay.yml
+cd ../..
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-target-network-delay $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 3 #
+# e2eBook 3 #
 ################
 
 echo "*******Performing Network delay on target**********"
@@ -106,16 +106,16 @@ echo "*******Performing Network delay on target**********"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-network-delay metadata="")
 echo $test_name
 
-cd e2e-tests
-cp experiments/chaos/openebs_target_network_delay/run_litmus_test.yml run_target_nw_delay_test.yml
+cd cstor-operators/e2e-tests
+cp experiments/chaos/openebs_target_network_delay/run_e2e_test.yml run_target_nw_delay_test.yml
 
-sed -i -e 's/value: app-percona-ns/value: percona-target-nw-delay/g' \
--e 's/name: target-network-delay/name: csi-target-network-delay-config/g' \
--e 's/name: openebs-target-network-delay/name: openebs-csi-target-network-delay/g' \
--e 's/value: docker/value: containerd/g' run_target_nw_delay_test.yml
-
-## Replace the value of DATA_PERSISTENCE with application name in litmus experiment. 
-sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_target_nw_delay_test.yml
+sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: percona-target-nw-delay/}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: '\''name=percona'\''/}' \
+-e '/name: CONTAINER_RUNTIME/{n;s/.*/            value: containerd/}' \
+-e '/name: DEPLOY_TYPE/{n;s/.*/            value: deployment/}' \
+-e '/name: APP_PVC/{n;s/.*/            value: percona-mysql-claim/}' \
+-e "/name: TARGET_AFFINITY_CHECK/{n;s/value: 'enable'/value: 'disable'/g}" \
+-e '/name: DATA_PERSISTENCE/{n;s/.*/            value: mysql/}' run_target_nw_delay_test.yml
 
 ## Insert the set of variables for percona data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
@@ -124,21 +124,21 @@ sed -i '/parameters.yml: |/a \
     dbname: targetnetworkdelay
 ' run_target_nw_delay_test.yml
 
-echo "Running the litmus test for percona Deployment Scaleup.."
+echo "Running the e2e test for percona Deployment Scaleup.."
 cat run_target_nw_delay_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-csi-target-network-delay' job=run_target_nw_delay_test.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:openebs-target-network-delay' job=run_target_nw_delay_test.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-target-network-delay $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 4 #
+# e2eBook 4 #
 ################
  
 kubectl delete job --all -n percona-target-nw-delay 
@@ -148,12 +148,12 @@ echo "********Deprovisioning Percona Application*******"
 run_id="deprovision-network-delay";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=percona-deployment metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-cp apps/percona/deployers/run_litmus_test.yml percona_deprovision_target_network_delay.yml
+cd cstor-operators/e2e-tests
+cp apps/percona/deployers/run_e2e_test.yml percona_deprovision_target_network_delay.yml
 
 sed -i -e 's/app: percona-deployment/app: deprovision-percona-csi-target-nw-delay/g' \
--e 's/generateName: litmus-percona-/generateName: litmus-percona-deprovision-nw-delay/g' \
--e 's/value: openebs-standard/value: openebs-cstor-csi/g' \
+-e 's/generateName: e2e-percona-/generateName: e2e-percona-deprovision-nw-delay/g' \
+-e 's/value: openebs-cstor-csi/value: openebs-cstor-csi/g' \
 -e 's/value: provision/value: deprovision/g' \
 -e 's/value: app-percona-ns/value: percona-target-nw-delay/g' percona_deprovision_target_network_delay.yml
 
@@ -164,26 +164,26 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' percona_deprovision_target_network_delay.yml           
 
-echo "Running the litmus test for percona Deprovision.."
+echo "Running the e2e test for percona Deprovision.."
 cat percona_deprovision_target_network_delay.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deprovision-percona-csi-target-nw-delay' job=percona_deprovision_target_network_delay.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deprovision-percona-csi-target-nw-delay' job=percona_deprovision_target_network_delay.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-target-network-delay $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 rc_val=$(echo $?)
 current_time=$(eval $time)
-# testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+# testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-target-network-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-target-network-delay jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Pass "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CCO03 4-chaos "Induce cstor target network delay and check if it gets recovered successfully" Pass "$current_time" $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

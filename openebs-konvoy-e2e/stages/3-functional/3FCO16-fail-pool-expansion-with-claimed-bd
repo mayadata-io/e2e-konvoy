@@ -23,15 +23,15 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:fail-pool-expansion-claimed-bd jobp
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:fail-pool-expansion-claimed-bd jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=fail-pool-expansion-claimed-bd metadata='')
 echo $test_name
 
-cd e2e-tests
+cd cstor-operators/e2e-tests
 
-cp experiments/functional/cspc-pool/fail-pool-expansion-with-claimed-bd/run_litmus_test.yml fail-pool-expansion-claimed-bd.yml
+cp experiments/functional/cspc-pool/fail-pool-expansion-with-claimed-bd/run_e2e_test.yml fail-pool-expansion-claimed-bd.yml
 
 sed -i -e '/name: CSPC_NAME/{n;s/.*/            value: "cstor-cspc-mirror-pool"/}' \
 sed -i -e '/name: OPERATOR_NS/{n;s/.*/            value: "openebs"/}' \
@@ -39,8 +39,8 @@ sed -i -e '/name: OPERATOR_NS/{n;s/.*/            value: "openebs"/}' \
 
 cat fail-pool-expansion-claimed-bd.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:pool-expansion-with-claimed-bd' job=fail-pool-expansion-claimed-bd.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:pool-expansion-with-claimed-bd' job=fail-pool-expansion-claimed-bd.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:fail-pool-expansion-claimed-bd $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -49,7 +49,7 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:fail-pool-expansion-claimed-bd jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO15 3-functional "Verify if the pool creation is failed when the blockdevice is already claimed" Fail "$current_time" $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO15 3-functional "Verify if the pool creation is failed when the blockdevice is already claimed" Fail "$current_time" $gittoken
 exit 1;
 fi
 

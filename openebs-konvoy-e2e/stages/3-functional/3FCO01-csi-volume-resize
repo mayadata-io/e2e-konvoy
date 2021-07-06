@@ -24,7 +24,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Wai
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 echo "****Deploying busybox Application using CSI****"
@@ -32,15 +32,14 @@ echo "****Deploying busybox Application using CSI****"
 run_id="ext";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-busybox-csi metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-echo "Running the litmus test for busybox Deployment.."
-cp apps/busybox/deployers/run_litmus_test.yml deploy_csi_busybox.yml
+cd cstor-operators/e2e-tests
+echo "Running the e2e test for busybox Deployment.."
+cp apps/busybox/deployers/run_e2e_test.yml deploy_csi_busybox.yml
 
 sed -i -e 's/value: app-busybox-ns/value: busybox-csi/g' \
--e 's/app: busybox-litmus/app: busybox-litmus-csi/g' \
--e 's/generateName: litmus-busybox-deploy-/generateName: litmus-busybox-csi-/g' \
--e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-cstor-csi/g' deploy_csi_busybox.yml
+-e 's/app: busybox-e2e/app: busybox-e2e-csi/g' \
+-e 's/generateName: e2e-busybox-deploy-/generateName: e2e-busybox-csi-/g' \
+-e 's/value: statefulset/value: deployment/g' deploy_csi_busybox.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -49,28 +48,28 @@ sed -i '/command:/i \
 
 cat deploy_csi_busybox.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-litmus-csi' job=deploy_csi_busybox.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-e2e-csi' job=deploy_csi_busybox.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:deploy-busybox-csi $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO01 3-functional "Check if the volume size is changed" Fail "$current_time" $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO01 3-functional "Check if the volume size is changed" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 ################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
 run_id="ext";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=csi-volume-resize metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-cp experiments/functional/csi-volume-resize/run_litmus_test.yml run_cstor_volume_resize_test.yml
+cd cstor-operators/e2e-tests
+cp experiments/functional/csi-volume-resize/run_e2e_test.yml run_cstor_volume_resize_test.yml
 
 sed -i -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
--e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: app=busybox/g}' \
 -e '/name: STORAGE_CLASS/{n;s/.*/            value: openebs-cstor-csi/g}' \
 -e 's/app: csi-vol-resize/app: csi-vol-resize-ext4/g' \
 -e '/name: PV_CAPACITY/{n;s/.*/            value: 5Gi/g}' \
@@ -84,8 +83,8 @@ sed -i '/command:/i \
 
 cat run_cstor_volume_resize_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:csi-vol-resize-ext4' job=run_cstor_volume_resize_test.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:csi-vol-resize-ext4' job=run_cstor_volume_resize_test.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-ext4 $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 return_count=$?
@@ -93,12 +92,12 @@ current_time=$(eval $time)
 
 if [ "$return_count" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO01 3-functional "Check if the volume size is changed" Fail "$current_time" $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO01 3-functional "Check if the volume size is changed" Fail "$current_time" $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize-ext4 jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO01 7-csi-functional "check if the volume size is changed" Pass "$current_time" $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FCO01 7-csi-functional "check if the volume size is changed" Pass "$current_time" $gittoken
 
 if [ "$return_count" != "0" ]; then
 exit 1;
