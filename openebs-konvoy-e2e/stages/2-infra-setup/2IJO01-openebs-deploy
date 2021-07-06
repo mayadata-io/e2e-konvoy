@@ -11,7 +11,7 @@ commit_id=$(echo $3)
 releaseTag=$(echo $4)
 release_branch=$(echo $5)
 case_id=2IJO01
-commit_id=$(echo $6)
+release_commit_id=$(echo $6)
 rc_tag=$(echo $7)
 
 time="date"
@@ -21,6 +21,8 @@ present_dir=$(pwd)
 echo $present_dir
 
 echo "releaseTag=$releaseTag"
+echo "rctag=$rc_tag"
+echo "releasebranch=$release_branch"
 
 # Applying e2e-CRD
 echo "***Applying e2e-crd***********"
@@ -49,11 +51,11 @@ wget https://raw.githubusercontent.com/openebs/upgrade/master/e2e-tests/experime
 mv run_e2e_test.yml run_operator.yml
 
 export OPENEBS_VERSION=$releaseBranch
-export COMMIT_ID=$commit_id
+export COMMIT_ID=$release_commit_id
 export RC_TAG=$rc_tag
 
 wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/env-update/env.py
-python3 env.py -f  run_operator.yml
+python3 env.py -f run_operator.yml
 
 cat run_operator.yml
 
