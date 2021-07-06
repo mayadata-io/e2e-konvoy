@@ -2,222 +2,252 @@
 
 stages:
   - CLUSTER-SETUP
-  - PROVIDER-SETUP
-  - FUNCTIONAL
-  - CHAOS
-  - INFRA-CHAOS
-  - CLUSTER-CLEANUP
+  - OPENEBS-SETUP
+  # - JIVA-CSI-INFRA-SETUP
+  # - JIVA-CSI-FUNCTIONAL
+  #   #  - JIVA-FUNCTIONAL
+  # - CHAOS
+  #   #  - JIVA-CSI-INFRA-CLEANUP
+  #   #  - OPENEBS-CLEANUP
+  # - CLUSTER-CLEANUP
+  
+##########################################################################################
 
-###############################################################################
-
-1CCO01-konvoy-cluster:
+1CJO01-Konvoy:
   image: openebs/openshift-ci:latest
   stage: CLUSTER-SETUP
-  tags: 
-    - k8s-konvoy 
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/1-cluster-setup/1CCO01-cluster-setup
-    - ./openebs-konvoy-e2e/stages/1-cluster-setup/1CCO01-cluster-setup
-
-###############################################################################
-
-.csi_infra_test_template:
-  image: openebs/openshift-ci:latest
-  stage: PROVIDER-SETUP
-  tags: 
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - 1CCO01-konvoy-cluster
-
-2ICO01-CSTOR-OPERATOR:
-  extends: .csi_infra_test_template        
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/2-infra-setup/2ICO01-cstor-operator
-    - ./openebs-konvoy-e2e/stages/2-infra-setup/2ICO01-cstor-operator
-
-2ICO02-CSPC-STRIPE-POOL:
-  extends: .csi_infra_test_template
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/2-infra-setup/2ICO02-create-cspc-stripe-pool
-    - ./openebs-konvoy-e2e/stages/2-infra-setup/2ICO02-create-cspc-stripe-pool
-
-2ICO03-CSPC-MIRROR-POOL:
-  extends: .csi_infra_test_template
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/2-infra-setup/2ICO03-create-cspc-mirror-pool
-    - ./openebs-konvoy-e2e/stages/2-infra-setup/2ICO03-create-cspc-mirror-pool
-
-2ICO04-CSI-STORAGE-POLICIES:
-  extends: .csi_infra_test_template
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/2-infra-setup/2ICO04-openebs-csi-sc
-    - ./openebs-konvoy-e2e/stages/2-infra-setup/2ICO04-openebs-csi-sc
-
-###############################################################################
-
-# ## Define job template for csi-functional jobs    
-.csi_func_test_template:
-  image: openebs/openshift-ci:latest
-  stage: FUNCTIONAL
-  tags: 
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - 1CCO01-konvoy-cluster 
-
-3FCO01-cStor-volume-resize-ext4:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO01-csi-volume-resize
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO01-csi-volume-resize
-
-3FCO02-cStor-volume-resize-xfs:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO02-csi-volume-resize-xfs
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO02-csi-volume-resize-xfs
-
-3FCO03-CSI-cstor-snapshot:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO03-csi-cstor-snapshot
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO03-csi-cstor-snapshot
-
-3FCO04-CSI-cstor-clone:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO04-csi-cstor-clone
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO04-csi-cstor-clone
-
-3FCO05-csi-volume-scaleup:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO05-csi-volume-scaleup
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO05-csi-volume-scaleup
- 
-3FCO06-csi-volume-scaledown:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO06-csi-volume-scaledown
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO06-csi-volume-scaledown      
-
-3FCO07-backup-restore-cstor-csi:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO07-backup-restore-cstor-csi
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO07-backup-restore-cstor-csi
-
-3FCO08-Remote-restore-diff-ns:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO08-remote-restore-diff-ns
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO08-remote-restore-diff-ns    
-
-3FCO09-Backup-restore-diff-profile:
-  extends: .csi_func_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO09-backup-restore-diff-profile
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO09-backup-restore-diff-profile
-    
-3FCO10-cStor-CSPC-pool-scaleup:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO10-cstor-cspc-pool-scaleup
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO10-cstor-cspc-pool-scaleup
-
-3FCO11-cStor-CSPC-pool-expansion:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO11-cstor-cspc-pool-expansion
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO11-cstor-cspc-pool-expansion
-
-3FCO12-cStor-CSPC-pool-replace-blockdevice:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO12-cstor-cspc-pool-replace-blockdevice
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO12-cstor-cspc-pool-replace-blockdevice
-
-3FCO14-pool-deletion-with-volume:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO14-block-pool-deletion-with-volume
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO14-block-pool-deletion-with-volume
-
-3FCO15-pool-creation-with-claimed-bd:
-  extends: .csi_func_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FCO15-block-pool-creation-with-claimed-bd
-    - ./openebs-konvoy-e2e/stages/3-functional/3FCO15-block-pool-creation-with-claimed-bd    
-
-###############################################################################
-
-.csi_chaos_test_template:
-  image: openebs/openshift-ci:latest
-  stage: CHAOS
   tags:
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - 1CCO01-konvoy-cluster
+    - k8s-konvoy  
+  script:     
+    - chmod 755 ./openebs-konvoy-e2e/stages/1-cluster-setup/1CJO01-cluster-setup
+    - ./openebs-konvoy-e2e/stages/1-cluster-setup/1CJO01-cluster-setup
 
-4CCO01-CSTOR-APP-KILL:
-  extends: .csi_chaos_test_template        
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/4-chaos/4CCO01-application-pod-kill
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO01-application-pod-kill
+##########################################################################################
 
-4CCO02-CSTOR-TARGET-KILL:
-  extends: .csi_chaos_test_template        
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/4-chaos/4CCO02-target-kill
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO02-target-kill
-
-4CCO04-Target-Delete:
-  extends: .csi_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO06-target-delete
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO06-target-delete
-
-4CCO05-CSPC-cStor-pool-kill:
-  extends: .csi_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CCO05-cspc-cstor-pool-kill
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CCO05-cspc-cstor-pool-kill
-
-###############################################################################
-
-.csi_infra_chaos_test_template:
+2CJO01-OpenEBS-Deploy:
   image: openebs/openshift-ci:latest
-  stage: INFRA-CHAOS
+  stage: OPENEBS-SETUP
   tags:
-    - k8s-konvoy
-  when: always
-  dependencies:
-    - 1CCO01-konvoy-cluster
-
-5ICCO01-node-failure-csi-cstor:
-  extends: .csi_infra_chaos_test_template        
+    - k8s-konvoy  
   script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO01-node-failure-csi-cstor
-    - ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO01-node-failure-csi-cstor
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
+    - ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
 
-5ICCO02-containerd-failure-csi-cstor:
-  extends: .csi_infra_chaos_test_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO02-containerd-failure-csi-cstor
-    - ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO02-containerd-failure-csi-cstor     
+# ##########################################################################################
 
-###############################################################################
+# .jiva_csi_infra_setup_template:
+#   image: openebs/openshift-ci:latest
+#   stage: JIVA-CSI-INFRA-SETUP
+#   tags:
+#     - k8s-konvoy  
+#   when: always
+#   dependencies:
+#     - PCZD-Konvoy
 
-6CCO01-konvoy-cleanup:
-  image: openebs/openshift-ci:latest
-  stage: CLUSTER-CLEANUP
-  when: always  
-  dependencies: 
-    - 1CCO01-konvoy-cluster
-  tags: 
-    - k8s-konvoy 
-  script:
-    - chmod 755 ./openebs-konvoy-e2e/stages/6-cleanup/6CCO01-cluster-cleanup
-    - ./openebs-konvoy-e2e/stages/6-cleanup/6CCO01-cluster-cleanup
+# JCSI01-JIVA-OPERATOR:
+#   extends: .jiva_csi_infra_setup_template
+#   script:
+#     - chmod 755 ./openebs-konvoy-e2e/stages/3-jiva-csi-infra-setup/JCSI01-jiva-operator/jiva-operator
+#     - ./openebs-konvoy-e2e/stages/3-jiva-csi-infra-setup/JCSI01-jiva-operator/jiva-operator
+
+# PBCY-NFSv4-JIVA-PROVISION:
+#   extends: .jiva_csi_infra_setup_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/3-jiva-csi-infra-setup/JCSI02-nfsv4-jiva-provision/nfsv4-jiva-provision
+#     - ./openebs-konvoy-e2e/stages/3-jiva-csi-infra-setup/JCSI02-nfsv4-jiva-provision/nfsv4-jiva-provision
+  
+# ###########################################################################################
+
+# .func_test_template:
+#   image: openebs/openshift-ci:latest
+#   stage: JIVA-CSI-FUNCTIONAL
+#   tags:
+#     - k8s-konvoy  
+#   when: always
+#   dependencies:
+#     - PCZD-Konvoy
+
+# JCSI11-JIVA-CSI-VOLUME-RESIZE-XFS:
+#   extends: .func_test_template
+#   script:
+#     - chmod 755 ./openebs-konvoy-e2e/stages/4-jiva-csi-functional/JCSI11-jiva-csi-volume-resize-xfs/jiva-csi-volume-resize-xfs
+#     - ./openebs-konvoy-e2e/stages/4-jiva-csi-functional/JCSI11-jiva-csi-volume-resize-xfs/jiva-csi-volume-resize-xfs
+
+# JCSI12-JIVA-CSI-VOLUME-RESIZE:
+#   extends: .func_test_template
+#   script:
+#     - chmod 755 ./openebs-konvoy-e2e/stages/4-jiva-csi-functional/JCSI12-jiva-csi-volume-resize/jiva-csi-volume-resize
+#     - ./openebs-konvoy-e2e/stages/4-jiva-csi-functional/JCSI12-jiva-csi-volume-resize/jiva-csi-volume-resize
+
+# #########################################################################################
+
+#       #.func_test_template:
+#       #  image: openebs/openshift-ci:latest
+#       #  stage: JIVA-FUNCTIONAL
+#       #  tags:
+#       #    - k8s-konvoy  
+#       #  when: always
+#       #  dependencies:
+#       #    - PCZD-Konvoy
+     
+# UH9A-Jiva-Data-Integrity:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI21-Jiva-Data-Integrity/data-integrity
+#     - ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI21-Jiva-Data-Integrity/data-integrity
+
+# SN3A-Jiva-Memory-Consumption:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI22-Jiva-Memory-Consumption/memory-consumption
+#     - ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI22-Jiva-Memory-Consumption/memory-consumption
+
+#       #8QQP-Jiva-delete-autogen-snapshot:
+#       #  extends: .func_test_template
+#       #  script:
+#       #    - chmod 775 .openebs-konvoy-e2e/stages/5-jiva-functional/JCSI23-Jiva-Snapshot-Delete/jiva-snapshot-delete
+#       #    - .openebs-konvoy-e2e/stages/5-jiva-functional/JCSI23-Jiva-Snapshot-Delete/jiva-snapshot-delete
+
+# WVTY-App-Deploy-Jiva-RWX:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI24-app-deploy-jiva-RWX/app-deploy-jiva-rwx
+#     - ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI24-app-deploy-jiva-RWX/app-deploy-jiva-rwx
+
+# KUL9-Jiva-App-Scaleup:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI25-Jiva-sts-App-replica-scaleup/app-replica-scaleup
+#     - ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI25-Jiva-sts-App-replica-scaleup/app-replica-scaleup
+
+# 4E0O-Jiva-Volume-Scaleup:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI26-Jiva-Volume-scaleup/jiva-volume-scaleup
+#     - ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI26-Jiva-Volume-scaleup/jiva-volume-scaleup
+
+# NWQB-Backup-Restore-Jiva:
+#   extends: .func_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI27-Backup-Restore-Jiva/backup-restore-jiva
+#     - ./openebs-konvoy-e2e/stages/5-jiva-functional/JCSI27-Backup-Restore-Jiva/backup-restore-jiva
+
+# ###########################################################################################
+# .chaos_test_template:
+#   image: openebs/openshift-ci:latest
+#   stage: CHAOS
+#   tags:
+#     - k8s-konvoy  
+#   when: always
+#   dependencies:
+#     - PCZD-Konvoy
+
+# HOSN-Jiva-single-replica-failure:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/HOSN-jiva-single-replica-failure/single-replica-failure
+#     - ./openebs-konvoy-e2e/stages/6-chaos/HOSN-jiva-single-replica-failure/single-replica-failure
+
+# VO3D-Jiva-controller-kill:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/VO3D-jiva-controller-kill/controller-kill
+#     - ./openebs-konvoy-e2e/stages/6-chaos/VO3D-jiva-controller-kill/controller-kill
+
+# PX1D-Jiva-replica-node-affinity:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/PX1D-jiva-replica-node-affinity/replica-node-affinity
+#     - ./openebs-konvoy-e2e/stages/6-chaos/PX1D-jiva-replica-node-affinity/replica-node-affinity
+
+# TSXL-Jiva-controller-network-delay:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/TSXL-Jiva-controller-network-delay/controller-network-delay
+#     - ./openebs-konvoy-e2e/stages/6-chaos/TSXL-Jiva-controller-network-delay/controller-network-delay
+
+# VJBK-Jiva-replica-failure:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/VJBK-Jiva-replica-failure/jiva-replica-failure
+#     - ./openebs-konvoy-e2e/stages/6-chaos/VJBK-Jiva-replica-failure/jiva-replica-failure
+
+# F7BO-Jiva-Revision-Counter:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/F7BO-jiva-revision-counter/jiva-revision-counter
+#     - ./openebs-konvoy-e2e/stages/6-chaos/F7BO-jiva-revision-counter/jiva-revision-counter
+
+# N67N-nfs-App-Kill-Jiva:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/N67N-nfs-app-kill-jiva/nfs-app-kill-jiva
+#     - ./openebs-konvoy-e2e/stages/6-chaos/N67N-nfs-app-kill-jiva/nfs-app-kill-jiva
+
+# 8ZWN-nfs-Ctrl-Kill-Jiva:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/8ZWN-nfs-ctrl-kill-jiva/nfs-ctrl-kill-jiva
+#     - ./openebs-konvoy-e2e/stages/6-chaos/8ZWN-nfs-ctrl-kill-jiva/nfs-ctrl-kill-jiva
+
+# NEPS-nfs-Ctrl-Container-Kill-Jiva:
+#   extends: .chaos_test_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/6-chaos/NEPS-nfs-ctrl-container-kill/nfs-ctrl-container-kill
+#     - ./openebs-konvoy-e2e/stages/6-chaos/NEPS-nfs-ctrl-container-kill/nfs-ctrl-container-kill
+
+
+# ####################################################################################################################
+
+#       #.jiva_csi_infra_cleanup_template:
+#       #  image: openebs/openshift-ci:latest
+#       #  stage: JIVA-CSI-INFRA-CLEANUP
+#       #  tags:
+#       #    - k8s-konvoy  
+#       #  when: always
+#       #  dependencies:
+#       #    - JCSI01-JIVA-OPERATOR
+
+#       #JCSI91-JIVA-OPERATOR:
+#       #  extends: .jiva_csi_infra_cleanup_template
+#       #  script:
+#       #    - chmod 755 .openebs-konvoy-e2e/stages/7-jiva-csi-infra-cleanup/JCSI41-jiva-operator-cleanup/jiva-operator-cleanup
+#       #    - .openebs-konvoy-e2e/stages/7-jiva-csi-infra-cleanup/JCSI41-jiva-operator-cleanup/jiva-operator-cleanup
+
+#       #J9PT-nfsv4-jiva-provision-cleanup:
+#       #  extends: .jiva_csi_infra_cleanup_template
+#       #  script:
+#       #    - chmod 775 .openebs-konvoy-e2e/stages/7-jiva-csi-infra-cleanup/JCSI42-nfsv4-jiva-provisioner-cleanup/nfsv4-jiva-provisioner-cleanup
+#       #    - .openebs-konvoy-e2e/stages/7-jiva-csi-infra-cleanup/JCSI42-nfsv4-jiva-provisioner-cleanup/nfsv4-jiva-provisioner-cleanup
+
+
+# ###########################################################################################
+
+#       #.cleanup_test_template:
+#       #  image: openebs/openshift-ci:latest
+#       #  stage: OPENEBS-CLEANUP
+#       #  tags:
+#       #    - k8s-konvoy  
+#       #  when: always
+#       #  dependencies:
+#       #    - K9YC-OpenEBS
+
+#       #GP95-openebs-Uninstall:
+#       #  extends: .cleanup_test_template
+#       #  script:
+#       #    - chmod 775 .openebs-konvoy-e2e/stages/8-cleanup/GP95-openebs-cleanup/openebs-cleanup
+#       #    - .openebs-konvoy-e2e/stages/8-cleanup/GP95-openebs-cleanup/openebs-cleanup
+
+# ##########################################################################################
+
+# 4SMQ-cluster-Delete:
+#   image: openebs/openshift-ci:latest
+#   stage: CLUSTER-CLEANUP
+#   tags:
+#     - k8s-konvoy  
+#   when: always
+#   dependencies:
+#     - PCZD-Konvoy
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/8-cleanup/4SMQ-cluster-cleanup/cluster-cleanup
+#     - ./openebs-konvoy-e2e/stages/8-cleanup/4SMQ-cluster-cleanup/cluster-cleanup

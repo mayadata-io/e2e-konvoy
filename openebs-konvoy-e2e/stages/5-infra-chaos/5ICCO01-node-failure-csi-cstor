@@ -49,7 +49,7 @@ sed -i -e 's/app-busybox-ns/node-failure-csi-cstor/g' \
 
 cat app_deploy_csi_node_failure.yml
 
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:node-failure-csi-cstor' app_deploy_csi_node_failure.yml
+bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:node-failure-csi-cstor' app_deploy_csi_node_failure.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:node-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -84,7 +84,7 @@ sed -i '/command:/i \
 ' busybox_loadgen_node_failure_csi_cstor.yml
 
 # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-node-failure-csi-cstor' job=busybox_loadgen_node_failure_csi_cstor.yml
+bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-node-failure-csi-cstor' job=busybox_loadgen_node_failure_csi_cstor.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -134,7 +134,7 @@ sed -i '/command:/i \
 
 cat run_node_failure_csi.yml
 
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:node-failure' run_node_failure_csi.yml
+bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='name:node-failure' run_node_failure_csi.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:node-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -170,7 +170,7 @@ sed -i '/command:/i \
 
 cat busybox_loadgen_deprovision_node_failure_csi.yml
 # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-node-failure-csi' job=busybox_loadgen_deprovision_node_failure_csi.yml
+bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-node-failure-csi' job=busybox_loadgen_deprovision_node_failure_csi.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -206,7 +206,7 @@ sed -i -e 's/generateName: e2e-busybox-deploy/generateName: e2e-busybox-deprovis
 
 cat deprovision_node_failure_csi.yml
 
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-deprovision-node-failure-csi' deprovision_node_failure_csi.yml
+bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-deprovision-node-failure-csi' deprovision_node_failure_csi.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:node-failure-csi-cstor $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

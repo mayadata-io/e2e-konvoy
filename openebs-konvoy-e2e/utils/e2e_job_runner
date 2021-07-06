@@ -22,14 +22,14 @@ while [ -z "$job_name" ]; do
     fi
   job_name=$(eval ${jobNameCmd});
 done
-chmod 755 ../openebs-konvoy-e2e/utils/error_handler
-bash ../openebs-konvoy-e2e/utils/error_handler ${retcode} msg="Unable to run e2ebook, exiting" action="exit"
+chmod 755 ../..openebs-konvoy-e2e/utils/error_handler
+bash ../..openebs-konvoy-e2e/utils/error_handler ${retcode} msg="Unable to run e2ebook, exiting" action="exit"
 
 ## Obtain the e2e pod name 
 
 e2ePodCmd="kubectl get pod --no-headers -n e2e -o jsonpath='{.items[?(@.metadata.labels.job-name==\"${job_name}\")].metadata.name}'"
 e2e_pod=$(eval ${e2ePodCmd}); retcode=$?
-bash ../openebs-konvoy-e2e/utils/error_handler ${retcode} msg="Unable to find e2e test runner pod, exiting" action="exit"
+bash ../..openebs-konvoy-e2e/utils/error_handler ${retcode} msg="Unable to find e2e test runner pod, exiting" action="exit"
 
 ## Wait till the ansibletest container terminates && also confirm job completion status. This is done to ensure
 ## that execution of auxiliary containers such as loggers is completed. Getting the ansibletest ccontainer to completed state 
