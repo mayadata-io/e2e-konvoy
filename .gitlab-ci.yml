@@ -28,7 +28,7 @@ stages:
   image: openebs/openshift-ci:latest
   stage: OPENEBS-SETUP
   tags:
-    - k8s-konvoy  
+    - k8s-konvoy
   script:
     - chmod 775 ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
     - ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy

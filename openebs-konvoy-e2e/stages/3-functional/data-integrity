@@ -60,7 +60,7 @@ sed -i '/command:/i \
 
 cat data_integrity_test_jiva.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:fio-di-e2e-jiva' job=data_integrity_test_jiva.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:fio-di-e2e-jiva' job=data_integrity_test_jiva.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:data-integrity-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

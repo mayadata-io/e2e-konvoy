@@ -47,7 +47,7 @@ sed -i -e 's/value: memleak/value: memleak-jiva/g' memcheck_jiva.yml
 
 cat memcheck_jiva.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:memleak-test' job=memcheck_jiva.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:memleak-test' job=memcheck_jiva.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:memory-consumption-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

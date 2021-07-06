@@ -56,7 +56,7 @@ sed -i '/command:/i \
 
 cat nfs_ctrl_container_kill.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='name:nfs-openebs-controller-container-kill' job=nfs_ctrl_container_kill.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:nfs-openebs-controller-container-kill' job=nfs_ctrl_container_kill.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -93,7 +93,7 @@ sed -i '/command:/i \
 
 cat deprovision_app_jiva.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:minio-e2e-deprovision-jiva' job=deprovision_app_jiva.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:minio-e2e-deprovision-jiva' job=deprovision_app_jiva.yml
 
 echo "Dumping state of cluster post job run"; echo ""
 cd ../..

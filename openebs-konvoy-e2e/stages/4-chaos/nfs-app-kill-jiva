@@ -55,7 +55,7 @@ sed -i '/command:/i \
 
 cat nfs_app_kill_jiva.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='name:nfs-app-pod-failure-jiva' job=nfs_app_kill_jiva.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:nfs-app-pod-failure-jiva' job=nfs_app_kill_jiva.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;

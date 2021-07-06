@@ -43,7 +43,7 @@ sed -i '/command:/i \
 
 cat deploy_app_jiva.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:minio-e2e-jiva' job=deploy_app_jiva.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:minio-e2e-jiva' job=deploy_app_jiva.yml
 
 echo "Dumping state of cluster post job run"; echo ""
 cd ../..

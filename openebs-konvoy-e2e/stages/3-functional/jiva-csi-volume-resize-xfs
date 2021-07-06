@@ -49,7 +49,7 @@ sed -i '/command:/i \
 
 cat deploy_csi_xfs_busybox.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-e2e-csi-xfs' job=deploy_csi_xfs_busybox.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-e2e-csi-xfs' job=deploy_csi_xfs_busybox.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -83,7 +83,7 @@ sed -i '/command:/i \
 
 cat liveness_csi_xfs_busybox.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:e2e-busybox-csi-xfs-liveness' job=liveness_csi_xfs_busybox.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:e2e-busybox-csi-xfs-liveness' job=liveness_csi_xfs_busybox.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -118,7 +118,7 @@ sed -i '/command:/i \
 
 cat run_jiva_volume_resize_xfs_test.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:csi-vol-resize-xfs' job=run_jiva_volume_resize_xfs_test.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:csi-vol-resize-xfs' job=run_jiva_volume_resize_xfs_test.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -153,7 +153,7 @@ sed -i '/command:/i \
 
 cat dep_liveness_csi_xfs_busybox.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:e2e-busybox-csi-xfs-liveness-dep' job=dep_liveness_csi_xfs_busybox.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:e2e-busybox-csi-xfs-liveness-dep' job=dep_liveness_csi_xfs_busybox.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -190,7 +190,7 @@ sed -i '/command:/i \
 
 cat dep_csi_xfs_busybox.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-e2e-csi-xfs-dep' job=dep_csi_xfs_busybox.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-e2e-csi-xfs-dep' job=dep_csi_xfs_busybox.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize-xfs $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

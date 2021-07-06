@@ -36,8 +36,8 @@ sed -i -e 's/name: e2e-openebs-runner/name: e2e-openebs-deprovision/g' \
 
 cat cleanup_openebs.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='provider:openebs-deprovision' job=cleanup_openebs.yml
-bash ../..openebs-konvoy-e2e/utils/dump_cluster_state;
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='provider:openebs-deprovision' job=cleanup_openebs.yml
+bash ../../openebs-konvoy-e2e/utils/dump_cluster_state;
 cd ../..
 bash openebs-konvoy-e2e/utils/event_updater jobname:openebs-cleanup $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 

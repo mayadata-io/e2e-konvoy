@@ -50,8 +50,8 @@ echo "Running the e2e test.."
 
 cat nfsv4-jiva-provision.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:nfs-e2e-jiva' job=nfsv4-jiva-provision.yml
-bash ../..openebs-konvoy-e2e/utils/dump_cluster_state;
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:nfs-e2e-jiva' job=nfsv4-jiva-provision.yml
+bash ../../openebs-konvoy-e2e/utils/dump_cluster_state;
 cd ../..
 bash openebs-konvoy-e2e/utils/event_updater jobname:s2-j8-nfsv4-jiva-provision $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 

@@ -72,7 +72,7 @@ sed -i -e 's/app: busybox-e2e/app: deploy-busybox-single-rep/g' \
 cat busybox_single_rep_kill.yml
 
 # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:deploy-busybox-single-rep' job=busybox_single_rep_kill.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deploy-busybox-single-rep' job=busybox_single_rep_kill.yml
 cd ../..
 
 #Get the cluster state Once the e2e jobs completed.
@@ -120,7 +120,7 @@ sed -i '/command:/i \
 ' busybox_loadgen_single_rep_kill.yml
 
 # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-single-rep-kill' job=busybox_loadgen_single_rep_kill.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-single-rep-kill' job=busybox_loadgen_single_rep_kill.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -180,7 +180,7 @@ sed -i '/parameters.yml: |/a \
 
 cat run_single_rep_failure.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='name:single-replica-failure' job=run_single_rep_failure.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:single-replica-failure' job=run_single_rep_failure.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-single-rep-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -227,7 +227,7 @@ sed -i '/command:/i \
 
 cat busybox_loadgen_deprovision_single_rep_kill.yml
 # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-single-rep-kill' job=busybox_loadgen_deprovision_single_rep_kill.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-single-rep-kill' job=busybox_loadgen_deprovision_single_rep_kill.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -280,7 +280,7 @@ sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-
 
 cat deprovision_single_rep_kill.yml
 
-bash ../..openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-deprovision-single-rep-kill' job=deprovision_single_rep_kill.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-deprovision-single-rep-kill' job=deprovision_single_rep_kill.yml
 cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-single-rep-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
