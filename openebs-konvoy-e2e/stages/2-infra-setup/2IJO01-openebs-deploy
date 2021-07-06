@@ -48,9 +48,12 @@ wget https://raw.githubusercontent.com/openebs/upgrade/master/e2e-tests/experime
 
 mv run_e2e_test.yml run_operator.yml
 
-sed -i -e '/name: OPENEBS_VERSION/{n;s/.*/            value: $releaseBranch/g}' \
--e '/name: COMMIT_ID/{n;s/.*/            value: $commit_id/g}' \
--e '/name: RC_TAG/{n;s/.*/            value: $rc_tag/}' run_operator.yml
+export OPENEBS_VERSION=$releaseBranch
+export COMMIT_ID=$commit_id
+export RC_TAG=$rc_tag
+
+wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/env-update/env.py
+python3 env.py -f  run_operator.yml
 
 cat run_operator.yml
 
