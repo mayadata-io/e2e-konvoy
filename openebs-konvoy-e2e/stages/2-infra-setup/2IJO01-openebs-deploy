@@ -44,7 +44,7 @@ git clone https://github.com/openebs/jiva-operator.git
 
 cd jiva-operator/e2e-tests
 
-wget https://github.com/openebs/upgrade/blob/master/e2e-tests/experiments/openebs-provision/run_e2e_test.yml
+wget https://raw.githubusercontent.com/openebs/upgrade/master/e2e-tests/experiments/openebs-provision/run_e2e_test.yml
 
 mv run_e2e_test.yml run_operator.yml
 
