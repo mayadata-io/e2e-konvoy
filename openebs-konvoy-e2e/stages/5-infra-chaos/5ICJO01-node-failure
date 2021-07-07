@@ -66,7 +66,7 @@ fi
 run_id="node-failure-csi-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
-cd jiva-operators/e2e-tests
+cd jiva-operator/e2e-tests
 # copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_node_failure_csi_jiva.yml
 
@@ -103,7 +103,7 @@ fi
 run_id="csi-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=node-failure metadata=${run_id})
 echo $test_name
 
-cd jiva-operators/e2e-tests
+cd jiva-operator/e2e-tests
 cp experiments/infra-chaos/jiva_node_failure/run_e2e_test.yml run_node_failure_csi.yml
 
 sed -i -e 's/password:/password: cGFzc3dvcmQ=/g' \
@@ -151,7 +151,7 @@ fi
 run_id="deprovision-node-failure-csi-jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
-cd jiva-operators/e2e-tests
+cd jiva-operator/e2e-tests
 # copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_deprovision_node_failure_csi.yml
 
@@ -193,7 +193,7 @@ echo "********Deprovisioning Busybox Application*******"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-node-failure-csi-jiva metadata="")
 echo $test_name
 
-cd jiva-operators/e2e-tests
+cd jiva-operator/e2e-tests
 cp apps/busybox/deployers/run_e2e_test.yml deprovision_node_failure_csi.yml
 
 sed -i -e 's/generateName: e2e-busybox-deploy/generateName: e2e-busybox-deprovision-csi/g' \

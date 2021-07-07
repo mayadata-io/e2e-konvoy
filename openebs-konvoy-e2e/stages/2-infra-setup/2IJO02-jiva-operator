@@ -40,7 +40,7 @@ kubectl create ns openebs
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-jiva-operator-provision metadata="")
 echo $test_name
 
-git clone https://github.com/openebs/jiva-operators
+git clone https://github.com/openebs/jiva-operator
 cd jiva-operator/e2e-tests
 
 cp experiments/jiva-operator/jiva-csi-provisioner/run_e2e_test.yml jiva_operator.yml
@@ -56,7 +56,7 @@ export JIVA_CSI_DRIVER_IMAGE=$jiva_csi_driver_image
 wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/env-update/env.py
 python3 env.py -f jiva_operator.yml
 
-sed -i -e "/name: OPENEBS_VERSION/{n;s/.*/          value: ${release_brancg}/g}" \
+sed -i -e "/name: OPENEBS_VERSION/{n;s/.*/          value: ${release_branch}/g}" \
 -e "/name: IMAGE_TYPE/{n;s/.*/          value: ${release_image_type}/g}" \
 -e "/name: ACTION/{n;s/.*/          value: provision/g}" jiva_operator.yml
 

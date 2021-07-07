@@ -27,6 +27,7 @@ cd jiva-operator/e2e-tests
 # copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
 cp apps/nfs-provisioner/run_e2e_test.yml nfsv4-jiva-provision.yml
 
+sed -i -e "/name: PROVIDER_STORAGE_CLASS/{n;s/.*/          value: jiva-csi-sc/g}" nfsv4-jiva-provision.yml
 sed -i '/command:/i \
           - name: RUN_ID\
             value: '"$run_id"'\
