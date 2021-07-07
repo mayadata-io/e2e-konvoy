@@ -138,8 +138,8 @@ stages:
 4CJO03-App-Kill:
   extends: .chaos_test_template
   script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CJO03-Jiva-app-kill
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CJO03-Jiva-app-kill
+    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CJO03-jiva-app-kill
+    - ./openebs-konvoy-e2e/stages/4-chaos/4CJO03-jiva-app-kill
 
 4CJO04-Jiva-replica-failure:
   extends: .chaos_test_template

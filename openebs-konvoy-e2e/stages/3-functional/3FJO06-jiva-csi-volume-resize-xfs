@@ -39,7 +39,7 @@ cp apps/busybox/deployers/run_e2e_test.yml deploy_csi_xfs_busybox.yml
 sed -i -e 's/value: app-busybox-ns/value: busybox-csi-xfs/g' \
 -e 's/app: busybox-e2e/app: busybox-e2e-csi-xfs/g' \
 -e 's/value: openebs-jiva-csi/value: jiva-csi-xfs-sc/g' \
--e 's/generateName: e2e-busybox-deploy-/generateName: e2e-busybox-csi-xfs-/g' \ deploy_csi_xfs_busybox.yml
+-e 's/generateName: e2e-busybox-deploy-/generateName: e2e-busybox-csi-xfs-/g' deploy_csi_xfs_busybox.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\

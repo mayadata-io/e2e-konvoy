@@ -38,10 +38,9 @@ cp apps/percona/deployers/run_e2e_test.yml percona_jiva_revision_counter.yml
 
 sed -i -e 's/app: percona-deployment/app: deploy-percona-jiva-revision-counter/g' \
 -e 's/generateName: e2e-percona-/generateName: e2e-percona-jiva-revision-counter-/g' \
--e 's/value: openebs-standard/value: jiva-csi-sc/g' \
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' \
 -e 's/value: 5Gi/value: 20Gi/g' \
 -e 's/value: enabled/value: /g' \
--e 's/value: enable/value: /g' \
 -e 's/value: app-percona-ns/value: jiva-revision-counter/g' percona_jiva_revision_counter.yml
 
 sed -i '/command:/i \

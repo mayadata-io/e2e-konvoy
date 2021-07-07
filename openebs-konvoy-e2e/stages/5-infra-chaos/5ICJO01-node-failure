@@ -38,7 +38,7 @@ echo "*******Deploying Busybox-Deployment****"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-node-failure-csi-jiva metadata="")
 echo $test_name
 
-cd jiva-operators/e2e-tests
+cd jiva-operator/e2e-tests
 echo "Running the e2e test for Busybox Deployment.."
 cp apps/busybox/deployers/run_e2e_test.yml app_deploy_csi_node_failure.yml
 
