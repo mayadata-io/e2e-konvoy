@@ -32,6 +32,7 @@ kubectl apply -f openebs-konvoy-e2e/utils/e2e-crd.yml
 echo "*****Deploying openebs*******"
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:openebs-deploy jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:openebs-deploy jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
+bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-operator jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:storage-policies jobphase:Waiting 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:nfsv4-jiva-provision jobphase:Waiting
 

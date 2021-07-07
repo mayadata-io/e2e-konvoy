@@ -2,7 +2,7 @@
 
 
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash Openshift-EE/pipelines/OpenEBS-base/stages/6-chaos/PX1D-jiva-replica-node-affinity/replica-node-affinity node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/4-chaos/PX1D-jiva-replica-node-affinity/replica-node-affinity node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -41,10 +41,10 @@ cp apps/busybox/deployers/run_e2e_test.yml deploy_rep_node_affinity.yml
   ------------------------------------------------------------------------------------------------------------------------------|
  | specAttribute     | kind   |         default value               | test specifc value                                        |
   ------------------------------------------------------------------------------------------------------------------------------|
- | appLabel          | env    | app=busybox-sts                     | app=busybox-rep-node-affinity-jiva                        |
+ | appLabel          | env    | app=busybox                     | app=busybox-rep-node-affinity-jiva                        |
  | appNamespace      | env    | app-busybox-ns                      | rep-node-affinity-jiva                                    |   
  | appPVC            | env    | openebs-busybox                     | openebs-busybox-rep-affinity                              |
- | storage class     | env    | openebs-cstor-sparse                | jiva-csi-sc                                               |
+ | storage class     | env    | openebs-jiva-csi                | jiva-csi-sc                                               |
  | deploy type       | env    | statefulset                         | deployment                                                |
  | e2e Job name   | name   | generateName: e2e-busybox-deploy | generateName: busybox-provision-replica-node-affinity-jiva|
  | e2e job label  | label  | app: busybox-e2e                 | app: busybox-replica-node-affiniy-jiva                    |
@@ -54,11 +54,10 @@ EOF
 sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
 -e 's/generateName: e2e-busybox-deploy/generateName: busybox-provision-replica-node-affinity-jiva/g' \
 -e 's/value: app-busybox-ns/value: rep-node-affinity-jiva/g' \
--e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-busybox/value: openebs-busybox-rep-affinity/g' \
 -e 's/app: busybox-e2e/app: busybox-replica-node-affiniy-jiva/g' \
--e 's/value: '\''app=busybox-sts'\''/value: '\''app=busybox-rep-node-affinity-jiva'\''/g' \
--e 's/value: openebs-cstor-sparse/value: jiva-csi-sc/g' deploy_rep_node_affinity.yml
+-e 's/value: '\''app=busybox'\''/value: '\''app=busybox-rep-node-affinity-jiva'\''/g' \
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' deploy_rep_node_affinity.yml
 
 cat deploy_rep_node_affinity.yml
 
@@ -72,7 +71,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-replica-node-affinity $
 
 # Update result of the test case in github mayadata-io/e2e-konvoy repository.
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 6-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 4-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -95,12 +94,12 @@ cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_replica_node_affinity.
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | rep-node-affinity-jiva                           | 
  | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-rep-node-affinity     |
- | appLabel          | env    | app=busybox-sts                     | app=busybox-rep-node-affinity-jiva               | 
+ | appLabel          | env    | app=busybox                     | app=busybox-rep-node-affinity-jiva               | 
   ----------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: rep-node-affinity-jiva/g' \
--e 's/app=busybox-sts/app=busybox-rep-node-affinity-jiva/g' \
+-e 's/app=busybox/app=busybox-rep-node-affinity-jiva/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-rep-node-affinity/g' busybox_loadgen_replica_node_affinity.yml
 
 cat busybox_loadgen_replica_node_affinity.yml
@@ -119,7 +118,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-replica-node-affinity $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 6-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 4-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -148,7 +147,6 @@ EOF
 
 sed -i -e 's/app=pgset/app=busybox-rep-node-affinity-jiva/g' \
 -e 's/value: '\''app-pgres-ns'\''/value: '\''rep-node-affinity-jiva'\''/g' \
--e '/name: STG_ENGINE/{n;s/.*/            value: 'jiva-csi'/}' \
 -e 's/value: '\''pgdata-claim'\''/value: '\''openebs-busybox-rep-affinity'\''/g' run_rep_node_affinity_jiva.yml
 
 sed -i '/command:/i \
@@ -167,7 +165,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-replica-node-affinity $
 
 # Update the result of the test case in github mayadata-io/e2e-konvoy repository.
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 6-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 4-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -189,14 +187,14 @@ cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_deprovision_replica_no
  | specAttribute     | kind   |         default value               | test specifc value                                       |
   -----------------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | rep-node-affinity-jiva                                   | 
- | appLabel          | env    | app=busybox-sts                     | app=busybox-rep-node-affinity-jiva                       |
+ | appLabel          | env    | app=busybox                     | app=busybox-rep-node-affinity-jiva                       |
  | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-deprovision-rep-node-affinity |
  | action            | env    | provision                           | deprovision                                              | 
   ------------------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: rep-node-affinity-jiva/g' \
--e 's/app=busybox-sts/app=busybox-rep-node-affinity-jiva/g' \
+-e 's/app=busybox/app=busybox-rep-node-affinity-jiva/g' \
 -e 's/value: provision/value: deprovision/g' \
 -e 's/generateName: e2e-busybox-liveness/generateName: busybox-liveness-dep-rep-node-affinity-jiva/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-deprovision-rep-node-affinity/g' busybox_loadgen_deprovision_replica_node_affinity.yml
@@ -218,7 +216,7 @@ rc_val=$(echo $?)
 
 # Update result of the test case in github mayadata-io/e2e-konvoy repository.
 if [ "$rc_val" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 6-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 4-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -238,10 +236,10 @@ cp apps/busybox/deployers/run_e2e_test.yml deprovision_rep_node_affinity.yml
   -----------------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                                       |
   -----------------------------------------------------------------------------------------------------------------------------|
- | appLabel          | env    | app=busybox-sts                     | app=busybox-rep-node-affinity-jiva                       | 
+ | appLabel          | env    | app=busybox                     | app=busybox-rep-node-affinity-jiva                       | 
  | appPVC            | env    | openebs-busybox                     | openebs-busybox-rep-affinity                             |
  | appNamespace      | env    | app-busybox-ns                      | rep-node-affinity-jiva                                   |   
- | storage class     | env    | openebs-cstor-sparse                | jiva-csi-sc                                              |
+ | storage class     | env    | openebs-jiva-csi                | jiva-csi-sc                                              |
  | deploy type       | env    | statefulset                         | deployment                                               |
  | Action            | env    | value: provision                    | value: deprovision                                       |
  | e2e Job name   | name   | generateName: e2e-busybox-deploy | generateName: busybox-deprovision-rep-node-affinity-jiva |
@@ -254,8 +252,8 @@ sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-
 -e 's/value: openebs-busybox/value: openebs-busybox-rep-affinity/g' \
 -e 's/app: busybox-e2e/app: busybox-deprovision-rep-node-affinity/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/value: '\''app=busybox-sts'\''/value: '\''app=busybox-rep-node-affinity-jiva'\''/g' \
--e 's/value: openebs-cstor-sparse/value: jiva-csi-sc/g' \
+-e 's/value: '\''app=busybox'\''/value: '\''app=busybox-rep-node-affinity-jiva'\''/g' \
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' \
 -e 's/value: provision/value: deprovision/g' deprovision_rep_node_affinity.yml
 
 cat deprovision_rep_node_affinity.yml
@@ -272,14 +270,14 @@ current_time=$(eval $time)
 # testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-replica-node-affinity jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 6-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 4-chaos "Jiva replica node affinity" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 #Update the e2e event for the job
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-replica-node-affinity jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 # Update the result of the test case in github mayadata-io/e2e-konvoy repository.
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 6-chaos "Jiva replica node affinity" Pass $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id PX1D 4-chaos "Jiva replica node affinity" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

@@ -2,7 +2,7 @@
 
 
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash Openshift-EE/pipelines/OpenEBS-base/stages/5-jiva-functional/JCSI25-Jiva-sts-App-replica-scaleup/app-replica-scaleup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/3-functional/3FJO02-app-replica-scaleup node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -12,7 +12,7 @@ job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
 releaseTag=$(echo $4)
-case_id=JCSI25
+case_id=3FJO02
 
 time="date"
 current_time=$(eval $time)
@@ -40,9 +40,9 @@ cp apps/busybox/deployers/run_e2e_test.yml deploy_run_test_jiva.yml
   ---------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                               |
   ---------------------------------------------------------------------------------------------------------------------|
- | appLabel          | env    | app=busybox-sts                     | app=busybox-scale-jiva                           |
+ | appLabel          | env    | app=busybox                     | app=busybox-scale-jiva                           |
  | appNamespace      | env    | app-busybox-ns                      | app-scale-jiva                                   | 
- | storage class     | env    | openebs-cstor-sparse                | jiva-csi-sc                          |
+ | storage class     | env    | openebs-jiva-csi                | jiva-csi-sc                          |
  | Action            | env    | value: provision                    | value: deprovision                               |
  | e2e Job name   | name   | generateName: e2e-busybox-deploy | generateName: busybox-provision-app-replica      |
  | e2e job label  | label  | app: busybox-e2e                 | app:busybox-replica-scale-jiva                   |
@@ -54,8 +54,8 @@ sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
 -e 's/value: app-busybox-ns/value: app-scale-jiva/g' \
 -e 's/app: busybox-e2e/app: busybox-replica-scale-jiva/g' \
 -e 's/value: '\''replicas=2'\''/value: '\''replicas=1'\''/g' \
--e 's/value: '\''app=busybox-sts'\''/value: '\''app=busybox-scale-jiva'\''/g' \
--e 's/value: openebs-cstor-sparse/value: jiva-csi-sc/g' deploy_run_test_jiva.yml
+-e 's/value: '\''app=busybox'\''/value: '\''app=busybox-scale-jiva'\''/g' \
+-e 's/value: deployment/value: statefulset/g' deploy_run_test_jiva.yml
 
 cat deploy_run_test_jiva.yml
 
@@ -65,7 +65,6 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-replica-scaleup-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI25 5-jiva-functional "Scale the statefulset application replicas and verify the ring configuration" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -89,13 +88,13 @@ cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_replica_scaleup_jiva.y
  | specAttribute     | kind   |         default value               | test specifc value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | app-scale-jiva                                   | 
- | appLabel          | env    | app=busybox-sts                     | app=busybox-scale-jiva                           | 
+ | appLabel          | env    | app=busybox                     | app=busybox-scale-jiva                           | 
  | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: bb-liveness-replica-scaleup            |  
   ----------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: app-scale-jiva/g' \
--e 's/app=busybox-sts/app=busybox-scale-jiva/g' \
+-e 's/app=busybox/app=busybox-scale-jiva/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: bb-liveness-replica-scaleup/g' busybox_loadgen_replica_scaleup_jiva.yml
 
 sed -i '/command:/i \
@@ -113,7 +112,6 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-replica-scaleup-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI25 5-jiva-functional "Scale the statefulset application replicas and verify the ring configuration" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -140,6 +138,7 @@ cp experiments/functional/scale_app_replica/run_e2e_test.yml run_scaleup_test_ji
 EOF
 
 sed -i -e 's/app: cassandra-scaleup-e2e/app: scaleup-e2e-jiva/g' \
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' \
 -e 's/value: '\''app=cassandra'\''/value: '\''app=busybox-scale-jiva'\''/g' \
 -e 's/value: app-cass-ns/value: app-scale-jiva/g' run_scaleup_test_jiva.yml
 
@@ -157,7 +156,6 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-replica-scaleup-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI25 5-jiva-functional "Scale the statefulset application replicas and verify the ring configuration" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -182,14 +180,14 @@ cp apps/busybox/liveness/run_e2e_test.yml bb_loadgen_dep_app_scaleup_jiva.yml
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | app-scale-jiva                                   | 
  | action            | env    | provision                           | deprovision                                      |
- | appLabel          | env    | app=busybox-sts                     | app=busybox-scale-jiva                           |  
+ | appLabel          | env    | app=busybox                     | app=busybox-scale-jiva                           |  
  | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: bb-liveness-dep-replica                |
  ----------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: app-scale-jiva/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/app=busybox-sts/app=busybox-scale-jiva/g' \
+-e 's/app=busybox/app=busybox-scale-jiva/g' \
 -e 's/generateName: e2e-busybox-liveness/generateName: busybox-liveness-dep-replica/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: bb-liveness-dep-replica/g' bb_loadgen_dep_app_scaleup_jiva.yml
 
@@ -210,11 +208,8 @@ rc_val=$(echo $?)
 
  # Update result of the test case in github mayadata-io/e2e-konvoy repository.
 if [ "$rc_val" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI25 5-jiva-functional "Scale the statefulset application replicas and verify the ring configuration" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
-
-
 
 ####Deprovisioning Busybox Application
 
@@ -232,9 +227,9 @@ cp apps/busybox/deployers/run_e2e_test.yml deprovision_scaleup_jiva.yml
   ---------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                               |
   ---------------------------------------------------------------------------------------------------------------------|
- | appLabel          | env    | app=busybox-sts                     | app=busybox-scale-jiva                           | 
+ | appLabel          | env    | app=busybox                     | app=busybox-scale-jiva                           | 
  | appNamespace      | env    | app-busybox-ns                      | app-scale-jiva                                   | 
- | storage clas      | env    | openebs-cstor-sparse                | jiva-csi-sc                             |
+ | storage clas      | env    | openebs-jiva-csi                | jiva-csi-sc                             |
  | deploy type       | env    | statefulset                         | deployment                                       |
  | Action            | env    | value: provision                    | value: deprovision                               |
  | e2e Job name   | name   | generateName: e2e-busybox-deploy | generateName: busybox-deprovision-target-affinity|
@@ -245,9 +240,10 @@ EOF
 sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-app-replica/g' \
 -e 's/value: app-busybox-ns/value: app-scale-jiva/g' \
 -e 's/app: busybox-e2e/app: busybox-deprovision-e2e-jiva/g' \
--e 's/value: '\''app=busybox-sts'\''/value: '\''app=busybox-scale-jiva'\''/g' \
+-e 's/value: '\''app=busybox'\''/value: '\''app=busybox-scale-jiva'\''/g' \
 -e 's/value: '\''replicas=2'\''/value: '\''replicas=1'\''/g' \
--e 's/value: openebs-cstor-sparse/value: jiva-csi-sc/g' \
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' \
+-e 's/value: deployment/value: statefulset/g' \
 -e 's/value: provision/value: deprovision/g' deprovision_scaleup_jiva.yml
 
 cat deprovision_scaleup_jiva.yml
@@ -263,12 +259,10 @@ current_time=$(eval $time)
 # testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:app-replica-scaleup-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI25 5-jiva-functional "Scale the statefulset application replicas and verify the ring configuration" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:app-replica-scaleup-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI25 5-jiva-functional "Scale the statefulset application replicas and verify the ring configuration" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

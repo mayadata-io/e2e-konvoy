@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
 pod(){
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash Openshift-EE/pipelines/OpenEBS-base/stages/4-jiva-csi-functional/JCSI12-jiva-csi-volume-resize/jiva-csi-volume-resize node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/3-functional/3FJO05-jiva-csi-volume-resize node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -12,7 +11,7 @@ job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
 releaseTag=$(echo $4)
-case_id=JCSI12
+case_id=3FJO05
 
 time="date"
 current_time=$(eval $time)
@@ -38,9 +37,8 @@ cp apps/busybox/deployers/run_e2e_test.yml deploy_csi_busybox.yml
 
 sed -i -e 's/value: app-busybox-ns/value: busybox-csi/g' \
 -e 's/app: busybox-e2e/app: busybox-e2e-csi/g' \
--e 's/generateName: e2e-busybox-deploy-/generateName: e2e-busybox-csi-/g' \
--e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: jiva-csi-sc/g' deploy_csi_busybox.yml
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' \
+-e 's/generateName: e2e-busybox-deploy-/generateName: e2e-busybox-csi-/g' deploy_csi_busybox.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -55,7 +53,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI12 4-jiva-csi-functional "Provision application using CSI with fsType ext4 and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FJO05 3-functional "Provision application using CSI with fsType ext4 and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -89,7 +87,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI12 4-jiva-csi-functional "Liveness on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FJO05 3-functional "Liveness on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -104,9 +102,8 @@ cd jiva-operator/e2e-tests
 cp experiments/functional/csi-volume-resize/run_e2e_test.yml run_jiva_volume_resize_test.yml
 
 sed -i -e '/name: APP_PVC/{n;s/.*/            value: openebs-busybox/g}' \
--e '/name: APP_LABEL/{n;s/.*/            value: app=busybox-sts/g}' \
+-e '/name: APP_LABEL/{n;s/.*/            value: app=busybox/g}' \
 -e '/name: STORAGE_CLASS/{n;s/.*/            value: jiva-csi-sc/g}' \
--e 's/app: csi-vol-resize/app: csi-vol-resize/g' \
 -e '/name: PV_CAPACITY/{n;s/.*/            value: 5Gi/g}' \
 -e '/name: NEW_CAPACITY/{n;s/.*/            value: 10Gi/g}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: busybox-csi/g}' run_jiva_volume_resize_test.yml
@@ -124,7 +121,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI12 4-jiva-csi-functional "Check if the volume size is changed" Fail $pipeline_id "$current_time" $commit_id $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FJO05 3-functional "Check if the volume size is changed" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -159,7 +156,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:csi-volume-resize $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI12 4-jiva-csi-functional "Liveness on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FJO05 3-functional "Liveness on application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -181,7 +178,7 @@ sed -i -e 's/value: app-busybox-ns/value: busybox-csi/g' \
 -e 's/generateName: e2e-busybox-deploy-/generateName: e2e-busybox-csi-dep-/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/value: openebs-cstor-sparse/value: jiva-csi-sc/g' dep_csi_busybox.yml
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' dep_csi_busybox.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -200,12 +197,12 @@ current_time=$(eval $time)
 
 if [ "$return_count" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI12 4-jiva-csi-functional "Deprovision the busybox application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FJO05 3-functional "Deprovision the busybox application and verify the status" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:csi-volume-resize jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id JCSI12 4-jiva-csi-functional "Deprovision the busybox application and verify the status" Pass $pipeline_id "$current_time" $commit_id $gittoken
+##python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3FJO05 3-functional "Deprovision the busybox application and verify the status" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$return_count" != "0" ]; then
 exit 1;

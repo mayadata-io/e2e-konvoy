@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash Openshift-EE/pipelines/OpenEBS-base/stages/6-chaos/F7BO-jiva-revision-counter/jiva-revision-counter node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/4-chaos/4CJO05-jiva-revision-counter node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -13,14 +12,13 @@ job_id=$(echo $1)
 pipeline_id=$(echo $2)
 commit_id=$(echo $3)
 releaseTag=$(echo $4)
-case_id=F7BO
+case_id=4CJO05
 
 time="date"
 current_time=$(eval $time)
 
 present_dir=$(pwd)
 echo $present_dir
-oc adm policy add-scc-to-user anyuid system:serviceaccount:jiva-revision-counter:default
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-revision-counter jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-revision-counter jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
@@ -59,7 +57,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-revision-counter $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id F7BO 6-chaos "Delete anyone jiva replica continuously and verify revision counter value" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CJO05 4-chaos "Delete anyone jiva replica continuously and verify revision counter value" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -95,7 +93,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-revision-counter $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id F7BO 6-chaos "Delete anyone jiva replica continuously and verify revision counter value" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CJO05 4-chaos "Delete anyone jiva replica continuously and verify revision counter value" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -107,12 +105,12 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=jiva-revis
 echo $test_name
 
 cd jiva-operator/e2e-tests
+
 cp experiments/chaos/revision_counter/run_e2e_test.yml run_revision_counter.yml
 
 sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: 'jiva-revision-counter'/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: 'name=percona'/}' \
 -e '/name: APP_PVC/{n;s/.*/            value: 'percona-mysql-claim'/}' \
--e '/name: STG_ENGINE/{n;s/.*/            value: 'jiva-csi'/}' \
 -e '/name: MOUNT_PATH/{n;s#.*#            value: '/var/lib/mysql'#}' run_revision_counter.yml
 
 echo "Running the e2e test for validation of jiva revision counter.."
@@ -124,7 +122,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-revision-counter $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id F7BO 6-chaos "Delete anyone jiva replica continuously and verify revision counter value" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CJO05 4-chaos "Delete anyone jiva replica continuously and verify revision counter value" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -169,12 +167,12 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-revision-counter jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id F7BO 6-chaos "Delete anyone jiva replica continuously and verify revision counter value" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CJO05 4-chaos "Delete anyone jiva replica continuously and verify revision counter value" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-revision-counter jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id F7BO 6-chaos "Delete anyone jiva replica continuously and verify revision counter value" Pass $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CJO05 4-chaos "Delete anyone jiva replica continuously and verify revision counter value" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

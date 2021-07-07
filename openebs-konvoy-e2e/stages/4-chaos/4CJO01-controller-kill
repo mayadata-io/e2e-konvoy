@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash Openshift-EE/pipelines/OpenEBS-base/stages/6-chaos/VO3D-jiva-controller-kill/controller-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/4-chaos/4CJO01-controller-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -15,8 +14,8 @@ job_id=$(echo $1) #Gitlab job id obtain from the gitlab env ($CI_JOB_ID).
 pipeline_id=$(echo $2) # Gitlab pipeline id obtained from gitlab env ($CI_PIPELINE_ID).
 commit_id=$(echo $3) #Gitlab commit id Obtained fron gilab env ($CI_COMMIT_SHA).
 releaseTag=$(echo $4)
-case_id=VO3D #test case ID.
-gitlab_stage=6-chaos # Gitlab stage where this test case is running.
+case_id=4CJO01 #test case ID.
+gitlab_stage=4-chaos # Gitlab stage where this test case is running.
 #job_description="'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available'"
 
 time="date"
@@ -26,7 +25,6 @@ present_dir=$(pwd)
 echo $present_dir
 
 #Creating e2e custom resoure result fot the each stage of the test.
-oc adm policy add-scc-to-user anyuid system:serviceaccount:ctrl-kill:default
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Waiting init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Running init_time:"$current_time"
 
@@ -53,9 +51,9 @@ cp apps/busybox/deployers/run_e2e_test.yml busybox_ctrl_kill.yml
   -----------------------------------------------------------------------------------------------------        |
  | e2e job label  | label    | app: busybox-e2e                 | app: deploy-busybox-ctrl-kill          | 
  | e2e job Name   | job name | generateName: e2e-busybox-deploy | generateName: busybox-deploy-ctrl-kill |
- | appLabel          | env      | app=busybox-sts                     | app=ctrl-kill                          |
+ | appLabel          | env      | app=busybox                     | app=ctrl-kill                          |
  | deploy type       | env      | statefulset                         | deployment                             |
- | storage class     | env      | openebs-cstor-sparse                | jiva-csi-sc                            |
+ | storage class     | env      | openebs-jiva-csi                | jiva-csi-sc                            |
  | pvcName           | env      | openebs-busybox                     | busybox-ctrl-kill                      | 
  | appNamespace      | env      | app-busybox-ns                      | ctrl-kill	                           | 
   --------------------------------------------------------------------------------------------------------------
@@ -63,9 +61,9 @@ EOF
 
 sed -i -e 's/app: busybox-e2e/app: deploy-busybox-ctrl-kill/g' \
 -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deploy-ctrl-kill/g' \
--e 's/app=busybox-sts/app=ctrl-kill/g' \
+-e 's/app=busybox/app=ctrl-kill/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: jiva-csi-sc/g' \
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' \
 -e 's/value: openebs-busybox/value: busybox-ctrl-kill/g' \
 -e 's/value: app-busybox-ns/value: ctrl-kill/g' busybox_ctrl_kill.yml
 
@@ -81,7 +79,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 #Update the result of the test case in github openebs/e2e-konvoy repository.
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -104,12 +102,12 @@ cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_controller_kill.yml
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | ctrl-kill                                        | 
  | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-controller-kill       |
- | appLabel          | env    | app=busybox-sts                     | app=ctrl-kill                                    | 
+ | appLabel          | env    | app=busybox                     | app=ctrl-kill                                    | 
   ----------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: ctrl-kill/g' \
--e 's/app=busybox-sts/app=ctrl-kill/g' \
+-e 's/app=busybox/app=ctrl-kill/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-controller-kill/g' busybox_loadgen_controller_kill.yml
 
 cat busybox_loadgen_controller_kill.yml
@@ -128,7 +126,7 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 6-chaos "Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 4-chaos "Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -142,7 +140,7 @@ run_id="jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testc
 echo $test_name
 
 cd jiva-operator/e2e-tests
-cp experiments/chaos/openebs_target_failure/run_e2e_test.yml run_ctrl_kill_test.yml
+cp experiments/chaos/openebs_controller_failure/run_e2e_test.yml run_ctrl_kill_test.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------
@@ -157,9 +155,6 @@ cp experiments/chaos/openebs_target_failure/run_e2e_test.yml run_ctrl_kill_test.
 EOF
 
 sed -i -e 's/value: percona-mysql-claim/value: busybox-ctrl-kill/g' \
--e 's/generateName: openebs-target-failure/generateName: openebs-controller-failure/g' \
--e 's/openebs-target-failure/openebs-controller-failure/g' \
--e 's/name: target-failure/name: ctrl-failure/g' \
 -e "/name: TARGET_AFFINITY_CHECK/{n;s/value: 'enable'/value: 'disable'/g}" \
 -e 's/value: '\''name=percona'\''/value: '\''app=ctrl-kill'\''/g' \
 -e 's/value: app-percona-ns/value: ctrl-kill/g' run_ctrl_kill_test.yml
@@ -171,6 +166,10 @@ sed -i '/command:/i \
 
 ## Replace the value of DATA_PERSISTENCE with application name in e2e experiment.
 sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_ctrl_kill_test.yml
+
+sed -i '/name: CHAOS_TYPE/{n;s/.*/            value: jiva-ctrl-kill/}' run_ctrl_kill_test.yml
+
+sed -i '/name: CONTAINER_RUNTIME/{n;s/.*/            value: containerd/}' run_ctrl_kill_test.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
 sed -i '/parameters.yml: |/a \
@@ -187,10 +186,9 @@ bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:controller-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
-
 
 ################
 # e2eBook 4 #
@@ -210,14 +208,14 @@ cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_deprovision_controller
  | specAttribute     | kind   |         default value               | test specifc value                                      |
   ----------------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | ctrl-kill                                               | 
- | appLabel          | env    | app=busybox-sts                     | app=ctrl-kill                                           |
+ | appLabel          | env    | app=busybox                     | app=ctrl-kill                                           |
  | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-deprovision-controller-kill   |
  | action            | env    | provision                           | deprovision                                             | 
   -----------------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: ctrl-kill/g' \
--e 's/app=busybox-sts/app=ctrl-kill/g' \
+-e 's/app=busybox/app=ctrl-kill/g' \
 -e 's/value: provision/value: deprovision/g' \
 -e 's/generateName: e2e-busybox-liveness/generateName: busybox-liveness-dep-controller-kill/g' \
 -e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-deprovision-controller-kill/g' busybox_loadgen_deprovision_controller_kill.yml
@@ -239,10 +237,9 @@ rc_val=$(echo $?)
 
 # Update result of the test case in github mayadata-io/e2e-konvoy repository.
 if [ "$rc_val" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 6-chaos "Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id 4-chaos "Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
-
 
 ################
 # e2eBook 5 #
@@ -263,9 +260,9 @@ cp apps/busybox/deployers/run_e2e_test.yml deprovision_ctrl_kill.yml
   ---------------------------------------------------------------------------------------------------------------|
  | e2e Job name   | name   | generateName: e2e-busybox-deploy | generateName: busybox-deprovision-ctrl-kill|
  | e2e job label  | label  | app: busybox-e2e                 | app: busybox-deprovision-ctrl-kill         |
- | appLabel          | env    | app=busybox-sts                     | app=ctrl-kill                              |
+ | appLabel          | env    | app=busybox                     | app=ctrl-kill                              |
  | deploy type       | env    | statefulset                         | deployment                                 |
- | storage clas      | env    | openebs-cstor-sparse                | jiva-csi-sc                       |
+ | storage clas      | env    | openebs-jiva-csi                | jiva-csi-sc                       |
  | pvcName           | env    | openebs-busybox                     | busybox-ctrl-kill                          | 
  | appNamespace      | env    | app-busybox-ns                      | ctrl-kill                                  | 
  | Action            | env    | value: provision                    | value: deprovision                         |
@@ -274,9 +271,9 @@ EOF
 
 sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-ctrl-kill/g' \
 -e 's/app: busybox-e2e/app: busybox-deprovision-ctrl-kill/g' \
--e 's/app=busybox-sts/app=ctrl-kill/g' \
+-e 's/app=busybox/app=ctrl-kill/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: jiva-csi-sc/g' \
+-e 's/value: openebs-jiva-csi/value: jiva-csi-sc/g' \
 -e 's/value: openebs-busybox/value: busybox-ctrl-kill/g' \
 -e 's/value: app-busybox-ns/value: ctrl-kill/g' \
 -e 's/value: provision/value: deprovision/g' deprovision_ctrl_kill.yml
@@ -295,13 +292,13 @@ current_time=$(eval $time)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
 
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Pass $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id $case_id $gitlab_stage 'Induce failure on JIVA controller pod and check if it gets scheduled immediately and the application is available' Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;

@@ -1,8 +1,7 @@
 #!/bin/bash
 
-
 pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash Openshift-EE/pipelines/OpenEBS-base/stages/6-chaos/NEPS-nfs-ctrl-container-kill/nfs-ctrl-container-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/4-chaos/4CJO08-nfs-ctrl-container-kill node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
@@ -14,7 +13,7 @@ source ~/.profile
 #github token to push the test result into github mayadata-io/e2e-konvoy repository.
 #This token is set as an env in ~/.profile in the test cluster.
 gittoken=$(echo "$github_token")
-case_id=NEPS  #test case ID.
+case_id=4CJO08  #test case ID.
 
 time="date"
 current_time=$(eval $time)
@@ -30,22 +29,20 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:nfs-ctrl-container-kill jobphase:Ru
 ################
 # Performing Application Container Chaos
 
-run_id="ctrl-container-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
+run_id="ctrl-container-kill";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-jiva-nfs-controller-failure metadata=${run_id})
 echo $test_name
 
 cd jiva-operator/e2e-tests
 # copy the content of chaos run_e2e_test.yml into a different file to update the test specific parameters.
-cp experiments/chaos/nfs_chaos/nfs_openebs_target_failure/run_e2e_test.yml nfs_ctrl_container_kill.yml
+cp experiments/chaos/nfs_chaos/nfs_openebs_controller_failure/run_e2e_test.yml nfs_ctrl_container_kill.yml
 
-sed -i -e '/name: NFS_NAMESPACE/{n;s/.*/            value: app-nfsv4-jiva/}' \
+sed -i -e '/name: NFS_NAMESPACE/{n;s/.*/            value: app-nfs-ns/}' \
 -e '/name: NFS_LABEL/{n;s/.*/            value: app=nfs/}' \
 -e '/name: NFS_PVC/{n;s/.*/            value: nfs-pvc-claim/}' \
 -e '/name: APP_LABEL/{n;s/.*/            value: name=minio-0/}' \
 -e '/name: APP_NAMESPACE/{n;s/.*/            value: app-minio-jiva/}' nfs_ctrl_container_kill.yml
 
-sed -i -e 's/name: nfs-openebs-target-failure/name: nfs-openebs-controller-container-kill/g' \
--e 's/value: "target-zrepl-kill"/value: "jiva-ctrl-kill"/g' \
--e 's/value: docker/value: containerd/g' nfs_ctrl_container_kill.yml
+sed -i -e 's/value: docker/value: containerd/g' nfs_ctrl_container_kill.yml
 
 echo "Running the e2e test for minio Deployment Container Volume mgmt kill.."
 
@@ -56,14 +53,14 @@ sed -i '/command:/i \
 
 cat nfs_ctrl_container_kill.yml
 
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:nfs-openebs-controller-container-kill' job=nfs_ctrl_container_kill.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='name:nfs-jiva-controller-failure' job=nfs_ctrl_container_kill.yml
 cd ../..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:nfs-ctrl-container-kill $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
 if [ "$?" != "0" ]; then
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id NEPS 6-chaos "Induce ctrl container kill and check if it is recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CJO08 4-chaos "Induce ctrl container kill and check if it is recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
@@ -80,7 +77,7 @@ echo "Running the e2e test.."
 cp apps/minio/deployers/run_e2e_test.yml deprovision_app_jiva.yml
 
 # Replace the storage class name
-sed -i '/name: PROVIDER_STORAGE_CLASS/{n;s/.*/            value: openebs-nfs4-jiva/}' deprovision_app_jiva.yml
+sed -i '/name: PROVIDER_STORAGE_CLASS/{n;s/.*/            value: openebs-nfs-NS/}' deprovision_app_jiva.yml
 
 sed -i -e 's/value: app-minio-ns/value: app-minio-jiva/g' \
 -e 's/app: minio-e2e/app: minio-e2e-deprovision-jiva/g' \
@@ -107,12 +104,12 @@ current_time=$(eval $time)
 # Update result of the test case in github mayadata-io/e2e-konvoy repository.
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:nfs-ctrl-container-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id NEPS 6-chaos "Induce ctrl container kill and check if it is recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CJO08 4-chaos "Induce ctrl container kill and check if it is recovered successfully" Fail $pipeline_id "$current_time" $commit_id $gittoken
 exit 1;
 fi
 
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:nfs-ctrl-container-kill jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Pass
-python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id NEPS 6-chaos "Induce ctrl container kill and check if it is recovered successfully" Pass $pipeline_id "$current_time" $commit_id $gittoken
+#python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 4CJO08 4-chaos "Induce ctrl container kill and check if it is recovered successfully" Pass $pipeline_id "$current_time" $commit_id $gittoken
 
 if [ "$rc_val" != "0" ]; then
 exit 1;
