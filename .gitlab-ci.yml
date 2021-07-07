@@ -187,13 +187,13 @@ stages:
     - 1CJO01-Konvoy
 
 5ICJO01-node-failure:
-  extends: .chaos_test_template
+  extends: .infra_chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICJO01-node-failure
     - ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICJO01-node-failure
 
 5ICJO02-containerd-failure:
-  extends: .chaos_test_template
+  extends: .infra_chaos_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICJO02-containerd-failure-csi-jiva
     - ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICJO02-containerd-failure-csi-jiva   
