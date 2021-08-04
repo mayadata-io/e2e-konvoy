@@ -4,8 +4,8 @@ pod() {
 ### Taint the node to run infra chaos test scripts
 
 node_name=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port kubectl get nodes --no-headers | grep -v master | awk 'FNR==1 {print $1}')
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "kubectl taint nodes $node_name infra-aid=observer:NoSchedule"
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "mkdir infra && echo $node_name >> infra/node_name"
+#sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "kubectl taint nodes $node_name infra-aid=observer:NoSchedule"
+#sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port "mkdir infra && echo $node_name >> infra/node_name"
 
 echo $node_name
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO01-node-failure-csi-cstor node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$node_name'"' '"'$RELEASE_TAG'"'
@@ -25,8 +25,7 @@ current_time=$(eval $time)
 
 present_dir=$(pwd)
 echo $present_dir
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:node-failure-csi-cstor jobphase:Waiting
-bash openebs-konvoy-e2e/utils/e2e-cr jobname:containerd-failure-csi-cstor jobphase:Waiting
+bash openebs-konvoy-e2e/utils/pooling jobname:multiple-app-login
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:node-failure-csi-cstor jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
