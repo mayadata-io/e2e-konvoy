@@ -41,23 +41,35 @@ stages:
   dependencies:
     - 2LP01-OPENEBS-DEPLOY
      
-3LF01-LOCALPV-DEVICE:
+3LF01-LOCALPV-ON-SELECTED-DEVICE:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF01-openebs-localpv-device/openebs-localpv-device
-    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF01-openebs-localpv-device/openebs-localpv-device
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF01-Localpv-selected-device/openebs-localpv-device
+    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF01-Localpv-selected-device/openebs-localpv-device
 
-3LF02-LOCALPV-HOSTPATH:
+3LF02-BACKUP-RESTORE-LOCALPV-DEVICE:
   extends: .func_test_template
   script: 
-    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF02-openebs-localpv-hostpath/openebs-localpv-hostpath
-    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF02-openebs-localpv-hostpath/openebs-localpv-hostpath
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF02-Backup-Restore-LocalPV-Device/backup-restore-localpv-device
+    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF02-Backup-Restore-LocalPV-Device/backup-restore-localpv-device
 
-3LF03-BACKUP-RESTORE-LOCALPV:
+3LF03-BACKUP-RESTORE-LOCALPV-HOSTPATH:
   extends: .func_test_template
   script:
     - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF03-Backup-Restore-LocalPV/backup-restore-localpv
     - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF03-Backup-Restore-LocalPV/backup-restore-localpv
+
+3LF04-Data-Integrity-Device:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF04-Data-Integrity-Device/data-integrity-device
+    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF04-Data-Integrity-Device/data-integrity-device
+
+3LF05-Data-Integrity-Hostpath:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF05-Data-Integrity-Hostpath/data-integrity-hostpath
+    - ./openebs-konvoy-e2e/pipelines/stages/3-functional/3LF05-Data-Integrity-Hostpath/data-integrity-hostpath
 
 ##########################################################################################
 

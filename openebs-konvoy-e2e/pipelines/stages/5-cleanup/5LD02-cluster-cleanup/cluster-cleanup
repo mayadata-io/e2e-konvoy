@@ -11,8 +11,8 @@ sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konv
 node() {
 job_id=$(echo $1)
 
-git clone https://github.com/openebs/e2e-tests.git
-cd e2e-tests
+git clone https://github.com/openebs/dynamic-localpv-provisioner.git
+cd dynamic-localpv-provisioner/e2e-tests
 
 # Replace the VM IP In csv file
 sed -i -e 's/10.12.22.10/10.43.1.110/g' \

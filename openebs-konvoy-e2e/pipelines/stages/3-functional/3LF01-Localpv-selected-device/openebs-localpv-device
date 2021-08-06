@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 pod() {
 sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/stages/3-functional/3LF01-openebs-localpv-device/openebs-localpv-device node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
@@ -25,19 +24,19 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:openebs-localpv-device jobphase:Wai
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:openebs-localpv-device jobphase:Running init_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 run_id="localpv";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-provision-busybox-device metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-cp apps/busybox/deployers/run_litmus_test.yml run_test_local_pv_device.yml
+cd dynamic-localpv-provisioner/e2e-tests
+cp apps/busybox/deployers/run_e2e_test.yml run_test_local_pv_device.yml
 
-sed -i -e 's/app: busybox-litmus/app: busybox-local-pv-device/g' \
+sed -i -e 's/app: busybox-e2e/app: busybox-local-pv-device/g' \
 -e 's/app=busybox-sts/app=local-pv-device/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/value: openebs-cstor-sparse/value: openebs-device/g' \
+-e 's/value: openebs-hostpath/value: openebs-device/g' \
 -e 's/value: openebs-busybox/value: openebs-busybox-device/g' \
 -e 's/value: app-busybox-ns/value: busybox-device/g' run_test_local_pv_device.yml
 
@@ -48,8 +47,8 @@ sed -i '/command:/i \
 
 cat run_test_local_pv_device.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-local-pv-device' job=run_test_local_pv_device.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-local-pv-device' job=run_test_local_pv_device.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:openebs-localpv-device $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -57,13 +56,48 @@ if [ "$?" != "0" ]; then
 exit 1;
 fi
 
+################
+# e2eBook 2 #
+################
+
+run_id="test";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=localpv-selected-device metadata=${run_id})
+echo $test_name
+
+cd dynamic-localpv-provisioner/e2e-tests
+cp experiments/functional/localpv-provisioning-selected-device/run_e2e_test.yml run_local_pv_device.yml
+
+sed -i -e "/name: PVC/{n;s/.*/            value: openebs-busybox-device/g}" \
+-e "/name: APP_NAMESPACE/{n;s/.*/            value: busybox-device/g}" \
+-e "/name: OPERATOR_NS/{n;s/.*/            value: openebs/g}" \
+-e "/name: TEST_CASE_TYPE/{n;s/.*/            value: positive/g}" run_local_pv_device.yml
+
+sed -i '/command:/i \
+          - name: RUN_ID\
+            value: '"$run_id"'\
+' run_local_pv_device.yml
+
+cat run_local_pv_device.yml
+
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:localpv-selected-device' job=run_local_pv_device.yml
+cd ../..
+bash openebs-konvoy-e2e/utils/dump_cluster_state;
+bash openebs-konvoy-e2e/utils/event_updater jobname:openebs-localpv-device $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
+
+if [ "$?" != "0" ]; then
+exit 1;
+fi
+
+################
+# e2eBook 3 #
+################
+
 run_id="localpv";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-busybox-device metadata=${run_id})
 echo $test_name
 
-cd e2e-tests
-cp apps/busybox/deployers/run_litmus_test.yml run_test_deprovision_device.yml
+cd dynamic-localpv-provisioner/e2e-tests
+cp apps/busybox/deployers/run_e2e_test.yml run_test_deprovision_device.yml
 
-sed -i -e 's/app: busybox-litmus/app: deprovision-busybox-local-pv-device/g' \
+sed -i -e 's/app: busybox-e2e/app: deprovision-busybox-local-pv-device/g' \
 -e 's/app=busybox-sts/app=local-pv-device/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-device/g' \
@@ -78,8 +112,8 @@ sed -i '/command:/i \
 
 cat run_test_deprovision_device.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deprovision-busybox-local-pv-device' job=run_test_deprovision_device.yml
-cd ..
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deprovision-busybox-local-pv-device' job=run_test_deprovision_device.yml
+cd ../..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:openebs-localpv-device $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
