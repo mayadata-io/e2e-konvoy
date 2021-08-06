@@ -208,6 +208,12 @@ stages:
     - chmod 775 ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO02-containerd-failure-csi-cstor
     - ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO02-containerd-failure-csi-cstor     
 
+5ICCO03-multiple-app-login-request:
+  extends: .csi_infra_chaos_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO03-multiple-app-login-request
+    - ./openebs-konvoy-e2e/stages/5-infra-chaos/5ICCO03-multiple-app-login-request 
+
 ###############################################################################
 
 6CCO01-konvoy-cleanup:
