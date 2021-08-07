@@ -243,12 +243,6 @@ BDD-CSTOR-SCALEUP-REPLICA:
     - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CC02-cstor-target-kill
     - ./openebs-konvoy-e2e/stages/4-chaos/4CC02-cstor-target-kill
 
-4CC03-target-network-delay:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CC03-cstor-target-network-delay
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CC03-cstor-target-network-delay
-
 4CC04-cstor-volume-istgt-kill:
   extends: .chaos_test_template
   script: 
@@ -266,24 +260,6 @@ BDD-CSTOR-SCALEUP-REPLICA:
   script: 
     - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CC06-nfs-application-pod-kill
     - ./openebs-konvoy-e2e/stages/4-chaos/4CC06-nfs-application-pod-kill
-
-4CC07-Snap-Rebuild-single-replica:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CC07-snap-rebuild-single-replica
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CC07-snap-rebuild-single-replica
-
-4CC08-snap-rebuild-multiple-rep:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CC08-snap-rebuild-multiple-replica
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CC08-snap-rebuild-multiple-replica
-
-4CC09-clone-post-snap-rebuild:
-  extends: .chaos_test_template
-  script: 
-    - chmod 775 ./openebs-konvoy-e2e/stages/4-chaos/4CC09-clone-post-snap-rebuild
-    - ./openebs-konvoy-e2e/stages/4-chaos/4CC09-clone-post-snap-rebuild
 
 4CC10-cStor-Pool-Delete:
   extends: .chaos_test_template
@@ -339,4 +315,3 @@ BDD-CSTOR-SCALEUP-REPLICA:
   script:
     - chmod 755 ./openebs-konvoy-e2e/stages/6-cleanup/6CC01-cluster-cleanup
     - ./openebs-konvoy-e2e/stages/6-cleanup/6CC01-cluster-cleanup
-

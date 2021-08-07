@@ -26,15 +26,15 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:cvr-migration jobphase:Running init
 ###########Deploying Busybox Application
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------------     
  | specAttribute     | kind   |         default value               | test specific value                                   |
   --------------------------------------------------------------------------------------------------------------------------|
- | Litmus job label  | label  | app: busybox-litmus                 | app: deploy-busybox-cvr-migration                     |
- | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-provision-cvr-migration         |
+ | e2e job label  | label  | app: busybox-e2e                 | app: deploy-busybox-cvr-migration                     |
+ | e2e Job name   | name   | generateName: e2e-busybox-deploy | generateName: busybox-provision-cvr-migration         |
  | appLabel          | env    | app=busybox-sts                     | app=busybox-cvr-migration                             |
  | deploy type       | env    | statefulset                         | deployment                                            |
  | pvcName           | env    | openebs-busybox                     | busybox-cvr-migration                                 | 
@@ -47,11 +47,11 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-pr
 echo $test_name
 
 cd e2e-tests
-echo "Running the litmus test for Busybox Deployment.."
-cp apps/busybox/deployers/run_litmus_test.yml deploy_busybox_cvr_migration.yml
+echo "Running the e2e test for Busybox Deployment.."
+cp apps/busybox/deployers/run_e2e_test.yml deploy_busybox_cvr_migration.yml
 
-sed -i -e 's/app: busybox-litmus/app: deploy-busybox-cvr-migration/g' \
--e 's/generateName: litmus-busybox-deploy/generateName: busybox-provision-cvr-migration/g' \
+sed -i -e 's/app: busybox-e2e/app: deploy-busybox-cvr-migration/g' \
+-e 's/generateName: e2e-busybox-deploy/generateName: busybox-provision-cvr-migration/g' \
 -e 's/app=busybox-sts/app=busybox-cvr-migration/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
@@ -61,7 +61,7 @@ sed -i -e 's/app: busybox-litmus/app: deploy-busybox-cvr-migration/g' \
 
 cat deploy_busybox_cvr_migration.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-cvr-migration' deploy_busybox_cvr_migration.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deploy-busybox-cvr-migration' deploy_busybox_cvr_migration.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cvr-migration $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -74,31 +74,31 @@ fi
 ##Running Busybox loadgen 
 
 #################
-# LitmusBook 2 #
+# e2eBook 2 #
 #################
 
 run_id="cvr-migration";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_cvr_migration.yml
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_cvr_migration.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specific value                              |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | cvr-migration                                  | 
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-cvr-migrate         |
+ | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-cvr-migrate         |
  | appLabel          | env    | app=busybox-sts                     | app=busybox-cvr-migration                      | 
   ----------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: cvr-migration/g' \
 -e 's/app=busybox-sts/app=busybox-cvr-migration/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-cvr-migrate/g' busybox_loadgen_cvr_migration.yml
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-cvr-migrate/g' busybox_loadgen_cvr_migration.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -107,10 +107,10 @@ sed -i '/command:/i \
 
 cat busybox_loadgen_cvr_migration.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-cvr-migrate' job=busybox_loadgen_cvr_migration.yml
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-cvr-migrate' job=busybox_loadgen_cvr_migration.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:cvr-migration $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -123,27 +123,27 @@ fi
 ## Migrating the cvr to other pool
 
 #################
-# LitmusBook 3 #
+# e2eBook 3 #
 #################
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-volume-replica-migration metadata="")
 echo $test_name
 
 cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp experiments/functional/cstor-volume-migration/run_litmus_test.yml busybox_volume_migration.yml
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp experiments/functional/cstor-volume-migration/run_e2e_test.yml busybox_volume_migration.yml
 
- # Update the environmental variables in litmus job spec.
+ # Update the environmental variables in e2e job spec.
 
 sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: cvr-migration/}' \
 -e '/name: OPERATOR_NS/{n;s/.*/            value: openebs/}' \
 -e '/name: PVC_NAME/{n;s/.*/            value: busybox-cvr-migration/}' busybox_volume_migration.yml
 
 cat  busybox_volume_migration.yml
- # Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:cvr-migration' job=busybox_volume_migration.yml
+ # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:cvr-migration' job=busybox_volume_migration.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cvr-migration $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -155,17 +155,17 @@ fi
 #Deprovisioning Busybox-loadgen
 
 ################
-# LitmusBook 4 #
+# e2eBook 4 #
 ################
 
 run_id="deprovision-cvr-migration";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_cvr_migration.yml
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_deprovision_cvr_migration.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 : << EOF
   --------------------------------------------------------------------------------------------------------------------------------
@@ -173,7 +173,7 @@ cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_cvr_mig
   --------------------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | cvr-migration                                               | 
  | appLabel          | env    | app=busybox-sts                     | app=busybox-cvr-migration                                   |
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-deprovision-cvr-migration        |
+ | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-deprovision-cvr-migration        |
  | action            | env    | provision                           | deprovision                                                 | 
   ---------------------------------------------------------------------------------------------------------------------------------
 EOF
@@ -181,8 +181,8 @@ EOF
 sed -i -e 's/value: app-busybox-ns/value: cvr-migration/g' \
 -e 's/app=busybox-sts/app=busybox-cvr-migration/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/generateName: litmus-busybox-liveness/generateName: busybox-liveness-dep-cvr-migration/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-deprovision-cvr-migration/g' busybox_loadgen_deprovision_cvr_migration.yml
+-e 's/generateName: e2e-busybox-liveness/generateName: busybox-liveness-dep-cvr-migration/g' \
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-deprovision-cvr-migration/g' busybox_loadgen_deprovision_cvr_migration.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -190,10 +190,10 @@ sed -i '/command:/i \
 ' busybox_loadgen_deprovision_cvr_migration.yml
 
 cat busybox_loadgen_deprovision_cvr_migration.yml
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-deprovision-cvr-migration' job=busybox_loadgen_deprovision_cvr_migration.yml
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-cvr-migration' job=busybox_loadgen_deprovision_cvr_migration.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cvr-migration $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -208,16 +208,16 @@ fi
 ###########-Deprovisioning busybox Application
 
 ################
-# LitmusBook 5 #
+# e2eBook 5 #
 ################
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-deprovision-cvr-migration metadata="")
 echo $test_name
 
 cd e2e-tests
-cp apps/busybox/deployers/run_litmus_test.yml deprovision_busybox_cvr_migration.yml
+cp apps/busybox/deployers/run_e2e_test.yml deprovision_busybox_cvr_migration.yml
 
-sed -i -e 's/generateName: litmus-busybox-deploy/generateName: busybox-deprovision-cvr-migration/g' \
--e 's/app: busybox-litmus/app: deprovision-cvr-migration/g' \
+sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-cvr-migration/g' \
+-e 's/app: busybox-e2e/app: deprovision-cvr-migration/g' \
 -e 's/app=busybox-sts/app=busybox-cvr-migration/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-cstor-disk/g' \
@@ -227,13 +227,13 @@ sed -i -e 's/generateName: litmus-busybox-deploy/generateName: busybox-deprovisi
 
 cat deprovision_busybox_cvr_migration.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deprovision-cvr-migration' job=deprovision_busybox_cvr_migration.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deprovision-cvr-migration' job=deprovision_busybox_cvr_migration.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:cvr-migration $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 return_count=$?
 
-testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 current_time=$(eval $time)
 
 if [ "$return_count" != "0" ]; then
