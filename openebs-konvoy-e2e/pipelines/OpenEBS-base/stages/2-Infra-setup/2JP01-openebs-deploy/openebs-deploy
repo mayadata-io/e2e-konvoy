@@ -59,7 +59,7 @@ echo "Generating test name***************************"
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-provision metadata="")
 echo $test_name
 
-## Clone the litmus repo, navigate to litmus root 
+## Clone the e2e repo, navigate to e2e root 
 
 git clone https://github.com/openebs/e2e-tests.git
 cd e2e-tests
@@ -102,11 +102,11 @@ echo "Applying rbac.yml********************************"
 kubectl apply -f ./hack/rbac.yaml
 kubectl apply -f ./hack/crds.yaml
 
-echo "Copying kube config for litmus"
+echo "Copying kube config for e2e"
 cp ~/.kube/config admin.conf
-kubectl create cm kubeconfig --from-file=admin.conf -n litmus
+kubectl create cm kubeconfig --from-file=admin.conf -n e2e
 
-echo "Running litmus test for openebs deploy.."
+echo "Running e2e test for openebs deploy.."
 
 run_test=providers/openebs/installers/operator/master/litmusbook/run_litmus_test.yml
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='provider:openebs-runner' job=$run_test
@@ -121,7 +121,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:openebs-deploy $test_name jo
 rc_val=$(echo $?)
 test_case_id="2JP01-$pipeline_id"
 
-## Check the test status & result from the litmus result custom resource
+## Check the test status & result from the e2e result custom resource
 source ~/.profile
 gittoken=$(echo "$github_token")
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)

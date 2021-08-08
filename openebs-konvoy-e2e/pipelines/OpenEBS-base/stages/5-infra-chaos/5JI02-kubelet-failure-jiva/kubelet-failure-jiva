@@ -34,7 +34,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-pr
 echo $test_name
 
 cd e2e-tests
-echo "Running the litmus test for Busybox Deployment.."
+echo "Running the e2e test for Busybox Deployment.."
 cp apps/busybox/deployers/run_litmus_test.yml busybox_deploy_kubelet_failure_jiva.yml
 
 : << EOF
@@ -42,14 +42,14 @@ cp apps/busybox/deployers/run_litmus_test.yml busybox_deploy_kubelet_failure_jiv
  | specAttribute     | kind   |         default value               | test specifc value                             |
   -------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | kubelet-failure-jiva                           |
- | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-deploy-kubelet-failure-jiva       | 
+ | e2e job label  | label  | app: busybox-e2e                 | app: busybox-deploy-kubelet-failure-jiva       | 
  | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-default                           |
  | deploy type       | env    | statefulset                         | deployment                                     |
   --------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: kubelet-failure-jiva/g' \
--e 's/app: busybox-litmus/app: busybox-deploy-kubelet-failure-jiva/g' \
+-e 's/app: busybox-e2e/app: busybox-deploy-kubelet-failure-jiva/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
 -e 's/statefulset/deployment/g' busybox_deploy_kubelet_failure_jiva.yml
 
@@ -75,19 +75,19 @@ echo $test_name
 cd e2e-tests
 cp apps/busybox/liveness/run_litmus_test.yml busybox_liveness_kubelet_failure_jiva.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 : << EOF
   ----------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | kubelet-failure-jiva                             | 
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-kubelet-failure-jiva  |
+ | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-kubelet-failure-jiva  |
   ----------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: kubelet-failure-jiva/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-kubelet-failure-jiva/g' busybox_liveness_kubelet_failure_jiva.yml
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-kubelet-failure-jiva/g' busybox_liveness_kubelet_failure_jiva.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -96,10 +96,10 @@ sed -i '/command:/i \
 
 cat busybox_liveness_kubelet_failure_jiva.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-kubelet-failure-jiva' job=busybox_liveness_kubelet_failure_jiva.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:kubelet-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -119,7 +119,7 @@ echo $test_name
 cd e2e-tests
 cp experiments/chaos/kubernetes/service_failure/run_litmus_test.yml run_kubelet_failure_test_jiva.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 sed -i -e '/name: OPERATOR_NAMESPACE/{n;s/.*/            value: openebs/g}' \
 -e 's/name: svc-failure-chaos/name: kubelet-failure-chaos-jiva/g' \
@@ -149,10 +149,10 @@ sed -i '/command:/i \
 
 cat run_kubelet_failure_test_jiva.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:kubelet-failure-chaos-jiva' job=run_kubelet_failure_test_jiva.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:kubelet-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -172,12 +172,12 @@ echo $test_name
 cd e2e-tests
 cp apps/busybox/liveness/run_litmus_test.yml busybox_liveness_deprovision_kubelet_failure_jiva.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-busybox-ns/value: kubelet-failure-jiva/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/generateName: litmus-busybox-liveness/generateName: busybox-liveness-dep-kubelet-failure-jiva/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-dep-kubelet-failure-jiva/g' busybox_liveness_deprovision_kubelet_failure_jiva.yml
+-e 's/generateName: e2e-busybox-liveness/generateName: busybox-liveness-dep-kubelet-failure-jiva/g' \
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-dep-kubelet-failure-jiva/g' busybox_liveness_deprovision_kubelet_failure_jiva.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -186,10 +186,10 @@ sed -i '/command:/i \
 
 cat busybox_liveness_deprovision_kubelet_failure_jiva.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-dep-kubelet-failure-jiva' job=busybox_liveness_deprovision_kubelet_failure_jiva.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:kubelet-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -209,11 +209,11 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-de
 echo $test_name
 
 cd e2e-tests
-echo "Running the litmus test for Busybox Application Deprovision.."
+echo "Running the e2e test for Busybox Application Deprovision.."
 cp apps/busybox/deployers/run_litmus_test.yml busybox_deprovision_kubelet_failure_jiva.yml
 
 sed -i -e 's/value: app-busybox-ns/value: kubelet-failure-jiva/g' \
--e 's/app: busybox-litmus/app: busybox-dep-kubelet-failure-jiva/g' \
+-e 's/app: busybox-e2e/app: busybox-dep-kubelet-failure-jiva/g' \
 -e 's/value: provision/value: deprovision/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
 -e 's/statefulset/deployment/g' busybox_deprovision_kubelet_failure_jiva.yml

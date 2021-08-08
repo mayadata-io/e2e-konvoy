@@ -10,8 +10,8 @@ The host machines should be created and have the dependent packages installed in
 
 #### Procedure
 
-- This job triggers a litmus experiment which configures konvoy cluster using its corresponding inventory.
-- The litmus experiment receives the necessary parameters in form of pod environmental variables and updates the inventory accordingly.
+- This job triggers a e2e experiment which configures konvoy cluster using its corresponding inventory.
+- The e2e experiment receives the necessary parameters in form of pod environmental variables and updates the inventory accordingly.
 - This test should check if the konvoy cluster is ready using kubectl command ```kubectl get nodes```
 
 #### Expected result

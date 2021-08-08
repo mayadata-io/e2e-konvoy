@@ -34,7 +34,7 @@ echo "*******Taking clone of BusyBox snapshot application**********"
  | specAttribute     | kind   |         default value               | test specific value                              |
   ------------------------------------------------------------------------------------------------------------------- |
  | pvcName           | env    | openebs-busybox                     | busybox-jiva-snapshot                           | 
- | Litmus job label  | label  | app: litmus-clone                   | app: litmus-jiva-clone                          |
+ | e2e job label  | label  | app: e2e-clone                   | app: e2e-jiva-clone                          |
  | snapshot name     | env    | value: snapshot-busybox             | value: snapshot-jiva-busybox                    |
  | clone name        | env    | value: clone-busybox                | value: clone-jiva-busybox                       |
  | appNamespace      | env    | app-busybox-ns                      | busybox-jiva-snap                               |
@@ -48,7 +48,7 @@ cd e2e-tests
 cp experiments/functional/clone-creation/run_litmus_test.yml run_jiva_clone_test.yml
 
 sed -i -e 's/value: openebs-busybox/value: busybox-jiva-snapshot/g' \
--e 's/app: litmus-clone/app: litmus-jiva-clone/g' \
+-e 's/app: e2e-clone/app: e2e-jiva-clone/g' \
 -e 's/value: snapshot-busybox/value: snapshot-jiva-busybox/g' \
 -e 's/value: clone-busybox/value: clone-jiva-busybox/g' \
 -e 's/value: app-busybox-ns/value: busybox-jiva-snap/g' run_jiva_clone_test.yml
@@ -60,7 +60,7 @@ sed -i '/command:/i \
 
 cat run_jiva_clone_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:litmus-jiva-clone' job=run_jiva_clone_test.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:e2e-jiva-clone' job=run_jiva_clone_test.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-snapshot-clone $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

@@ -41,7 +41,7 @@ cp experiments/functional/fio/data-integrity/run_litmus_test.yml data_integrity_
  | specAttribute     | kind     | default busybox value               | test specifc value                      |
   --------------------------------------------------------------------------------------------------------------|
  | imagePullPolicy   | image    | Always                              | IfNotPresent                            |
- | LitmusjobLabel    | label    | app:fio-di-litmus                   | app:fio-di-litmus-jiva                  |
+ | LitmusjobLabel    | label    | app:fio-di-e2e                   | app:fio-di-e2e-jiva                  |
  | storage class     | env      | openebs-standard                    | openebs-jiva-default                    |
  | appNamespace      | env      | fio                                 | fio-jiva                                | 
   --------------------------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ EOF
 
 sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
 -e 's/value: openebs-standard/value: openebs-jiva-default/g' \
--e 's/app: fio-di-litmus/app: fio-di-litmus-jiva/g' \
+-e 's/app: fio-di-e2e/app: fio-di-e2e-jiva/g' \
 -e 's/value: fio/value: fio-jiva/g' data_integrity_test_jiva.yml
 
 sed -i '/command:/i \
@@ -59,7 +59,7 @@ sed -i '/command:/i \
 
 cat data_integrity_test_jiva.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:fio-di-litmus-jiva' job=data_integrity_test_jiva.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:fio-di-e2e-jiva' job=data_integrity_test_jiva.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:data-integrity-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

@@ -34,7 +34,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-pr
 echo $test_name
 
 cd e2e-tests
-echo "Running the litmus test for Busybox Deployment.."
+echo "Running the e2e test for Busybox Deployment.."
 cp apps/busybox/deployers/run_litmus_test.yml app_deploy_node_failure_jiva.yml
 
 : << EOF
@@ -42,7 +42,7 @@ cp apps/busybox/deployers/run_litmus_test.yml app_deploy_node_failure_jiva.yml
  | specAttribute     | kind   |         default value               | test specifc value                             |
   -------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | node-failure-jiva                              |
- | Litmus job label  | label  | app: busybox-litmus                 | app: node-failure-jiva                         | 
+ | e2e job label  | label  | app: busybox-e2e                 | app: node-failure-jiva                         | 
  | appLabel          | env    | app=busybox-sts                     | app=node-failure-jiva                          |
  | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-defaul                            |
  | deploy type       | env    | statefulset                         | deployment                                     |
@@ -50,7 +50,7 @@ cp apps/busybox/deployers/run_litmus_test.yml app_deploy_node_failure_jiva.yml
 EOF
 
 sed -i -e 's/app-busybox-ns/node-failure-jiva/g' \
--e 's/busybox-litmus/node-failure-jiva/g' \
+-e 's/busybox-e2e/node-failure-jiva/g' \
 -e 's/app=busybox-sts/app=node-failure-jiva/g' \
 -e 's/openebs-cstor-sparse/openebs-jiva-default/g' \
 -e 's/statefulset/deployment/g' app_deploy_node_failure_jiva.yml
@@ -78,21 +78,21 @@ cd e2e-tests
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_node_failure_jiva.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 : << EOF
   ----------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | node-failure-jiva                                       | 
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-node-failure-jiva             |
+ | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-node-failure-jiva             |
  | appLabel          | env    | app=busybox-sts                     | app=node-failure-jiva                                   | 
   ----------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: node-failure-jiva/g' \
 -e 's/app=busybox-sts/app=node-failure-jiva/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-node-failure-jiva/g' busybox_loadgen_node_failure_jiva.yml
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-node-failure-jiva/g' busybox_loadgen_node_failure_jiva.yml
 
 cat busybox_loadgen_node_failure_jiva.yml
 
@@ -101,10 +101,10 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' busybox_loadgen_node_failure_jiva.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-node-failure-jiva' job=busybox_loadgen_node_failure_jiva.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:node-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -173,7 +173,7 @@ cd e2e-tests
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_node_failure_jiva.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
@@ -181,7 +181,7 @@ cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_node_fa
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | node-failure-jiva                                | 
  | appLabel          | env    | app=busybox-sts                     | app=node-failure-jiva                            |
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-deprovision-node-failure|
+ | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-deprovision-node-failure|
  | action            | env    | provision                           | deprovision                                      | 
   ----------------------------------------------------------------------------------------------------------------------
 EOF
@@ -189,8 +189,8 @@ EOF
 sed -i -e 's/value: app-busybox-ns/value: node-failure-jiva/g' \
 -e 's/app=busybox-sts/app=node-failure-jiva/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/generateName: litmus-busybox-liveness/generateName: busybox-liveness-dep-node-failure-jiva/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-deprovision-node-failure-jiva/g' busybox_loadgen_deprovision_node_failure_jiva.yml
+-e 's/generateName: e2e-busybox-liveness/generateName: busybox-liveness-dep-node-failure-jiva/g' \
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-deprovision-node-failure-jiva/g' busybox_loadgen_deprovision_node_failure_jiva.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -198,10 +198,10 @@ sed -i '/command:/i \
 ' busybox_loadgen_deprovision_node_failure_jiva.yml
 
 cat busybox_loadgen_deprovision_node_failure_jiva.yml
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-deprovision-node-failure-jiva' job=busybox_loadgen_deprovision_node_failure_jiva.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:node-failure-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -229,21 +229,21 @@ cp apps/busybox/deployers/run_litmus_test.yml deprovision_node_failure_jiva.yml
   -------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                             |
   -------------------------------------------------------------------------------------------------------------------|
- | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName:litmus-busybox-deprovision        |
+ | e2e Job name   | name   | generateName: e2e-busybox-deploy | generateName:e2e-busybox-deprovision        |
  | appNamespace      | env    | app-busybox-ns                      | node-failure-jiva                              |
  | appLabel          | env    | app=busybox-sts                     | app=node-failure-jiva                          |
  | deploy type       | env    | statefulset                         | deployment                                     |
- | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-deprovision-node-failure          | 
+ | e2e job label  | label  | app: busybox-e2e                 | app: busybox-deprovision-node-failure          | 
  | storage class     | env    | openebs-cstor-sparse                | openebs-jiva-default                           |
  | Action            | env    | provision                           | deprovision                                    |
   --------------------------------------------------------------------------------------------------------------------
 EOF
 
-sed -i -e 's/generateName: litmus-busybox-deploy/generateName: litmus-busybox-dep-node-failure-jiva/g' \
+sed -i -e 's/generateName: e2e-busybox-deploy/generateName: e2e-busybox-dep-node-failure-jiva/g' \
 -e 's/app-busybox-ns/node-failure-jiva/g' \
 -e 's/app=busybox-sts/app=node-failure-jiva/g' \
 -e 's/value: statefulset/value: deployment/g' \
--e 's/busybox-litmus/busybox-deprovision-node-failure-jiva/g' \
+-e 's/busybox-e2e/busybox-deprovision-node-failure-jiva/g' \
 -e 's/openebs-cstor-sparse/openebs-jiva-default/g' \
 -e 's/value: provision/value: deprovision/g' deprovision_node_failure_jiva.yml
 
