@@ -26,7 +26,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=create-clo
 echo $test_name
 
 cd e2e-tests
-cp experiments/functional/clone-creation/run_litmus_test.yml run_clone_test.yml
+cp experiments/functional/clone-creation/run_e2e_test.yml run_clone_test.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
@@ -40,10 +40,10 @@ EOF
 sed -i -e 's/value: openebs-busybox/value: busybox-snapshot/g' \
 -e 's/value: app-busybox-ns/value: busybox-snap/g' run_clone_test.yml
 
-echo "Running the litmus test for Busybox Deployment Clone.."
+echo "Running the e2e test for Busybox Deployment Clone.."
 cat run_clone_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:litmus-clone' job=run_clone_test.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:e2e-clone' job=run_clone_test.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:snapshot-clone $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

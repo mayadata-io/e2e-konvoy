@@ -28,19 +28,19 @@ run_id="striped";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name te
 echo $test_name
 cd e2e-tests
 
-cp providers/cstor/cstor-block-device-pool/run_litmus_test.yml create_striped_pool.yml
+cp providers/cstor/cstor-block-device-pool/run_e2e_test.yml create_striped_pool.yml
 
 #################
 ## RUNNER MAIN ##
 #################
-echo "Running the litmus test.."
+echo "Running the e2e test.."
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------------------------------   
  | specAttribute     | kind   |         default value                           | test specific value                                           |
   ---------------------------------------------------------------------------------------------------------------------------------------------
- | Litmus job label  | label  | app: cstor-block-device-pool-provision          | app: cstor-striped-pool-provision                            |
- | Litmus Job name   | name   | generateName: cstor-block-device-pool-provision | generateName: cstor-block-device-striped-pool-provision      |
+ | e2e job label  | label  | app: cstor-block-device-pool-provision          | app: cstor-striped-pool-provision                            |
+ | e2e Job name   | name   | generateName: cstor-block-device-pool-provision | generateName: cstor-block-device-striped-pool-provision      |
  | ImagePullPolicy   | value  | Always                                          | IfNotPresent                                                 |
  | Pool name         | name   | cstor-block-disk-pool                           | cstor-block-disk-pool-stripe                                 |
  ---------------------------------------------------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ sed -i '/command:/i \
 
 cat create_striped_pool.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:cstor-striped-pool-provision' job=create_striped_pool.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:cstor-striped-pool-provision' job=create_striped_pool.yml
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
 cd ..
 bash openebs-konvoy-e2e/utils/event_updater jobname:cstor-striped-pool $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -68,11 +68,11 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:cstor-striped-pool $test_nam
 #################
 rc_val=$(echo $?)
 
-## Check the test status & result from the litmus result custom resource
+## Check the test status & result from the e2e result custom resource
 source ~/.profile
 gittoken=$(echo "$github_token")
 
-testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 current_time=$(eval $time)
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:cstor-striped-pool jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:$testResult
