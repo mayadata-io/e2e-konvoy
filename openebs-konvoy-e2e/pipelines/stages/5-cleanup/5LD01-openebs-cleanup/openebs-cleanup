@@ -41,7 +41,7 @@ echo $test_name
 
 ## Clone the e2e repo, navigate to e2e root 
 
-git clone https://github.com/openebs/dynamic-localpv-provisioner
+#git clone https://github.com/openebs/dynamic-localpv-provisioner
 cd dynamic-localpv-provisioner/e2e-tests
 
 export LOCALPV_PROVISIONER_IMAGE=$localpv_provisioner_image
@@ -57,6 +57,9 @@ export RC_TAG=$rc_tag
 cp experiments/localpv-provisioner/run_e2e_test.yml deprovision-operator.yml
 python3 env.py -f deprovision-operator.yml
 
+sed -i -e 's/provider: localpv-operator/provider: localpv-operator-deprovision/g' deprovision-operator.yml
+
+sed -i -e "/name: ACTION/{n;s/.*/          value: deprovision/g}" deprovision-operator.yml
 cat deprovision-operator.yml
 
 #################
@@ -68,10 +71,6 @@ kubectl apply -f ./hack/rbac.yaml
 kubectl apply -f ./hack/crds.yaml
 
 echo "Running e2e test for openebs deploy.."
-
-sed -i -e 's/provider: localpv-operator/provider: localpv-operator-deprovision/g' deprovision-operator.yml
-
-sed -i -e "/name: ACTION/{n;s/.*/            value: deprovision/g}" deprovision-operator.yml
 
 bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='provider:localpv-operator-deprovision' job=deprovision-operator.yml
 
