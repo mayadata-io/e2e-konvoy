@@ -31,7 +31,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-failure jobphase:Waiting
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-failure jobphase:Running init_time:"$current_time"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 #### Deploy BusyBox application
 
@@ -44,8 +44,8 @@ echo $test_name
 cd e2e-tests
 echo "Running the e2e test for Busybox Deployment.."
 
-#copy the content of deployer run_litmus_test.yml into a different file to update the test specific parametes.
-cp apps/busybox/deployers/run_litmus_test.yml busybox_ctrl_failure.yml
+#copy the content of deployer run_e2e_test.yml into a different file to update the test specific parametes.
+cp apps/busybox/deployers/run_e2e_test.yml busybox_ctrl_failure.yml
 
 : << EOF
   --------------------------------------------------------------------------------------------------------------
@@ -71,8 +71,8 @@ sed -i -e 's/app: busybox-e2e/app: deploy-busybox-ctrl-failure/g' \
 
 cat busybox_ctrl_failure.yml
 
-# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-ctrl-failure' job=busybox_ctrl_failure.yml
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:deploy-busybox-ctrl-failure' job=busybox_ctrl_failure.yml
 cd ..
 
 #Get the cluster state Once the e2e jobs completed.
@@ -86,15 +86,15 @@ exit 1;
 fi
 
 ################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
 run_id="controller-failure";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_controller_failure.yml
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_controller_failure.yml
 
 # Update the environmental variables in e2e job spec.
 
@@ -119,8 +119,8 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' busybox_loadgen_controller_failure.yml
 
-# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-controller-failure' job=busybox_loadgen_controller_failure.yml
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-controller-failure' job=busybox_loadgen_controller_failure.yml
 cd ..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -133,16 +133,16 @@ exit 1;
 fi
 
 ################
-# LitmusBook 3 #
+# e2eBook 3 #
 ################
 ##### Run the e2e book to perform the controller failure on JIVA
 
-## testcase name is defined in test_vars of LitmusBook.
+## testcase name is defined in test_vars of e2eBook.
 run_id="jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
-cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_ctrl_failure_test.yml
+cp experiments/chaos/openebs_target_failure/run_e2e_test.yml run_ctrl_failure_test.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ sed -i '/parameters.yml: |/a \
 
 cat run_ctrl_failure_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='name:openebs-controller-failure' job=run_ctrl_failure_test.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='name:openebs-controller-failure' job=run_ctrl_failure_test.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -192,15 +192,15 @@ fi
 
 
 ################
-# LitmusBook 4 #
+# e2eBook 4 #
 ################
 
 run_id="deprovision-controller-failure";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_controller_failure.yml
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_deprovision_controller_failure.yml
 
 # Update the environmental variables in e2e job spec.
 
@@ -226,8 +226,8 @@ sed -i '/command:/i \
 ' busybox_loadgen_deprovision_controller_failure.yml
 
 cat busybox_loadgen_deprovision_controller_failure.yml
-# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-deprovision-controller-failure' job=busybox_loadgen_deprovision_controller_failure.yml
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:busybox-liveness-deprovision-controller-failure' job=busybox_loadgen_deprovision_controller_failure.yml
 cd ..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -243,7 +243,7 @@ fi
 
 
 ################
-# LitmusBook 5 #
+# e2eBook 5 #
 ################
 # Run the e2e book to Deprovison the busybox deployment
 
@@ -253,7 +253,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-de
 echo $test_name
 
 cd e2e-tests
-cp apps/busybox/deployers/run_litmus_test.yml deprovision_ctrl_failure.yml
+cp apps/busybox/deployers/run_e2e_test.yml deprovision_ctrl_failure.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------
@@ -281,7 +281,7 @@ sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-
 
 cat deprovision_ctrl_failure.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deprovision-ctrl-failure' job=deprovision_ctrl_failure.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-deprovision-ctrl-failure' job=deprovision_ctrl_failure.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -289,7 +289,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_nam
 rc_val=$(echo $?)
 current_time=$(eval $time)
 
-# testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+# testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:controller-failure jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail

@@ -26,7 +26,7 @@ bash openebs-konvoy-e2e/utils/e2e-cr jobname:jiva-snapshot-clone jobphase:Runnin
 echo "*******Taking clone of BusyBox snapshot application**********"
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 : << EOF
@@ -45,7 +45,7 @@ run_id="jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testc
 echo $test_name
 
 cd e2e-tests
-cp experiments/functional/clone-creation/run_litmus_test.yml run_jiva_clone_test.yml
+cp experiments/functional/clone-creation/run_e2e_test.yml run_jiva_clone_test.yml
 
 sed -i -e 's/value: openebs-busybox/value: busybox-jiva-snapshot/g' \
 -e 's/app: e2e-clone/app: e2e-jiva-clone/g' \
@@ -60,7 +60,7 @@ sed -i '/command:/i \
 
 cat run_jiva_clone_test.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:e2e-jiva-clone' job=run_jiva_clone_test.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:e2e-jiva-clone' job=run_jiva_clone_test.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-snapshot-clone $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
