@@ -30,13 +30,13 @@ stages:
   dependencies:
     - 1CJO01-Konvoy
 
-2IJO01-OpenEBS-Deploy:
-  extends: .jiva_csi_infra_setup_template
-  script:
-    - chmod 775 ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
-    - ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
+# 2IJO01-OpenEBS-Deploy:
+#   extends: .jiva_csi_infra_setup_template
+#   script:
+#     - chmod 775 ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
+#     - ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
 
-2IJO02-JIVA-OPERATOR:
+2IJO01-JIVA-OPERATOR:
   extends: .jiva_csi_infra_setup_template
   script:
     - chmod 755 ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO02-jiva-operator
