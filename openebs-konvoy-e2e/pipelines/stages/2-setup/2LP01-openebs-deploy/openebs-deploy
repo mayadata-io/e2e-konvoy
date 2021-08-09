@@ -54,9 +54,9 @@ export RC_TAG=$rc_tag
 
 wget https://raw.githubusercontent.com/openebs/e2e-infrastructure/master/env-update/env.py
 
-python3 env.py -f experiments/localpv-provisioner/run_e2e_test.yml
+cp experiments/localpv-provisioner/run_e2e_test.yml operator_provision.yml
 
-cat experiments/localpv-provisioner/run_e2e_test.yml
+python3 env.py -f operator_provision.yml
 
 #################
 ## RUNNER MAIN ##
@@ -68,8 +68,8 @@ kubectl apply -f ./hack/crds.yaml
 
 echo "Running e2e test for openebs deploy.."
 
-run_test=experiments/localpv-provisioner/run_e2e_test.yml
-bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='provider:localpv-operator' job=$run_test
+cat operator_provision.yml
+bash ../../openebs-konvoy-e2e/utils/e2e_job_runner label='provider:localpv-operator' job=operator_provision.yml
 
 echo "Dumping state of cluster post job run"; echo ""
 bash ../../openebs-konvoy-e2e/utils/dump_cluster_state;
