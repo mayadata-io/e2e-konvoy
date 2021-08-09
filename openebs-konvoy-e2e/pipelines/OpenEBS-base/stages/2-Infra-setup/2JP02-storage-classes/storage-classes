@@ -29,13 +29,13 @@ echo $test_name
 
 cd e2e-tests
 echo "Running the e2e test.."
-cp providers/cstor-storage-policies/run_litmus_test.yml cstor-sc.yaml
+cp providers/cstor-storage-policies/run_e2e_test.yml cstor-sc.yaml
 sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
 -e 's/cstor-sparse-pool/cstor-block-disk-pool-stripe/g' cstor-sc.yaml
 
 cat cstor-sc.yaml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:cstor-storage-policy' job=cstor-sc.yaml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:cstor-storage-policy' job=cstor-sc.yaml
 
 echo "Dumping state of cluster post job run"; echo ""
 bash ../openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -50,7 +50,7 @@ rc_val=$(echo $?)
 ## Check the test status & result from the e2e result custom resource
 source ~/.profile
 gittoken=$(echo "$github_token")
-testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 #python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 2JP02 2-Infra-setup "Create K8s storage classes adhering the policies supported by OpenEBS" $testResult $pipeline_id "$current_time" $commit_id $gittoken
 
 current_time=$(eval $time)

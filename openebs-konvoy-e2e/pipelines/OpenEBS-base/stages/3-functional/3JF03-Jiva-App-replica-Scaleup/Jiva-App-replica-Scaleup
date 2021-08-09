@@ -29,12 +29,12 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-pr
 echo $test_name
 
 ################
-# LitmusBook 1 #
+# e2eBook 1 #
 ################
 
 cd e2e-tests
 echo "Running the e2e test for Busybox Deployment.."
-cp apps/busybox/deployers/run_litmus_test.yml deploy_run_test_jiva.yml
+cp apps/busybox/deployers/run_e2e_test.yml deploy_run_test_jiva.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
 
 cat deploy_run_test_jiva.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-replica-scale-jiva' job=deploy_run_test_jiva.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-replica-scale-jiva' job=deploy_run_test_jiva.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-replica-scaleup-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -72,15 +72,15 @@ fi
 ##Deploying loadgen and liveness****"
 
 #################
-# LitmusBook 2 #
+# e2eBook 2 #
 ################
 
 run_id="replica";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_replica_scaleup_jiva.yml
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp apps/busybox/liveness/run_e2e_test.yml busybox_loadgen_replica_scaleup_jiva.yml
 
  # Update the environmental variables in e2e job spec.
 
@@ -105,8 +105,8 @@ sed -i '/command:/i \
 
 cat busybox_loadgen_replica_scaleup_jiva.yml
 
- # Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:bb-liveness-replica-scaleup' job=busybox_loadgen_replica_scaleup_jiva.yml
+ # Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:bb-liveness-replica-scaleup' job=busybox_loadgen_replica_scaleup_jiva.yml
 cd ..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -123,11 +123,11 @@ run_id="jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testc
 echo $test_name
 
 ################
-# LitmusBook 3 #
+# e2eBook 3 #
 ################
 
 cd e2e-tests
-cp experiments/functional/scale_app_replica/run_litmus_test.yml run_scaleup_test_jiva.yml
+cp experiments/functional/scale_app_replica/run_e2e_test.yml run_scaleup_test_jiva.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
@@ -151,7 +151,7 @@ sed -i '/command:/i \
 ###Running the e2e test for Busybox Deployment Scaleup
 cat run_scaleup_test_jiva.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:scaleup-e2e-jiva' job=run_scaleup_test_jiva.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:scaleup-e2e-jiva' job=run_scaleup_test_jiva.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-replica-scaleup-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -164,15 +164,15 @@ fi
 ##Deprovisioning loadgen and liveness 
 
 ################
-# LitmusBook 4 #
+# e2eBook 4 #
 ################
 
 run_id="dep-replica";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-liveness metadata=${run_id})
 echo $test_name
 
 cd e2e-tests
-# copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
-cp apps/busybox/liveness/run_litmus_test.yml bb_loadgen_dep_app_scaleup_jiva.yml
+# copy the content of deployer run_e2e_test.yml into a different file to update the test specific parameters.
+cp apps/busybox/liveness/run_e2e_test.yml bb_loadgen_dep_app_scaleup_jiva.yml
 
  # Update the environmental variables in e2e job spec.
 
@@ -198,8 +198,8 @@ sed -i '/command:/i \
 ' bb_loadgen_dep_app_scaleup_jiva.yml
 
 cat bb_loadgen_dep_app_scaleup_jiva.yml
-# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:bb-liveness-dep-replica' job=bb_loadgen_dep_app_scaleup_jiva.yml
+# Run the e2e job and get the details of the e2e job from e2e_job_runner utils.
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='liveness:bb-liveness-dep-replica' job=bb_loadgen_dep_app_scaleup_jiva.yml
 cd ..
 # Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
@@ -221,11 +221,11 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-de
 echo $test_name
 
 ################
-# LitmusBook 5 #
+# e2eBook 5 #
 ################
 
 cd e2e-tests
-cp apps/busybox/deployers/run_litmus_test.yml deprovision_scaleup_jiva.yml
+cp apps/busybox/deployers/run_e2e_test.yml deprovision_scaleup_jiva.yml
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
@@ -251,7 +251,7 @@ sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-
 
 cat deprovision_scaleup_jiva.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:busybox-deprovision-e2e-jiva' job=deprovision_scaleup_jiva.yml
+bash ../openebs-konvoy-e2e/utils/e2e_job_runner label='app:busybox-deprovision-e2e-jiva' job=deprovision_scaleup_jiva.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:app-replica-scaleup-jiva $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -259,7 +259,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:app-replica-scaleup-jiva $te
 rc_val=$(echo $?)
 current_time=$(eval $time)
 
-# testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
+# testResult=$(kubectl get e2eresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)
 if [ "$rc_val" != "0" ]; then
 bash openebs-konvoy-e2e/utils/e2e-cr jobname:app-replica-scaleup-jiva jobphase:Completed end_time:"$current_time" jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id" openebs_version:"$releaseTag" test_result:Fail
 python3 openebs-konvoy-e2e/utils/result/result_update.py $job_id 3JF03 3-functional "Scale the statefulset application replicas and verify the ring configuration" Fail $pipeline_id "$current_time" $commit_id $gittoken
