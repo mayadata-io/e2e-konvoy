@@ -42,7 +42,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=busybox-pr
 echo $test_name
 
 cd e2e-tests
-echo "Running the litmus test for Busybox Deployment.."
+echo "Running the e2e test for Busybox Deployment.."
 
 #copy the content of deployer run_litmus_test.yml into a different file to update the test specific parametes.
 cp apps/busybox/deployers/run_litmus_test.yml busybox_ctrl_failure.yml
@@ -51,8 +51,8 @@ cp apps/busybox/deployers/run_litmus_test.yml busybox_ctrl_failure.yml
   --------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind     | default busybox value               | test specifc value                     |
   -----------------------------------------------------------------------------------------------------        |
- | Litmus job label  | label    | app: busybox-litmus                 | app: deploy-busybox-ctrl-failure          | 
- | Litmus job Name   | job name | generateName: litmus-busybox-deploy | generateName: busybox-deploy-ctrl-failure |
+ | e2e job label  | label    | app: busybox-e2e                 | app: deploy-busybox-ctrl-failure          | 
+ | e2e job Name   | job name | generateName: e2e-busybox-deploy | generateName: busybox-deploy-ctrl-failure |
  | appLabel          | env      | app=busybox-sts                     | app=ctrl-failure                          |
  | deploy type       | env      | statefulset                         | deployment                             |
  | storage class     | env      | openebs-cstor-sparse                | openebs-jiva-default                   |
@@ -61,8 +61,8 @@ cp apps/busybox/deployers/run_litmus_test.yml busybox_ctrl_failure.yml
   --------------------------------------------------------------------------------------------------------------
 EOF
 
-sed -i -e 's/app: busybox-litmus/app: deploy-busybox-ctrl-failure/g' \
--e 's/generateName: litmus-busybox-deploy/generateName: busybox-deploy-ctrl-failure/g' \
+sed -i -e 's/app: busybox-e2e/app: deploy-busybox-ctrl-failure/g' \
+-e 's/generateName: e2e-busybox-deploy/generateName: busybox-deploy-ctrl-failure/g' \
 -e 's/app=busybox-sts/app=ctrl-failure/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \
@@ -71,11 +71,11 @@ sed -i -e 's/app: busybox-litmus/app: deploy-busybox-ctrl-failure/g' \
 
 cat busybox_ctrl_failure.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deploy-busybox-ctrl-failure' job=busybox_ctrl_failure.yml
 cd ..
 
-#Get the cluster state Once the litmus jobs completed.
+#Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 #Update the e2e event for the job
 bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -96,21 +96,21 @@ cd e2e-tests
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_controller_failure.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 : << EOF
   ---------------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                               |
   ---------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | ctrl-failure                                        | 
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-controller-failure       |
+ | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-controller-failure       |
  | appLabel          | env    | app=busybox-sts                     | app=ctrl-failure                                    | 
   ----------------------------------------------------------------------------------------------------------------------
 EOF
 
 sed -i -e 's/value: app-busybox-ns/value: ctrl-failure/g' \
 -e 's/app=busybox-sts/app=ctrl-failure/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-controller-failure/g' busybox_loadgen_controller_failure.yml
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-controller-failure/g' busybox_loadgen_controller_failure.yml
 
 cat busybox_loadgen_controller_failure.yml
 
@@ -119,10 +119,10 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' busybox_loadgen_controller_failure.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-controller-failure' job=busybox_loadgen_controller_failure.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -135,7 +135,7 @@ fi
 ################
 # LitmusBook 3 #
 ################
-##### Run the litmus book to perform the controller failure on JIVA
+##### Run the e2e book to perform the controller failure on JIVA
 
 ## testcase name is defined in test_vars of LitmusBook.
 run_id="jiva";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=openebs-target-failure metadata=${run_id})
@@ -149,8 +149,8 @@ cp experiments/chaos/openebs_target_failure/run_litmus_test.yml run_ctrl_failure
  | specAttribute     | kind   |         default value                 | test specifc value                       |
   ---------------------------------------------------------------------------------------------------------------|
  | pvcName           | env    | value: percona-mysql-claim            | value: busybox-ctrl-failure                 | 
- | Litmus Job name   | name   | generateName: openebs-target-failure  | generateName: openebs-controller-failure |
- | Litmus job label  | label  | openebs-target-failure                | openebs-controller-failure               |
+ | e2e Job name   | name   | generateName: openebs-target-failure  | generateName: openebs-controller-failure |
+ | e2e job label  | label  | openebs-target-failure                | openebs-controller-failure               |
  | appLabel          | env    | value: name=percona                   | value:     app=ctrl-failure                 |
  | appNamespace      | env    | app-percon-ns                         | ctrl-failure                                | 
   ----------------------------------------------------------------------------------------------------------------
@@ -168,7 +168,7 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' run_ctrl_failure_test.yml
 
-## Replace the value of DATA_PERSISTENCE with application name in litmus experiment.
+## Replace the value of DATA_PERSISTENCE with application name in e2e experiment.
 sed -i '/name: DATA_PERSISTENCE/{n;s/.*/            value: busybox/}' run_ctrl_failure_test.yml
 
 ## Insert the set of variables for busybox data consistency util into configmap spec.
@@ -202,7 +202,7 @@ cd e2e-tests
 # copy the content of deployer run_litmus_test.yml into a different file to update the test specific parameters.
 cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_controller_failure.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 : << EOF
   -----------------------------------------------------------------------------------------------------------------------------
@@ -210,7 +210,7 @@ cp apps/busybox/liveness/run_litmus_test.yml busybox_loadgen_deprovision_control
   ----------------------------------------------------------------------------------------------------------------------------|
  | appNamespace      | env    | app-busybox-ns                      | ctrl-failure                                               | 
  | appLabel          | env    | app=busybox-sts                     | app=ctrl-failure                                           |
- | Litmus job label  | label  | liveness: litmus-busybox-liveness   | liveness: busybox-liveness-deprovision-controller-failure   |
+ | e2e job label  | label  | liveness: e2e-busybox-liveness   | liveness: busybox-liveness-deprovision-controller-failure   |
  | action            | env    | provision                           | deprovision                                             | 
   -----------------------------------------------------------------------------------------------------------------------------
 EOF
@@ -218,7 +218,7 @@ EOF
 sed -i -e 's/value: app-busybox-ns/value: ctrl-failure/g' \
 -e 's/app=busybox-sts/app=ctrl-failure/g' \
 -e 's/value: provision/value: deprovision/g' \
--e 's/liveness: litmus-busybox-liveness/liveness: busybox-liveness-deprovision-controller-failure/g' busybox_loadgen_deprovision_controller_failure.yml
+-e 's/liveness: e2e-busybox-liveness/liveness: busybox-liveness-deprovision-controller-failure/g' busybox_loadgen_deprovision_controller_failure.yml
 
 sed -i '/command:/i \
           - name: RUN_ID\
@@ -226,10 +226,10 @@ sed -i '/command:/i \
 ' busybox_loadgen_deprovision_controller_failure.yml
 
 cat busybox_loadgen_deprovision_controller_failure.yml
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='liveness:busybox-liveness-deprovision-controller-failure' job=busybox_loadgen_deprovision_controller_failure.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:controller-failure $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
 
@@ -245,7 +245,7 @@ fi
 ################
 # LitmusBook 5 #
 ################
-# Run the litmus book to Deprovison the busybox deployment
+# Run the e2e book to Deprovison the busybox deployment
 
 echo "********Deprovisioning Busybox Application*******"
 
@@ -259,8 +259,8 @@ cp apps/busybox/deployers/run_litmus_test.yml deprovision_ctrl_failure.yml
   ---------------------------------------------------------------------------------------------------------------
  | specAttribute     | kind   |         default value               | test specifc value                         |
   ---------------------------------------------------------------------------------------------------------------|
- | Litmus Job name   | name   | generateName: litmus-busybox-deploy | generateName: busybox-deprovision-ctrl-failure|
- | Litmus job label  | label  | app: busybox-litmus                 | app: busybox-deprovision-ctrl-failure         |
+ | e2e Job name   | name   | generateName: e2e-busybox-deploy | generateName: busybox-deprovision-ctrl-failure|
+ | e2e job label  | label  | app: busybox-e2e                 | app: busybox-deprovision-ctrl-failure         |
  | appLabel          | env    | app=busybox-sts                     | app=ctrl-failure                              |
  | deploy type       | env    | statefulset                         | deployment                                 |
  | storage clas      | env    | openebs-cstor-sparse                | openebs-jiva-default                       |
@@ -270,8 +270,8 @@ cp apps/busybox/deployers/run_litmus_test.yml deprovision_ctrl_failure.yml
   ----------------------------------------------------------------------------------------------------------------
 EOF
 
-sed -i -e 's/generateName: litmus-busybox-deploy/generateName: busybox-deprovision-ctrl-failure/g' \
--e 's/app: busybox-litmus/app: busybox-deprovision-ctrl-failure/g' \
+sed -i -e 's/generateName: e2e-busybox-deploy/generateName: busybox-deprovision-ctrl-failure/g' \
+-e 's/app: busybox-e2e/app: busybox-deprovision-ctrl-failure/g' \
 -e 's/app=busybox-sts/app=ctrl-failure/g' \
 -e 's/value: statefulset/value: deployment/g' \
 -e 's/value: openebs-cstor-sparse/value: openebs-jiva-default/g' \

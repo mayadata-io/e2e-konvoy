@@ -44,7 +44,7 @@ echo $test_name
 
 
 cd e2e-tests
-echo "Running the litmus test for Jiva internal snapshot deletion."
+echo "Running the e2e test for Jiva internal snapshot deletion."
 cp experiments/functional/snapshot_deletion/jiva/run_litmus_test.yml jiva_snapshot_delete.yml
 
 sed -i -e 's/value: fio/value: fio-jiva-snapshot-del/g' \
@@ -52,7 +52,7 @@ sed -i -e 's/value: fio/value: fio-jiva-snapshot-del/g' \
 
 cat jiva_snapshot_delete.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:fio-di-litmus-snap-del' job=jiva_snapshot_delete.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:fio-di-e2e-snap-del' job=jiva_snapshot_delete.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-internal-snapshot-deletion $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"

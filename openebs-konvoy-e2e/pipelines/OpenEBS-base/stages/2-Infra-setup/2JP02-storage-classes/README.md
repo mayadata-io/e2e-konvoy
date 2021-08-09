@@ -12,8 +12,8 @@ This job will create storage classes with the properties supported by OpenEBS.
 
 #### Procedure
 
-- This job triggers the litmus experiment which is capable of creating OpenEBS storage classes.
-- The litmus experiment receives the necessary parameters in form of pod environmental variables and updates the manifest accordingly.
+- This job triggers the e2e experiment which is capable of creating OpenEBS storage classes.
+- The e2e experiment receives the necessary parameters in form of pod environmental variables and updates the manifest accordingly.
 - This job updates the Storage classes template should with the storagepoolclaim name and initiates the required storage classes creation.
 - The test should check if the OpenEBS storage classes are created using kubectl command `kubectl get sc`
 - Finally, this job updates the result CR with the actual result.

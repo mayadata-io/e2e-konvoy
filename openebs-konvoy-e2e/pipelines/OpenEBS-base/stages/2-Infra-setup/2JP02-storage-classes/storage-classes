@@ -28,7 +28,7 @@ test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-stor
 echo $test_name
 
 cd e2e-tests
-echo "Running the litmus test.."
+echo "Running the e2e test.."
 cp providers/cstor-storage-policies/run_litmus_test.yml cstor-sc.yaml
 sed -i -e 's/imagePullPolicy: Always/imagePullPolicy: IfNotPresent/g' \
 -e 's/cstor-sparse-pool/cstor-block-disk-pool-stripe/g' cstor-sc.yaml
@@ -47,7 +47,7 @@ bash openebs-konvoy-e2e/utils/event_updater jobname:storage-classes $test_name j
 #################
 rc_val=$(echo $?)
 
-## Check the test status & result from the litmus result custom resource
+## Check the test status & result from the e2e result custom resource
 source ~/.profile
 gittoken=$(echo "$github_token")
 testResult=$(kubectl get litmusresult ${test_name} --no-headers -o custom-columns=:spec.testStatus.result)

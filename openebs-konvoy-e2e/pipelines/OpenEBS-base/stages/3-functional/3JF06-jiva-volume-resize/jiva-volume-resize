@@ -33,12 +33,12 @@ run_id="jiva-volume-resize";test_name=$(bash openebs-konvoy-e2e/utils/generate_t
 echo $test_name
 
 cd e2e-tests
-echo "Running the litmus test for percona Deployment.."
+echo "Running the e2e test for percona Deployment.."
 
 cp apps/percona/deployers/run_litmus_test.yml percona_jiva_volume_resize.yml
 
 sed -i -e 's/app: percona-deployment/app: deploy-percona-jiva-volume-resize/g' \
--e 's/generateName: litmus-percona-/generateName: litmus-percona-jiva-volume-resize-/g' \
+-e 's/generateName: e2e-percona-/generateName: e2e-percona-jiva-volume-resize-/g' \
 -e 's/value: openebs-standard/value: openebs-jiva-default/g' \
 -e 's/value: enabled/value: /g' \
 -e 's/value: enable/value: /g' \
@@ -71,7 +71,7 @@ echo $test_name
 cd e2e-tests
 cp apps/percona/workload/run_litmus_test.yml percona_loadgen_jiva_volume_resize.yml
 
-# Update the environmental variables in litmus job spec.
+# Update the environmental variables in e2e job spec.
 
 sed -i -e 's/value: app-percona-ns/value: jiva-volume-resize/g' \
 -e 's/generateName: percona-loadgen-/generateName: percona-loadgen-jiva-volume-resize-/g' \
@@ -84,10 +84,10 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' percona_loadgen_jiva_volume_resize.yml
 
-# Run the Litmus job and get the details of the litmus job from litmus_job_runner utils.
+# Run the e2e job and get the details of the e2e job from litmus_job_runner utils.
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='loadgen:percona-loadjob-jiva-volume-resize' job=percona_loadgen_jiva_volume_resize.yml
 cd ..
-# Get the cluster state Once the litmus jobs completed.
+# Get the cluster state Once the e2e jobs completed.
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 # Update the e2e event for the job.
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-volume-resize $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -111,10 +111,10 @@ sed -i -e '/name: APP_NAMESPACE/{n;s/.*/            value: 'jiva-volume-resize'/
 -e '/name: APP_LABEL/{n;s/.*/            value: 'name=percona'/}' \
 -e '/name: APP_PVC/{n;s/.*/            value: 'percona-mysql-claim'/}' run_jiva_volume_resize.yml
 
-echo "Running the litmus test for resizing of jiva volume.."
+echo "Running the e2e test for resizing of jiva volume.."
 cat run_jiva_volume_resize.yml
 
-bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:litmus-jiva-vol-resize' job=run_jiva_volume_resize.yml
+bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:e2e-jiva-vol-resize' job=run_jiva_volume_resize.yml
 cd ..
 bash openebs-konvoy-e2e/utils/dump_cluster_state;
 bash openebs-konvoy-e2e/utils/event_updater jobname:jiva-volume-resize $test_name jobid:"$job_id" pipelineid:"$pipeline_id" testcaseid:"$case_id"
@@ -139,7 +139,7 @@ cd e2e-tests
 cp apps/percona/deployers/run_litmus_test.yml percona_deprovision_jiva_volume_resize.yml
 
 sed -i -e 's/app: percona-deployment/app: deprovision-percona-jiva-volume-resize/g' \
--e 's/generateName: litmus-percona-/generateName: litmus-percona-deprovision-jiva-volume-resize/g' \
+-e 's/generateName: e2e-percona-/generateName: e2e-percona-deprovision-jiva-volume-resize/g' \
 -e 's/value: openebs-standard/value: openebs-jiva-default/g' \
 -e 's/value: enabled/value: /g' \
 -e 's/value: enable/value: /g' \
@@ -151,7 +151,7 @@ sed -i '/command:/i \
             value: '"$run_id"'\
 ' percona_deprovision_jiva_volume_resize.yml           
 
-echo "Running the litmus test for percona Deprovision.."
+echo "Running the e2e test for percona Deprovision.."
 cat percona_deprovision_jiva_volume_resize.yml
 
 bash ../openebs-konvoy-e2e/utils/litmus_job_runner label='app:deprovision-percona-jiva-volume-resize' job=percona_deprovision_jiva_volume_resize.yml
