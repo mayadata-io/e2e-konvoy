@@ -67,6 +67,7 @@ fi
 
 test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=cstor-thick-provisioning metadata="")
 echo $test_name
+
 cd e2e-tests
 
 cp experiments/functional/cstor_thick_provisioning/run_e2e_test.yml create_thick_provisioning.yml
