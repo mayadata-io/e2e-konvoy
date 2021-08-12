@@ -99,7 +99,7 @@ fi
 # e2eBook 3 #
 ################
 
-run_id="csi-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=multiple_application_on_single_volume metadata=${run_id})
+run_id="csi-cstor";test_name=$(bash openebs-konvoy-e2e/utils/generate_test_name testcase=multiple-application-on-single-volume metadata=${run_id})
 echo $test_name
 
 cd cstor-operators/e2e-tests
