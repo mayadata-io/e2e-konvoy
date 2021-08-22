@@ -2,8 +2,12 @@
 
 
 pod() {
-# sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'git clone -b OpenEBS-base https://github.com/openebs/e2e-openshift.git'
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF05-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
+mkdir -p /root/.ssh
+touch /root/.ssh/id_rsa
+echo "$SSH_KEYS" > /root/.ssh/id_rsa
+chmod 600 /root/.ssh/id_rsa
+# ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa 'git clone -b OpenEBS-base https://github.com/openebs/e2e-openshift.git'
+ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/3-functional/3JF05-Jiva-internal-snapshot-deletion/Jiva-internal-snapshot-deletion node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
