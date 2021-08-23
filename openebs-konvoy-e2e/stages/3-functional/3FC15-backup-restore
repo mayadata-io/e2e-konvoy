@@ -1,7 +1,10 @@
 #!/bin/bash
 
-pod() {
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/3-functional/3FC15-backup-restore node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$VELERO_VERSION'"' '"'$VELERO_PLUGIN_VERSION'"' '"'$SDK_TOKEN'"'
+mkdir -p /root/.ssh
+touch /root/.ssh/id_rsa
+echo "$SSH_KEYS" > /root/.ssh/id_rsa
+chmod 600 /root/.ssh/id_rsa
+ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa 'cd e2e-konvoy && bash openebs-konvoy-e2e/stages/3-functional/3FC15-backup-restore node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$RELEASE_TAG'"' '"'$VELERO_VERSION'"' '"'$VELERO_PLUGIN_VERSION'"' '"'$SDK_TOKEN'"'
 }
 
 node() {
@@ -77,7 +80,7 @@ cp experiments/functional/backup_and_restore/cstor/run_e2e_test.yml run_backupre
 
 sed -i -e 's/value: app-percona-ns/value: percona-backup/g' \
 -e '/name: DEPROVISION_VELERO/{n;s/.*/            value: "true"/}' \
--e 's/value: "minio"/value: "GCP"/g' run_backuprestore_test.yml
+-e 's/value: "minio"/value: "minio"/g' run_backuprestore_test.yml
 
 sed -i "s/v1.1.0/$velero_version/g" run_backuprestore_test.yml
 sed -i "s/plugin:ci/plugin:$velero_plugin_version/g" run_backuprestore_test.yml
