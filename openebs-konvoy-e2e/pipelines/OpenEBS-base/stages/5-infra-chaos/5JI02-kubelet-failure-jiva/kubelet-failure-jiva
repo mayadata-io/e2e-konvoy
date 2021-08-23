@@ -1,9 +1,9 @@
 #!/bin/bash
 
 pod(){
-node_name=$(sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port kubectl get nodes --no-headers | grep -v master | awk 'FNR==1 {print $1}')
+node_name=$(ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa kubectl get nodes --no-headers | grep -v master | awk 'FNR==1 {print $1}')
 echo $node_name
-sshpass -p $pass ssh -o StrictHostKeyChecking=no $user@$ip -p $port 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/5JI02-kubelet-failure-jiva/kubelet-failure-jiva node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$node_name'"' '"'$RELEASE_TAG'"'
+ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa 'cd e2e-konvoy && bash openebs-konvoy-e2e/pipelines/OpenEBS-base/stages/5-infra-chaos/5JI02-kubelet-failure-jiva/kubelet-failure-jiva node '"'$CI_JOB_ID'"'' '"'$CI_PIPELINE_ID'"' '"'$CI_COMMIT_SHA'"' '"'$node_name'"' '"'$RELEASE_TAG'"'
 }
 
 node() {
