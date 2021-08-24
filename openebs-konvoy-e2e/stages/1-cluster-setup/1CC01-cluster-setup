@@ -5,6 +5,7 @@ current_time=$time
 echo $current_time
 
 echo "***Checking the cluster is Engaged or not*"
+
 mkdir -p /root/.ssh
 touch /root/.ssh/id_rsa
 echo "$SSH_KEYS" > /root/.ssh/id_rsa

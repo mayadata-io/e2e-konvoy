@@ -1,5 +1,6 @@
 #!/bin/bash
 
+pod() {
 mkdir -p /root/.ssh
 touch /root/.ssh/id_rsa
 echo "$SSH_KEYS" > /root/.ssh/id_rsa
