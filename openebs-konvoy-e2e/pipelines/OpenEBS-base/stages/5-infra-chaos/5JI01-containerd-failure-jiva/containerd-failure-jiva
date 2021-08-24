@@ -1,6 +1,10 @@
 #!/bin/bash
 
-pod(){
+pod() {
+mkdir -p /root/.ssh
+touch /root/.ssh/id_rsa
+echo "$SSH_KEYS" > /root/.ssh/id_rsa
+chmod 600 /root/.ssh/id_rsa
 
 ### Taint the node to run infra chaos test scripts
 
