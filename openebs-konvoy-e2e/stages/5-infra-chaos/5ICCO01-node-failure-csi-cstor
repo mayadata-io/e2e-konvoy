@@ -7,7 +7,7 @@ echo "$SSH_KEYS" > /root/.ssh/id_rsa
 chmod 600 /root/.ssh/id_rsa
 ### Taint the node to run infra chaos test scripts
 
-node_name=$(ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa kubectl get nodes --no-headers | grep -v master | awk 'FNR==1 {print $1}')
+node_name=$(ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa kubectl get nodes --no-headers | grep -v master | awk 'FNR==5 {print $1}')
 #ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa "kubectl taint nodes $node_name infra-aid=observer:NoSchedule"
 #ssh -o StrictHostKeyChecking=no $user@$ip -p $port -i /root/.ssh/id_rsa "mkdir infra && echo $node_name >> infra/node_name"
 
