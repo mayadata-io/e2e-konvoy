@@ -30,12 +30,6 @@ stages:
   dependencies:
     - 1CJO01-Konvoy
 
-# 2IJO01-OpenEBS-Deploy:
-#   extends: .jiva_csi_infra_setup_template
-#   script:
-#     - chmod 775 ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
-#     - ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO01-openebs-deploy
-
 2IJO01-JIVA-OPERATOR:
   extends: .jiva_csi_infra_setup_template
   script:
@@ -53,6 +47,12 @@ stages:
   script:
     - chmod 775 ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO04-nfsv4-jiva-provision
     - ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO04-nfsv4-jiva-provision
+
+2IJO05-DYNAMIC-NFS-PROVISION:
+  extends: .jiva_csi_infra_setup_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO05-openebs-dynamic-nfs
+    - ./openebs-konvoy-e2e/stages/2-infra-setup/2IJO05-openebs-dynamic-nfs    
   
 ###########################################################################################
 
@@ -112,6 +112,12 @@ stages:
   script:
     - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FJO08-memory-consumption
     - ./openebs-konvoy-e2e/stages/3-functional/3FJO08-memory-consumption
+
+3FJO09-App-deploy-Dynamic-rwx:
+  extends: .func_test_template
+  script:
+    - chmod 775 ./openebs-konvoy-e2e/stages/3-functional/3FJO09-app-deploy-dynamic-nfs-rwx
+    - ./openebs-konvoy-e2e/stages/3-functional/3FJO09-app-deploy-dynamic-nfs-rwx    
 
 ###########################################################################################
 .chaos_test_template:
